@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-md-6">
+    <br>
+    <h1>Add Leads</h1>
+
+    <div class="container">
+        <form action="{% url 'add_record' %}" method="POST">
+            {% csrf_token %}
+
+            <div class="form-group row">
+                <label for="company" class="col-sm-3 col-form-label">Company:</label>
+                <div class="col-sm-9">
+                    <input type="text" id="company" name="company" class="form-control" required>
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="client_name" class="col-sm-3 col-form-label">Client Name:</label>
+                <div class="col-sm-9">
+                    <input type="text" id="client_name" name="client_name" class="form-control" required>
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="dept_name" class="col-sm-3 col-form-label">Department Name:</label>
+                <div class="col-sm-9">
+                    <input type="text" id="dept_name" name="dept_name" class="form-control" required>
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="phone" class="col-sm-3 col-form-label">Phone:</label>
+                <div class="col-sm-9">
+                    <input type="text" id="phone" name="phone" class="form-control" required maxlength="10">
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="email" class="col-sm-3 col-form-label">Email:</label>
+                <div class="col-sm-9">
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="city" class="col-sm-3 col-form-label">City:</label>
+                <div class="col-sm-9">
+                    <input type="text" id="city" name="city" class="form-control" required>
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="address" class="col-sm-3 col-form-label">Address:</label>
+                <div class="col-sm-9">
+                    <textarea id="address" name="address" class="form-control" required></textarea>
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="assigned_person" class="col-sm-3 col-form-label">Assigned Person:</label>
+                <div class="col-sm-9">
+                    <input type="text" id="assigned_person" name="assigned_person" class="form-control" required>
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="comments" class="col-sm-3 col-form-label">Comments:</label>
+                <div class="col-sm-9">
+                    <textarea id="comments" name="comments" class="form-control" required></textarea>
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="remarks" class="col-sm-3 col-form-label">Remarks:</label>
+                <div class="col-sm-9">
+                    <textarea id="remarks" name="remarks" class="form-control" required></textarea>
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <div class="col-sm-9 offset-sm-3">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <br>
+    {% if user.is_authenticated %}
+        <!-- Display records if the user is authenticated -->
+        <h1>Leads</h1>
+        <table class="table table-stripped table-hover">
+             <thead class="table-dark">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">City</th>
+                    <th scope="col">Assigned Person</th>
+                    <th scope="col">Created</th>
+                    <th scope="col">Follow-Up Date</th>
+                    <th scope="col">Remarks</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td><a href="{% url 'record' record.id %}">{{record.id }}</a></td>
+                    <td>{{ record.company }}</td>
+                    <td>{{ record.client_name }}</td>
+                    <td>{{ record.dept_name }}</td>
+                    <td>{{ record.phone }}</td>
+                    <td>{{ record.email }}</td>
+                    <td>{{ record.address }}</td>
+                    <td>{{ record.assigned_person }}</td>
+                    <td>{{ record.created_at }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">No records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <!-- Display login form if the user is not authenticated -->
+    <div class="col-md-6 offset-md-3">
+        <br>
+        <h1>Login</h1>
+        <br>
+        <form method="POST" action="{% url 'home' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label">Email address</label>
+                <input type="email" id="username" class="form-control" name="username" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-control" name="password">
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="remember_me">
+                <label class="form-check-label" for="remember_me">Remember Me</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}
