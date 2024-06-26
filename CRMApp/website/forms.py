@@ -53,6 +53,8 @@ class AddRecordForm(forms.ModelForm):
     city = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "city", "class": "form-control"}), label="")
     address = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "address", "class": "form-control"}), label="")
     assigned_person = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "assigned_person", "class": "form-control"}), label="")
+    follow_up_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=False,
+                                     label='')
     comments = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "comments", "class": "form-control"}), label="")
     remarks = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "remarks", "class": "form-control"}), label="")
 

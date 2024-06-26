@@ -1,17 +1,19 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SignUpForm, AddRecordForm
 from .models import Record
 
 
 def home(request):
     records = Record.objects.all()
+    return render(request, 'home.html', {'records': records})
 
+
+def login_user(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -19,9 +21,9 @@ def home(request):
             return redirect('home')
         else:
             messages.error(request, "Invalid User")
-            return redirect('home')
+            return redirect('login')
     else:
-        return render(request, 'home.html', {'records': records})
+        return render(request, 'login.html')
 
 
 def logout_user(request):
@@ -44,7 +46,7 @@ def register_user(request):
                 return redirect('home')
             else:
                 messages.error(request, "Registration successful but login failed. Please log in manually.")
-                return redirect('login')  # Assuming you have a login URL
+                return redirect('login')
         else:
             messages.error(request, "There was an error with your registration. Please try again.")
     else:
@@ -66,7 +68,7 @@ def delete_record(request, pk):
     if request.user.is_authenticated:
         delete_it = Record.objects.get(id=pk)
         delete_it.delete()
-        messages.success(request, "Records deleted successfully")
+        messages.success(request, "Record deleted successfully")
         return redirect('home')
     else:
         messages.error(request, "You must be logged in to view the record")
@@ -76,16 +78,27 @@ def delete_record(request, pk):
 def add_record(request):
     form = AddRecordForm(request.POST or None)
     if request.method == "POST":
-        print(request.POST)  # Print POST data for debugging
         if form.is_valid():
             form.save()
             messages.success(request, "You have successfully added a new lead!")
             return redirect('home')
         else:
-            print(form.errors)  # Print form errors for debugging
             messages.error(request, "Error adding lead. Please check your inputs.")
-
     return render(request, 'add_record.html', {'form': form})
+
+
+def update_record(request, pk):
+    record = get_object_or_404(Record, pk=pk)
+    form = AddRecordForm(request.POST or None, instance=record)
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Lead details updated successfully!")
+            return redirect('home')
+        else:
+            messages.error(request, "Error updating lead. Please check your inputs.")
+
+    return render(request, 'update_record.html', {'form': form, 'record': record})
 
 
 def submit_lead(request):
@@ -94,12 +107,10 @@ def submit_lead(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Lead submitted successfully!")
-            return redirect('home')  # Replace 'home' with your actual home page URL name
+            return redirect('home')
         else:
             messages.error(request, "Error submitting lead. Please check your inputs.")
     else:
         form = AddRecordForm()
 
     return render(request, 'add_record.html', {'form': form})
-
-

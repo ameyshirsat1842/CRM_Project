@@ -24,24 +24,34 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link active text-light" aria-current="page" href="#">Home</a>
-        </li>
-          {% if user.is_authenticated %}
-          <li class="nav-item">
-          <a class="nav-link text-light" href="{% url 'add_record' %}">Add Lead</a>
-        </li>
+            <span class="nav-link text-light">Welcome {{ user.username }}</span>
+          </li>
         <li class="nav-item">
-          <a class="nav-link text-light" href="{% url 'logout' %}">Logout</a>
-        </li>
-          {% else %}
-          <li class="nav-item">
-          <a class="nav-link text-light" href="{% url 'register' %}">Register</a>
+          <a class="nav-link active text-light" aria-current="page" href="{% url 'home' %}">Home</a>
         </li>
           <li class="nav-item">
-          <a class="nav-link text-light" href="{% url 'home' %}">Login</a>
+            <a class="nav-link text-light" href="{% url 'add_record' %}">Add Lead</a>
+          </li>
+         <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Notifications
+            </a>
+           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"> </ul>
         </li>
-          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link text-light" href="{% url 'logout' %}">Logout</a>
+          </li>
+
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link text-light" href="{% url 'register' %}">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="{% url 'login' %}">Login</a>
+          </li>
+        {% endif %}
       </ul>
     </div>
   </div>

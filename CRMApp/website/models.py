@@ -12,6 +12,7 @@ class Record(models.Model):
     city = models.CharField(max_length=50)
     address = models.CharField(max_length=200)
     assigned_person = models.CharField(max_length=50)
+    follow_up_date = models.DateField(null=True, blank=True)
     comments = models.CharField(max_length=200)
 
     def __str__(self):

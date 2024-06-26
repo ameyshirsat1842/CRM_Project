@@ -15,17 +15,13 @@
                     {{ customer_record.email }}
                     {{ customer_record.address }}
                     {{ customer_record.assigned_person }}
+                    {{ customer_record.follow_up_date }}
                     {{ customer_record.created_at }}
     </h5>
   </div>
 </div>
 <br><br/>
-<a href="{% url 'home' %}" class="btn btn-primary">Back</a>
-
-<a href="{% url 'delete_record' customer_record.id %}" class="btn btn-primary">Delete</a>
-
-
-
-
+    <button class="btn btn-primary" onclick="window.history.back()">Back</button>
+    <a href="{% url 'delete_record' customer_record.id %}" class="btn btn-primary">Delete</a>
 
 {% endblock %}

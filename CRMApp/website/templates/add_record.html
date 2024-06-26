@@ -7,6 +7,7 @@
 
     <div class="container">
         <form action="{% url 'add_record' %}" method="POST">
+
             {% csrf_token %}
 
             <div class="form-group row">
@@ -72,7 +73,11 @@
                 </div>
             </div>
             <br>
-
+            <div class="form-group">
+                <label for="follow_up_date">Follow-Up Date:</label>
+                <input type="date" class="form-control" id="follow_up_date" name="follow_up_date">
+            </div>
+            <br>
             <div class="form-group row">
                 <label for="comments" class="col-sm-3 col-form-label">Comments:</label>
                 <div class="col-sm-9">
@@ -92,6 +97,7 @@
             <div class="form-group row">
                 <div class="col-sm-9 offset-sm-3">
                     <button type="submit" class="btn btn-primary">Submit</button>
+                    <br><br/>
                 </div>
             </div>
         </form>
