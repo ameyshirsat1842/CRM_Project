@@ -10,6 +10,14 @@
             max-height: 40px; /* Adjust the height as necessary */
             margin-right: 10px; /* Space between the logo and text */
         }
+        .side-panel {
+            height: 100vh;
+            border-right: 1px solid #ddd;
+            background-color: #f8f9fa;
+        }
+        .main-content {
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
@@ -61,6 +69,29 @@
     </div>
   </div>
 </nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Side Panel -->
+        <div class="col-md-2 side-panel">
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
+                <a href="#" class="list-group-item list-group-item-action">Leads</a>
+                <a href="#" class="list-group-item list-group-item-action">Tickets</a>
+                <a href="#" class="list-group-item list-group-item-action">Contacts</a>
+                <a href="#" class="list-group-item list-group-item-action">Reports</a>
+                <a href="#" class="list-group-item list-group-item-action">Settings</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+            <!-- Your main content goes here -->
+            <h1>Welcome to Tecstaq CRM</h1>
+            <p>Your main content will be displayed here.</p>
+        </div>
+    </div>
+</div>
 
 <!-- Include Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
