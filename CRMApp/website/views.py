@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SignUpForm, AddRecordForm
-from .models import Record
+from .models import Record, Notification
 
 
 def home(request):
@@ -114,3 +114,12 @@ def submit_lead(request):
         form = AddRecordForm()
 
     return render(request, 'add_record.html', {'form': form})
+
+
+def notifications(request):
+    if request.user.is_authenticated:
+        notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+        return render(request, 'notifications.html', {'notifications': notifications})
+    else:
+        messages.error(request, "You must be logged in to view notifications")
+        return redirect('home')

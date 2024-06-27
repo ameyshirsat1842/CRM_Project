@@ -27,30 +27,35 @@
         {% if user.is_authenticated %}
         <li class="nav-item">
             <span class="nav-link text-light">Welcome {{ user.username }}</span>
-          </li>
+        </li>
         <li class="nav-item">
-          <a class="nav-link active text-light" aria-current="page" href="{% url 'home' %}">Home</a>
+            <a class="nav-link active text-light" aria-current="page" href="{% url 'home' %}">Home</a>
         </li>
-          <li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link text-light" href="{% url 'add_record' %}">Add Lead</a>
-          </li>
-         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Notifications
-            </a>
-           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"> </ul>
         </li>
-          <li class="nav-item">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Notifications
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                {% for notification in notifications %}
+                <li><a class="dropdown-item" href="#">{{ notification.message }}</a></li>
+                {% empty %}
+                <li><a class="dropdown-item" href="#">No notifications</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li class="nav-item">
             <a class="nav-link text-light" href="{% url 'logout' %}">Logout</a>
-          </li>
-
+        </li>
         {% else %}
-          <li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link text-light" href="{% url 'register' %}">Register</a>
-          </li>
-          <li class="nav-item">
+        </li>
+        <li class="nav-item">
             <a class="nav-link text-light" href="{% url 'login' %}">Login</a>
-          </li>
+        </li>
         {% endif %}
       </ul>
     </div>
