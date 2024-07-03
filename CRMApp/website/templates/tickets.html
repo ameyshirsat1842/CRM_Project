@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Tickets</h1>
+
+    <a href="{% url 'add_ticket' %}" class="btn btn-primary mb-3">Add Ticket</a>
+
+    {% if tickets %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for ticket in tickets %}
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ ticket.title }}</h5>
+                            <p class="card-text">{{ ticket.description }}</p>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Company Name: {{ ticket.company_name }}</li>
+                                <li class="list-group-item">Ticket Type: {{ ticket.ticket_type }}</li>
+                                <li class="list-group-item">Status: {{ ticket.status }}</li>
+                                <li class="list-group-item">Account Name: {{ ticket.account_name }}</li>
+                                <li class="list-group-item">Detailed Summary: {{ ticket.detailed_summary }}</li>
+                                <li class="list-group-item">Comments / History: {{ ticket.comments_history }}</li>
+                                <li class="list-group-item">Contract: {{ ticket.contract }}</li>
+                                <li class="list-group-item">Ticket Source: {{ ticket.ticket_source }}</li>
+                                <li class="list-group-item">Resolution: {{ ticket.resolution }}</li>
+                                <li class="list-group-item">Contact Name: {{ ticket.contact_name }}</li>
+                                <li class="list-group-item">Support Mode: {{ ticket.support_mode }}</li>
+                                <li class="list-group-item">Phone: {{ ticket.phone }}</li>
+                                <li class="list-group-item">Email: {{ ticket.email }}</li>
+
+                            </ul>
+                        </div>
+                        <div class="card-footer d-flex justify-content-end">
+                            <a href="{% url 'update_ticket' ticket.pk %}" class="btn btn-warning btn-sm me-2">Update</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No tickets found.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -10,88 +10,80 @@
             max-height: 40px; /* Adjust the height as necessary */
             margin-right: 10px; /* Space between the logo and text */
         }
-        .side-panel {
-            height: 100vh;
-            border-right: 1px solid #ddd;
-            background-color: #f8f9fa;
-        }
+
         .main-content {
             padding: 20px;
+        }
+
+        .navbar {
+            background-color: #071229;
         }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand text-light" href="https://tecstaq.com/" target="_blank">
-      <img src="https://tecstaq.com/wp-content/uploads/2023/06/Tecstaq-new-logo-transeparent.png" alt="Tecstaq Logo">
-      CRM
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        {% if user.is_authenticated %}
-        <li class="nav-item">
-            <span class="nav-link text-light">Welcome {{ user.username }}</span>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active text-light" aria-current="page" href="{% url 'home' %}">Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-light" href="{% url 'add_record' %}">Add Lead</a>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Notifications
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                {% for notification in notifications %}
-                <li><a class="dropdown-item" href="#">{{ notification.message }}</a></li>
-                {% empty %}
-                <li><a class="dropdown-item" href="#">No notifications</a></li>
-                {% endfor %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand text-light" href="https://tecstaq.com/" target="_blank">
+            <img src="https://tecstaq.com/wp-content/uploads/2023/06/Tecstaq-new-logo-transeparent.png" alt="Tecstaq Logo">
+            CRM
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="nav-link text-light">Welcome {{ user.username }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-light dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Notifications <span class="badge bg-danger"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                            <!-- Fetch notifications from backend and loop through them -->
+                            {% for notification in notifications %}
+                                <li><a class="dropdown-item" href="#">{{ notification.message }}</a></li>
+                            {% empty %}
+                                <li><a class="dropdown-item" href="#">No notifications</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    {% if request.path == '/leads/' %}
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{% url 'add_record' %}">Add Lead</a>
+                        </li>
+                    {% endif %}
+                    {% if request.path == '/tickets/' %}
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{% url 'add_ticket' %}">Add Ticket</a>
+                        </li>
+                        {% if 'ticket' in request.Path %}
+                            <li class="nav-item">
+                                <a class="nav-link text-light" href="{% url 'update_ticket' ticket.id %}">Update Ticket</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url 'register' %}">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url 'login' %}">Login</a>
+                    </li>
+                {% endif %}
             </ul>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-light" href="{% url 'logout' %}">Logout</a>
-        </li>
-        {% else %}
-        <li class="nav-item">
-            <a class="nav-link text-light" href="{% url 'register' %}">Register</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-light" href="{% url 'login' %}">Login</a>
-        </li>
-        {% endif %}
-      </ul>
+        </div>
     </div>
-  </div>
 </nav>
-
-<div class="container-fluid">
-    <div class="row">
-        <!-- Side Panel -->
-        <div class="col-md-2 side-panel">
-            <div class="list-group list-group-flush">
-                <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
-                <a href="#" class="list-group-item list-group-item-action">Leads</a>
-                <a href="#" class="list-group-item list-group-item-action">Tickets</a>
-                <a href="#" class="list-group-item list-group-item-action">Contacts</a>
-                <a href="#" class="list-group-item list-group-item-action">Reports</a>
-                <a href="#" class="list-group-item list-group-item-action">Settings</a>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="col-md-10 main-content">
-            <!-- Your main content goes here -->
-            <h1>Welcome to Tecstaq CRM</h1>
-            <p>Your main content will be displayed here.</p>
-        </div>
-    </div>
-</div>
 
 <!-- Include Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

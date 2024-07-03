@@ -1,51 +1,140 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRM by Amey</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         .custom-alert {
-            font-size: 0.8rem; /* Adjust the font size */
-            padding: 0.5rem 1rem; /* Adjust the padding */
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            z-index: 1050;
+            width: auto;
+            max-width: 300px;
+            font-size: 0.8rem;
+            padding: 0.5rem 1.5rem;
         }
         .custom-alert .bi {
-            width: 1em; /* Adjust the icon size */
-            height: 1em; /* Adjust the icon size */
+            width: 1em;
+            height: 1em;
         }
         .footer {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-size: 0.8rem; /* Adjust the font size */
-            color: #6c757d; /* Adjust the text color */
+            background-color: #071229;
+            color: #c3cbe2;
+            padding: 50px 0;
+            text-align: center;
+        }
+        .footer p {
+            margin-bottom: 0;
+        }
+        .side-panel {
+            height: 100vh;
+            border-right: 1px solid #ddd;
+            background-color: #f8f9fa;
         }
     </style>
 </head>
 <body>
-    {% include 'navbar.html' %}
-    <div class="container">
-        {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-primary d-flex align-items-center custom-alert" role="alert">
-            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
-                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-            </svg>
-            <div>
-                {{ message }}
+
+<!-- Navbar -->
+{% include 'navbar.html' %}
+
+<!-- Main content area -->
+<div class="container-fluid">
+    <div class="row">
+        <!-- Side panel -->
+        {% if user.is_authenticated %}
+        <div class="col-md-2 side-panel">
+            <div class="list-group list-group-flush">
+                <a href="{% url 'home' %}" class="list-group-item list-group-item-action active">Dashboard</a>
+                <a href="{% url 'leads' %}" class="list-group-item list-group-item-action">Leads</a>
+                <a href="{% url 'tickets' %}" class="list-group-item list-group-item-action">Tickets</a>
+                <a href="#" class="list-group-item list-group-item-action">Contacts</a>
+                <a href="#" class="list-group-item list-group-item-action">Reports</a>
+                <a href="#" class="list-group-item list-group-item-action">Settings</a>
             </div>
         </div>
-        {% endfor %}
         {% endif %}
-        {% block content %}
-        {% endblock %}
-    </div>
 
-     <footer class="text-right" style="position: fixed; bottom: 0; right: 10px; width: 100%; text-align: right;">
-  <p>&copy; 2024 CRM by Amey. All rights reserved.</p>
+        <!-- Main content area -->
+        <div class="col-md-10">
+            <div class="container">
+                <!-- Display alerts -->
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-primary d-flex align-items-center custom-alert alert-dismissible fade show" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <div>
+                        {{ message }}
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <!-- Main content block -->
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<br><br/>
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="https://tecstaq.com/wp-content/uploads/2023/06/Tecstaq-new-logo-transeparent.png" alt="Company Logo" width="150">
+                <p style="font-size: 1.1rem;">Mon-Sat: 8am-10pm</p>
+                <p><i class="fas fa-phone"></i> 8104512303</p>
+                <p><i class="fas fa-map-marker-alt"></i> 113 Shiv Sagar, Mumbai, India</p>
+            </div>
+            <div class="col-md-4">
+                <h3 style="font-size: 1.2rem;">Company</h3>
+                <ul class="list-unstyled" style="font-size: 1.1rem;">
+                    <li><a href="#" style="color: #c3cbe2;">About Us</a></li>
+                    <li><a href="#" style="color: #c3cbe2;">Support</a></li>
+                    <li><a href="#" style="color: #c3cbe2;">Contact Us</a></li>
+                    <li><a href="#" style="color: #c3cbe2;">Home</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3 style="font-size: 1.2rem;">Our Services</h3>
+                <ul class="list-unstyled" style="font-size: 1.1rem;">
+                    <li><a href="https://tecstaq.com/aws/" style="color: #c3cbe2;" target="_blank">AWS</a></li>
+                    <li><a href="https://tecstaq.com/acronis/" style="color: #c3cbe2;" target="_blank">Acronis</a></li>
+                    <li><a href="https://tecstaq.com/microsoft-azure/" style="color: #c3cbe2;" target="_blank">Azure</a></li>
+                    <li><a href="https://tecstaq.com/office-365/" style="color: #c3cbe2;" target="_blank">Office 365</a></li>
+                    <li><a href="https://tecstaq.com/mfa/" style="color: #c3cbe2;" target="_blank">MFA</a></li>
+                    <li><a href="https://tecstaq.com/zoom/" style="color: #c3cbe2;" target="_blank">Zoom</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="text-center" style="font-size: 1rem;">
+        <p>&copy; 2024 CRM by Amey. All rights reserved.</p>
+    </div>
 </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+<!-- Scripts -->
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                let alerts = document.querySelectorAll('.custom-alert');
+                alerts.forEach(alert => {
+                    let bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000); // 5000 milliseconds = 5 seconds
+        });
+  </script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-9ZyVdCGD1F5F1x7L/2D5WYTcL99gTrNEC9yWSn7nscEorAKhMLC6zrDjDgHvQ+1r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-kA1BFFoX6G71G2lfvzFFf6QT1YvsgKr+Tl0lE3gA3H6OcHlI3Fme3kuFpBZQb5P8" crossorigin="anonymous"></script>
 </body>
 </html>

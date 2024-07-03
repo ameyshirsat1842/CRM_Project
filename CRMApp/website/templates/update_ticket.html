@@ -1,0 +1,79 @@
+<!-- templates/update_ticket.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Update Ticket</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                </div>
+                <div class="mb-3">
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                </div>
+                <div class="mb-3">
+                    {{ form.company_name.label_tag }}
+                    {{ form.company_name }}
+                </div>
+                <div class="mb-3">
+                    {{ form.ticket_type.label_tag }}
+                    {{ form.ticket_type }}
+                </div>
+                <div class="mb-3">
+                    {{ form.status.label_tag }}
+                    {{ form.status }}
+                </div>
+                <div class="mb-3">
+                    {{ form.account_name.label_tag }}
+                    {{ form.account_name }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form.detailed_summary.label_tag }}
+                    {{ form.detailed_summary }}
+                </div>
+                <div class="mb-3">
+                    {{ form.comments_history.label_tag }}
+                    {{ form.comments_history }}
+                </div>
+                <div class="mb-3">
+                    {{ form.contract.label_tag }}
+                    {{ form.contract }}
+                </div>
+                <div class="mb-3">
+                    {{ form.ticket_source.label_tag }}
+                    {{ form.ticket_source }}
+                </div>
+                <div class="mb-3">
+                    {{ form.resolution.label_tag }}
+                    {{ form.resolution }}
+                </div>
+                <div class="mb-3">
+                    {{ form.contact_name.label_tag }}
+                    {{ form.contact_name }}
+                </div>
+                <div class="mb-3">
+                    {{ form.support_mode.label_tag }}
+                    {{ form.support_mode }}
+                </div>
+                <div class="mb-3">
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+                </div>
+                <div class="mb-3">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Ticket</button>
+    </form>
+</div>
+{% endblock %}

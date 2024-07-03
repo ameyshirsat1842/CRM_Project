@@ -1,0 +1,80 @@
+<!-- templates/add_ticket.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Add Ticket</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form.title.label_tag }}{% if form.title.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.title }}
+                </div>
+                <div class="mb-3">
+                    {{ form.description.label_tag }}{% if form.description.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.description }}
+                </div>
+                <div class="mb-3">
+                    {{ form.company_name.label_tag }}{% if form.company_name.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.company_name }}
+                </div>
+                <div class="mb-3">
+                    {{ form.ticket_type.label_tag }}{% if form.ticket_type.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.ticket_type }}
+                </div>
+                <div class="mb-3">
+                    {{ form.status.label_tag }}{% if form.status.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.status }}
+                </div>
+                <div class="mb-3">
+                    {{ form.account_name.label_tag }}{% if form.account_name.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.account_name }}
+                </div>
+                <div class="mb-3">
+                    {{ form.detailed_summary.label_tag }}{% if form.detailed_summary.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.detailed_summary }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form.comments_history.label_tag }}{% if form.comments_history.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.comments_history }}
+                </div>
+                <div class="mb-3">
+                    {{ form.contract.label_tag }}{% if form.contract.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.contract }}
+                </div>
+                <div class="mb-3">
+                    {{ form.ticket_source.label_tag }}{% if form.ticket_source.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.ticket_source }}
+                </div>
+                <div class="mb-3">
+                    {{ form.resolution.label_tag }}{% if form.resolution.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.resolution }}
+                </div>
+                <div class="mb-3">
+                    {{ form.contact_name.label_tag }}{% if form.contact_name.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.contact_name }}
+                </div>
+                <div class="mb-3">
+                    {{ form.support_mode.label_tag }}{% if form.support_mode.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.support_mode }}
+                </div>
+                <div class="mb-3">
+                    {{ form.phone.label_tag }}{% if form.phone.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.phone }}
+                </div>
+                <div class="mb-3">
+                    {{ form.email.label_tag }}{% if form.email.field.required %}<span class="text-danger">*</span>{% endif %}
+                    {{ form.email }}
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Add Ticket</button>
+    </form>
+</div>
+{% endblock %}

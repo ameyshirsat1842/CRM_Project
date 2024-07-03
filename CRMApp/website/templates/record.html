@@ -1,27 +1,31 @@
 {% extends 'base.html' %}
-{% block content %}
 
+{% block content %}
+<br>
 <h1> Customer Record </h1>
+<br>
 <div class="card">
   <div class="card-header">
    {{ customer_record.client_name }}
   </div>
   <div class="card-body">
     <h5 class="card-title">
-                    {{ customer_record.id }}
-                    {{ customer_record.company }}
-                    {{ customer_record.dept_name }}
-                    {{ customer_record.phone }}
-                    {{ customer_record.email }}
-                    {{ customer_record.address }}
-                    {{ customer_record.assigned_person }}
-                    {{ customer_record.follow_up_date }}
-                    {{ customer_record.created_at }}
+        <strong>ID:</strong> {{ customer_record.id }}<br>
+        <strong>Company:</strong> {{ customer_record.company }}<br>
+        <strong>Department:</strong> {{ customer_record.dept_name }}<br>
+        <strong>Phone:</strong> {{ customer_record.phone }}<br>
+        <strong>Email:</strong> {{ customer_record.email }}<br>
+        <strong>Address:</strong> {{ customer_record.address }}<br>
+        <strong>Assigned Person:</strong> {{ customer_record.assigned_to.username }}<br>
+        <strong>Follow-Up Date:</strong> {{ customer_record.follow_up_date }}<br>
+        <strong>Created At:</strong> {{ customer_record.created_at }}
     </h5>
   </div>
 </div>
+
 <br><br/>
-    <button class="btn btn-primary" onclick="window.history.back()">Back</button>
-    <a href="{% url 'delete_record' customer_record.id %}" class="btn btn-primary">Delete</a>
+
+        <button class="btn btn-primary" onclick="window.history.back()">Back</button>
+        <a href="{% url 'delete_record' customer_record.id %}" class="btn btn-danger">Delete</a>
 
 {% endblock %}

@@ -7,7 +7,6 @@
 
     <div class="container">
         <form action="{% url 'add_record' %}" method="POST">
-
             {% csrf_token %}
 
             <div class="form-group row">
@@ -67,17 +66,24 @@
             <br>
 
             <div class="form-group row">
-                <label for="assigned_person" class="col-sm-3 col-form-label">Assigned Person:</label>
+                <label for="id_assigned_to" class="col-sm-3 col-form-label">Assigned To:</label>
                 <div class="col-sm-9">
-                    <input type="text" id="assigned_person" name="assigned_person" class="form-control" required>
+                    <select name="assigned_to" id="id_assigned_to" class="form-control">
+                        <option value="">---------</option>
+                        {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
             <br>
+
             <div class="form-group">
                 <label for="follow_up_date">Follow-Up Date:</label>
                 <input type="date" class="form-control" id="follow_up_date" name="follow_up_date">
             </div>
             <br>
+
             <div class="form-group row">
                 <label for="comments" class="col-sm-3 col-form-label">Comments:</label>
                 <div class="col-sm-9">
@@ -90,6 +96,21 @@
                 <label for="remarks" class="col-sm-3 col-form-label">Remarks:</label>
                 <div class="col-sm-9">
                     <textarea id="remarks" name="remarks" class="form-control" required></textarea>
+                </div>
+            </div>
+            <br>
+
+             <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Visible To:</label>
+                <div class="col-sm-9">
+                    {% for user in users %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="visible_to" id="user_{{ user.id }}" value="{{ user.id }}">
+                            <label class="form-check-label" for="user_{{ user.id }}">
+                                {{ user.username }}
+                            </label>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
             <br>

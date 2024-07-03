@@ -16,9 +16,114 @@
     {% endif %}
     <form method="POST" action="">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-primary" onclick="window.history.back()">Back</button>
-        <button type="submit" class="btn btn-primary">Update</button>
+        <div class="form-group row">
+            <label for="company" class="col-sm-3 col-form-label">{{ form.company.label }}</label>
+            <div class="col-sm-9">
+                {{ form.company }}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="client_name" class="col-sm-3 col-form-label">{{ form.client_name.label }}</label>
+            <div class="col-sm-9">
+                {{ form.client_name }}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="dept_name" class="col-sm-3 col-form-label">{{ form.dept_name.label }}</label>
+            <div class="col-sm-9">
+                {{ form.dept_name }}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="phone" class="col-sm-3 col-form-label">{{ form.phone.label }}</label>
+            <div class="col-sm-9">
+                {{ form.phone }}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="email" class="col-sm-3 col-form-label">{{ form.email.label }}</label>
+            <div class="col-sm-9">
+                {{ form.email }}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="city" class="col-sm-3 col-form-label">{{ form.city.label }}</label>
+            <div class="col-sm-9">
+                {{ form.city }}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="address" class="col-sm-3 col-form-label">{{ form.address.label }}</label>
+            <div class="col-sm-9">
+                {{ form.address }}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="assigned_to" class="col-sm-3 col-form-label">{{ form.assigned_to.label }}</label>
+            <div class="col-sm-9">
+                {{ form.assigned_to }}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="follow_up_date" class="col-sm-3 col-form-label">{{ form.follow_up_date.label }}</label>
+            <div class="col-sm-9">
+                {{ form.follow_up_date }}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="comments" class="col-sm-3 col-form-label">{{ form.comments.label }}</label>
+            <div class="col-sm-9">
+                {{ form.comments }}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="remarks" class="col-sm-3 col-form-label">{{ form.remarks.label }}</label>
+            <div class="col-sm-9">
+                {{ form.remarks }}
+            </div>
+        </div>
+        <br>
+          <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Visible To:</label>
+                <div class="col-sm-9">
+                    {% for user in users %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="visible_to" id="user_{{ user.id }}" value="{{ user.id }}"
+                                {% if user in record.visible_to.all %}checked{% endif %}>
+                            <label class="form-check-label" for="user_{{ user.id }}">
+                                {{ user.username }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+        <br>
+        <div class="form-group row">
+            <div class="col-sm-9 offset-sm-3">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
+                <button type="submit" class="btn btn-primary">Update</button>
+                <br><br/>
+            </div>
+        </div>
     </form>
 </div>
 {% endblock %}
