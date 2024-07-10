@@ -45,42 +45,67 @@ class SignUpForm(UserCreationForm):
 
 
 class AddRecordForm(forms.ModelForm):
-    company = forms.CharField(required=True,
-                              widget=forms.TextInput(attrs={"placeholder": "Company", "class": "form-control"}),
-                              label="Company")
-    client_name = forms.CharField(required=True,
-                                  widget=forms.TextInput(attrs={"placeholder": "Client Name", "class": "form-control"}),
-                                  label="Client Name")
-    dept_name = forms.CharField(required=True,
-                                widget=forms.TextInput(attrs={"placeholder": "Department Name", "class": "form-control"}),
-                                label="Department Name")
-    phone = forms.CharField(required=True, max_length=10,
-                            widget=forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"}),
-                            label="Phone")
-    email = forms.EmailField(required=True,
-                             widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
-                             label="Email")
-    city = forms.CharField(required=True,
-                           widget=forms.TextInput(attrs={"placeholder": "City", "class": "form-control"}),
-                           label="City")
-    address = forms.CharField(required=True,
-                              widget=forms.TextInput(attrs={"placeholder": "Address", "class": "form-control"}),
-                              label="Address")
-    assigned_to = forms.ModelChoiceField(queryset=User.objects.all(),
-                                         widget=forms.Select(attrs={"class": "form-control"}),
-                                         label="Assigned To")
-    visible_to = forms.ModelMultipleChoiceField(queryset=User.objects.all(),
-                                                widget=forms.CheckboxSelectMultiple,
-                                                required=False,
-                                                label="Visible To")
-    follow_up_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', "class": "form-control"}),
-                                     required=False, label='Follow-Up Date')
-    comments = forms.CharField(required=True,
-                               widget=forms.TextInput(attrs={"placeholder": "Comments", "class": "form-control"}),
-                               label="Comments")
-    remarks = forms.CharField(required=True,
-                              widget=forms.TextInput(attrs={"placeholder": "Remarks", "class": "form-control"}),
-                              label="Remarks")
+    company = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Company", "class": "form-control"}),
+        label="Company"
+    )
+    client_name = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Client Name", "class": "form-control"}),
+        label="Client Name"
+    )
+    dept_name = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Department Name", "class": "form-control"}),
+        label="Department Name"
+    )
+    phone = forms.CharField(
+        required=True,
+        max_length=10,
+        widget=forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"}),
+        label="Phone"
+    )
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
+        label="Email"
+    )
+    city = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "City", "class": "form-control"}),
+        label="City"
+    )
+    address = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Address", "class": "form-control"}),
+        label="Address"
+    )
+    assigned_to = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Assigned To"
+    )
+    visible_to = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+    follow_up_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', "class": "form-control"}),
+        required=False,
+        label='Follow-Up Date'
+    )
+    comments = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Comments", "class": "form-control"}),
+        label="Comments"
+    )
+    remarks = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Remarks", "class": "form-control"}),
+        label="Remarks"
+    )
 
     class Meta:
         model = Record
@@ -91,9 +116,11 @@ class AddRecordForm(forms.ModelForm):
 
 
 class UpdateRecordForm(forms.ModelForm):
-    assigned_to = forms.ModelChoiceField(queryset=User.objects.all(),
-                                         widget=forms.Select(attrs={"class": "form-control"}),
-                                         required=False)
+    assigned_to = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control"}),
+        required=False
+    )
 
     class Meta:
         model = Record

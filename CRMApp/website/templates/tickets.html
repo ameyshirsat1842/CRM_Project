@@ -4,8 +4,6 @@
 <div class="container mt-5">
     <h1>Tickets</h1>
 
-    <a href="{% url 'add_ticket' %}" class="btn btn-primary mb-3">Add Ticket</a>
-
     {% if tickets %}
         <div class="row row-cols-1 row-cols-md-2 g-4">
             {% for ticket in tickets %}
@@ -33,6 +31,8 @@
                         </div>
                         <div class="card-footer d-flex justify-content-end">
                             <a href="{% url 'update_ticket' ticket.pk %}" class="btn btn-warning btn-sm me-2">Update</a>
+                                <a href="{% url 'add_ticket' %}" class="btn btn-primary mb-3">Add Ticket</a>
+
                         </div>
                     </div>
                 </div>

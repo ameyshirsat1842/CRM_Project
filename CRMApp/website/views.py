@@ -101,6 +101,7 @@ def add_record(request):
                 users = User.objects.filter(id__in=visible_to_ids)
                 record.visible_to.set(users)
 
+            messages.success(request, "Record added successfully!")
             return redirect('leads')  # Redirect to leads page after successful save
     else:
         form = AddRecordForm()

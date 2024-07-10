@@ -16,7 +16,7 @@ class Record(models.Model):
     follow_up_date = models.DateField(null=True, blank=True)
     comments = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
-    visible_to = models.ManyToManyField(User, related_name='visible_leads', blank=True)
+    visible_to = models.ManyToManyField(User, related_name='visible_tickets', blank=True)
 
     def __str__(self):
         return f"{self.client_name} from {self.company}"
