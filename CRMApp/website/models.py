@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -8,8 +9,8 @@ class Record(models.Model):
     company = models.CharField(max_length=50)
     client_name = models.CharField(max_length=50)
     dept_name = models.CharField(max_length=50)
-    phone = models.CharField(max_length=10)
-    email = models.CharField(max_length=100)
+    phone = models.CharField(max_length=10, validators=[RegexValidator(r'^\d{10}$', message="Phone number must be 10 digits.")])
+    email = models.EmailField(max_length=100)
     city = models.CharField(max_length=50)
     address = models.CharField(max_length=200)
     assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_leads', null=True, blank=True)
@@ -17,6 +18,14 @@ class Record(models.Model):
     comments = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
     visible_to = models.ManyToManyField(User, related_name='visible_tickets', blank=True)
+    attachments = models.FileField(upload_to='attachments/', null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_records', null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['assigned_to']),
+            models.Index(fields=['created_at']),
+        ]
 
     def __str__(self):
         return f"{self.client_name} from {self.company}"
@@ -56,3 +65,18 @@ class Ticket(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class MeetingRecord(models.Model):
+    objects = None
+    id = models.AutoField(primary_key=True)
+    meeting_partner = models.CharField(max_length=255)
+    products_discussed_partner = models.TextField()
+    products_discussed_company = models.TextField()
+    conclusion = models.TextField()
+    follow_up_date = models.DateField(null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Meeting with {self.meeting_partner} on {self.created_at}"

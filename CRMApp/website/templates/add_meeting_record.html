@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Add Meeting Record</h1>
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group row">
+            <label for="id_meeting_partner" class="col-sm-3 col-form-label">Meeting Partner:</label>
+            <div class="col-sm-9">
+                {{ form.meeting_partner }}
+                {% if form.meeting_partner.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.meeting_partner.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="id_products_discussed_partner" class="col-sm-3 col-form-label">Products Discussed by Partner:</label>
+            <div class="col-sm-9">
+                {{ form.products_discussed_partner }}
+                {% if form.products_discussed_partner.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.products_discussed_partner.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="id_products_discussed_company" class="col-sm-3 col-form-label">Products Discussed by Company:</label>
+            <div class="col-sm-9">
+                {{ form.products_discussed_company }}
+                {% if form.products_discussed_company.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.products_discussed_company.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+            <br>
+
+            <div class="form-group">
+                <label for="follow_up_date">Follow-Up Date:</label>
+                <input type="date" class="form-control" id="follow_up_date" name="follow_up_date">
+            </div>
+            <br>
+
+        <div class="form-group row">
+            <label for="id_conclusion" class="col-sm-3 col-form-label">Conclusion:</label>
+            <div class="col-sm-9">
+                {{ form.conclusion }}
+                {% if form.conclusion.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.conclusion.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-9 offset-sm-3">
+                <button type="submit" class="btn btn-primary">Add Record</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

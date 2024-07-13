@@ -2,18 +2,15 @@ from celery.utils.time import timezone
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm
-from .models import Record, Notification, Ticket
+from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, MeetingRecordForm
+from .models import Record, Notification, Ticket, MeetingRecord
+from django.views.generic import ListView
 
 
 def home(request):
     return render(request, 'home.html')
-
-
-def leads(request):
-    records = Record.objects.all()
-    return render(request, 'leads.html', {'records': records})
 
 
 def login_user(request):
@@ -61,11 +58,29 @@ def register_user(request):
     return render(request, 'register.html', {'form': form})
 
 
-def lead(request):
-    user = request.user
-    # Fetch records where the logged-in user is in the visible_to list or the assigned_to field
-    records = Record.objects.filter(visible_to=user) | Record.objects.filter(assigned_to=user)
-    return render(request, 'leads.html', {'records': records.distinct()})
+def leads_view(request):
+    if request.user.is_authenticated:
+        search_query = request.GET.get('search', '')
+
+        if search_query:
+            records = Record.objects.filter(
+                Q(company__icontains=search_query) |
+                Q(client_name__icontains=search_query) |
+                Q(dept_name__icontains=search_query) |
+                Q(phone__icontains=search_query) |
+                Q(email__icontains=search_query) |
+                Q(city__icontains=search_query) |
+                Q(assigned_to__username__icontains=search_query) |
+                Q(comments__icontains=search_query) |
+                Q(remarks__icontains=search_query)
+            )
+        else:
+            records = Record.objects.all()
+
+        context = {'records': records}
+        return render(request, 'leads.html', context)
+    else:
+        return redirect('login')
 
 
 def customer_record(request, pk):
@@ -88,21 +103,19 @@ def delete_record(request, pk, record=None):
 
 def add_record(request):
     if request.method == 'POST':
-        form = AddRecordForm(request.POST)
+        form = AddRecordForm(request.POST, request.FILES)
         if form.is_valid():
             record = form.save(commit=False)  # Save the form data without committing to the database yet
 
-            # Save the record instance first to get an id
             record.save()
 
-            # Now handle the many-to-many field 'visible_to'
             visible_to_ids = request.POST.getlist('visible_to')
             if visible_to_ids:
                 users = User.objects.filter(id__in=visible_to_ids)
                 record.visible_to.set(users)
 
             messages.success(request, "Record added successfully!")
-            return redirect('leads')  # Redirect to leads page after successful save
+            return redirect('leads')
     else:
         form = AddRecordForm()
 
@@ -113,7 +126,7 @@ def add_record(request):
 def update_record(request, pk):
     record = get_object_or_404(Record, pk=pk)
     if request.method == 'POST':
-        form = UpdateRecordForm(request.POST, instance=record)
+        form = UpdateRecordForm(request.POST, request.FILES, instance=record)
         if form.is_valid():
             record = form.save(commit=False)
 
@@ -128,26 +141,13 @@ def update_record(request, pk):
                 users = User.objects.filter(id__in=visible_to_ids)
                 record.visible_to.set(users)
 
+            messages.success(request, "Record updated successfully!")
             return redirect('leads')
     else:
         form = UpdateRecordForm(instance=record)
 
     users = User.objects.all()
     return render(request, 'update_record.html', {'form': form, 'users': users})
-
-
-def submit_lead(request):
-    if request.method == "POST":
-        form = AddRecordForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Lead submitted successfully!")
-            return redirect('home')
-        else:
-            messages.error(request, "Error submitting lead. Please check your inputs.")
-    else:
-        form = AddRecordForm()
-    return render(request, 'add_record.html', {'form': form})
 
 
 def notifications(request):
@@ -212,3 +212,64 @@ def update_ticket(request, pk):
     else:
         messages.error(request, "You must be logged in to update a ticket.")
         return redirect('login')
+
+
+def meeting_records(request):
+    records = MeetingRecord.objects.filter(created_by=request.user)
+    return render(request, 'meeting_records.html', {'records': records})
+
+
+def add_meeting_record(request):
+    if request.method == 'POST':
+        form = MeetingRecordForm(request.POST)
+        if form.is_valid():
+            meeting_record = form.save(commit=False)
+            meeting_record.created_by = request.user
+            meeting_record.save()
+            messages.success(request, "Meeting record added successfully!")
+            return redirect('meeting_records')
+    else:
+        form = MeetingRecordForm()
+    return render(request, 'add_meeting_record.html', {'form': form})
+
+
+class MeetingRecordListView(ListView):
+    model = MeetingRecord
+    template_name = 'meeting_records.html'
+    context_object_name = 'records'
+    paginate_by = 10  # Adjust as needed
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(
+                Q(meeting_partner__icontains=query) |
+                Q(products_discussed_partner__icontains=query) |
+                Q(products_discussed_company__icontains=query) |
+                Q(conclusion__icontains=query) |
+                Q(follow_up_date__icontains=query)
+            )
+        return queryset
+
+
+def update_meeting_record(request, pk):
+    record = get_object_or_404(MeetingRecord, pk=pk)
+    if request.method == 'POST':
+        form = MeetingRecordForm(request.POST, instance=record)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Meeting record updated successfully!")
+            return redirect('meeting_records')
+    else:
+        form = MeetingRecordForm(instance=record)
+    return render(request, 'update_meeting_record.html', {'form': form})
+
+
+def delete_meeting_record(request, pk):
+    record = get_object_or_404(MeetingRecord, pk=pk)
+    if request.method == 'POST':
+        record.delete()
+        messages.success(request, "Meeting record deleted successfully!")
+        return redirect('meeting_records')
+    return render(request, 'delete_meeting_record.html', {'record': record})

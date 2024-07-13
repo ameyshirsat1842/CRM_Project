@@ -59,6 +59,13 @@
                             <a class="nav-link text-light" href="{% url 'add_record' %}">Add Lead</a>
                         </li>
                     {% endif %}
+
+                  {% if request.path == '/meeting-records/' %}
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{% url 'add_meeting_record' %}">Add Meeting</a>
+                        </li>
+                    {% endif %}
+
                     {% if request.path == '/tickets/' %}
                         <li class="nav-item">
                             <a class="nav-link text-light" href="{% url 'add_ticket' %}">Add Ticket</a>

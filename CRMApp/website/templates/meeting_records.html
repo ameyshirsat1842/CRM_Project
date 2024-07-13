@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Meeting Records</h1>
+
+    <form method="GET" action="{% url 'meeting_records' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Search leads..." value="{{ request.GET.search }}">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Meeting Partner</th>
+                    <th scope="col">Products Discussed by Partner</th>
+                    <th scope="col">Products Discussed by Company</th>
+                    <th scope="col">Conclusion</th>
+                    <th scope="col">Follow-Up Date</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.id }}</td>
+                    <td>{{ record.meeting_partner }}</td>
+                    <td>{{ record.products_discussed_partner }}</td>
+                    <td>{{ record.products_discussed_company }}</td>
+                    <td>{{ record.conclusion }}</td>
+                    <td>{{ record.follow_up_date|date:"F d, Y" }}</td>
+                    <td>{{ record.created_at|date:"F d, Y" }}</td>
+                    <td>
+                        <a href="{% url 'update_meeting_record' record.pk %}" class="btn btn-warning btn-sm">Update</a>
+                        <a href="{% url 'delete_meeting_record' record.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No meeting records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

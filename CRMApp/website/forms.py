@@ -1,7 +1,7 @@
+from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django import forms
-from .models import Record, Ticket
+from .models import Record, Ticket, MeetingRecord
 
 
 class SignUpForm(UserCreationForm):
@@ -111,8 +111,17 @@ class AddRecordForm(forms.ModelForm):
         model = Record
         fields = [
             'company', 'client_name', 'dept_name', 'phone', 'email', 'city',
-            'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to'
+            'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to', 'attachments', 'created_by'
         ]
+        widgets = {
+            'created_by': forms.HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if self.user:
+            self.initial['created_by'] = self.user.username
 
 
 class UpdateRecordForm(forms.ModelForm):
@@ -126,11 +135,19 @@ class UpdateRecordForm(forms.ModelForm):
         model = Record
         fields = [
             'company', 'client_name', 'dept_name', 'phone', 'email', 'city',
-            'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to'
+            'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to', 'attachments', 'created_by'
         ]
         widgets = {
             'visible_to': forms.CheckboxSelectMultiple,
+            'created_by': forms.HiddenInput(),
         }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if self.user:
+            self.fields['created_by'].initial = self.user.username
+            self.fields['created_by'].widget = forms.HiddenInput()
 
 
 class AddTicketForm(forms.ModelForm):
@@ -169,3 +186,15 @@ class AddTicketForm(forms.ModelForm):
         model = Ticket
         fields = '__all__'
         exclude = ("created_by", "created_at", "modified_at")
+
+
+class MeetingRecordForm(forms.ModelForm):
+    class Meta:
+        model = MeetingRecord
+        fields = ['id', 'meeting_partner', 'products_discussed_partner', 'products_discussed_company', 'conclusion', 'follow_up_date']
+
+    follow_up_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', "class": "form-control"}),
+        required=False,
+        label='Follow-Up Date'
+    )
