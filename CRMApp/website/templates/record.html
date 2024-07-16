@@ -15,11 +15,12 @@
         <strong>Department:</strong> {{ customer_record.dept_name }}<br>
         <strong>Phone:</strong> {{ customer_record.phone }}<br>
         <strong>Email:</strong> {{ customer_record.email }}<br>
+        <strong>City:</strong> {{ customer_record.city }}<br>
         <strong>Address:</strong> {{ customer_record.address }}<br>
         <strong>Assigned Person:</strong> {{ customer_record.assigned_to.username }}<br>
-        <strong>Follow-Up Date:</strong> {{ customer_record.follow_up_date }}<br>
-        <strong>Created At:</strong> {{ customer_record.created_at }}<br>
-        <strong>Created By:</strong> {{ record.created_by }}<br>
+        <strong>Follow-Up Date:</strong> {{ customer_record.follow_up_date|date:"F d, Y" }}<br>
+        <strong>Created At:</strong> {{ customer_record.created_at|date:"F d, Y H:i:s" }}<br>
+        <strong>Created By:</strong> {{ customer_record.created_by.username }}<br>
         <strong>Attachments:</strong>
         {% if customer_record.attachments %}
             <a href="{{ customer_record.attachments.url }}" target="_blank">{{ customer_record.attachments.name }}</a>

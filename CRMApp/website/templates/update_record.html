@@ -14,12 +14,17 @@
             </div>
         {% endfor %}
     {% endif %}
-    <form action="" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
         <div class="form-group row">
             <label for="company" class="col-sm-3 col-form-label">{{ form.company.label }}</label>
             <div class="col-sm-9">
                 {{ form.company }}
+                {% if form.company.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.company.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -28,6 +33,11 @@
             <label for="client_name" class="col-sm-3 col-form-label">{{ form.client_name.label }}</label>
             <div class="col-sm-9">
                 {{ form.client_name }}
+                {% if form.client_name.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.client_name.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -36,6 +46,11 @@
             <label for="dept_name" class="col-sm-3 col-form-label">{{ form.dept_name.label }}</label>
             <div class="col-sm-9">
                 {{ form.dept_name }}
+                {% if form.dept_name.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.dept_name.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -44,6 +59,11 @@
             <label for="phone" class="col-sm-3 col-form-label">{{ form.phone.label }}</label>
             <div class="col-sm-9">
                 {{ form.phone }}
+                {% if form.phone.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.phone.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -52,6 +72,11 @@
             <label for="email" class="col-sm-3 col-form-label">{{ form.email.label }}</label>
             <div class="col-sm-9">
                 {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.email.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -60,6 +85,11 @@
             <label for="city" class="col-sm-3 col-form-label">{{ form.city.label }}</label>
             <div class="col-sm-9">
                 {{ form.city }}
+                {% if form.city.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.city.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -68,6 +98,11 @@
             <label for="address" class="col-sm-3 col-form-label">{{ form.address.label }}</label>
             <div class="col-sm-9">
                 {{ form.address }}
+                {% if form.address.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.address.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -76,6 +111,11 @@
             <label for="assigned_to" class="col-sm-3 col-form-label">{{ form.assigned_to.label }}</label>
             <div class="col-sm-9">
                 {{ form.assigned_to }}
+                {% if form.assigned_to.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.assigned_to.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -84,6 +124,11 @@
             <label for="follow_up_date" class="col-sm-3 col-form-label">{{ form.follow_up_date.label }}</label>
             <div class="col-sm-9">
                 {{ form.follow_up_date }}
+                {% if form.follow_up_date.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.follow_up_date.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -92,6 +137,11 @@
             <label for="comments" class="col-sm-3 col-form-label">{{ form.comments.label }}</label>
             <div class="col-sm-9">
                 {{ form.comments }}
+                {% if form.comments.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.comments.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -100,11 +150,16 @@
             <label for="remarks" class="col-sm-3 col-form-label">{{ form.remarks.label }}</label>
             <div class="col-sm-9">
                 {{ form.remarks }}
+                {% if form.remarks.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.remarks.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
 
-         <div class="form-group row">
+        <div class="form-group row">
             <label for="attachments" class="col-sm-3 col-form-label">Attachments:</label>
             <div class="col-sm-9">
                 <input type="file" id="attachments" name="attachments" class="form-control">
@@ -136,7 +191,6 @@
             <div class="col-sm-9 offset-sm-3">
                 <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
                 <button type="submit" class="btn btn-primary">Update</button>
-                <br><br/>
             </div>
         </div>
     </form>

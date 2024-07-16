@@ -7,130 +7,132 @@
 
     <div class="container">
     <form action="{% url 'add_record' %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
+        {% csrf_token %}
 
-            <div class="form-group row">
-                <label for="company" class="col-sm-3 col-form-label">Company:</label>
-                <div class="col-sm-9">
-                    <input type="text" id="company" name="company" class="form-control" required>
-                </div>
+        <div class="form-group row">
+            <label for="company" class="col-sm-3 col-form-label">Company:</label>
+            <div class="col-sm-9">
+                <input type="text" id="company" name="company" class="form-control" required>
             </div>
-            <br>
+        </div>
+        <br>
 
-            <div class="form-group row">
-                <label for="client_name" class="col-sm-3 col-form-label">Client Name:</label>
-                <div class="col-sm-9">
-                    <input type="text" id="client_name" name="client_name" class="form-control" required>
-                </div>
+        <div class="form-group row">
+            <label for="client_name" class="col-sm-3 col-form-label">Client Name:</label>
+            <div class="col-sm-9">
+                <input type="text" id="client_name" name="client_name" class="form-control" required>
             </div>
-            <br>
+        </div>
+        <br>
 
-            <div class="form-group row">
-                <label for="dept_name" class="col-sm-3 col-form-label">Department Name:</label>
-                <div class="col-sm-9">
-                    <input type="text" id="dept_name" name="dept_name" class="form-control" required>
-                </div>
+        <div class="form-group row">
+            <label for="dept_name" class="col-sm-3 col-form-label">Department Name:</label>
+            <div class="col-sm-9">
+                <input type="text" id="dept_name" name="dept_name" class="form-control" required>
             </div>
-            <br>
+        </div>
+        <br>
 
-            <div class="form-group row">
-                <label for="phone" class="col-sm-3 col-form-label">Phone:</label>
-                <div class="col-sm-9">
-                    <input type="text" id="phone" name="phone" class="form-control" required maxlength="10">
-                </div>
+        <div class="form-group row">
+            <label for="phone" class="col-sm-3 col-form-label">Phone:</label>
+            <div class="col-sm-9">
+                <input type="text" id="phone" name="phone" class="form-control" required maxlength="10">
             </div>
-            <br>
+        </div>
+        <br>
 
-            <div class="form-group row">
-                <label for="email" class="col-sm-3 col-form-label">Email:</label>
-                <div class="col-sm-9">
-                    <input type="email" id="email" name="email" class="form-control" required>
-                </div>
+        <div class="form-group row">
+            <label for="email" class="col-sm-3 col-form-label">Email:</label>
+            <div class="col-sm-9">
+                <input type="email" id="email" name="email" class="form-control" required>
             </div>
-            <br>
+        </div>
+        <br>
 
-            <div class="form-group row">
-                <label for="city" class="col-sm-3 col-form-label">City:</label>
-                <div class="col-sm-9">
-                    <input type="text" id="city" name="city" class="form-control" required>
-                </div>
+        <div class="form-group row">
+            <label for="city" class="col-sm-3 col-form-label">City:</label>
+            <div class="col-sm-9">
+                <input type="text" id="city" name="city" class="form-control" required>
             </div>
-            <br>
+        </div>
+        <br>
 
-            <div class="form-group row">
-                <label for="address" class="col-sm-3 col-form-label">Address:</label>
-                <div class="col-sm-9">
-                    <textarea id="address" name="address" class="form-control" required></textarea>
-                </div>
+        <div class="form-group row">
+            <label for="address" class="col-sm-3 col-form-label">Address:</label>
+            <div class="col-sm-9">
+                <textarea id="address" name="address" class="form-control" required></textarea>
             </div>
-            <br>
+        </div>
+        <br>
 
-            <div class="form-group row">
-                <label for="id_assigned_to" class="col-sm-3 col-form-label">Assigned To:</label>
-                <div class="col-sm-9">
-                    <select name="assigned_to" id="id_assigned_to" class="form-control">
-                        <option value="">---------</option>
-                        {% for user in users %}
-                            <option value="{{ user.id }}">{{ user.username }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <br>
-
-            <div class="form-group">
-                <label for="follow_up_date">Follow-Up Date:</label>
-                <input type="date" class="form-control" id="follow_up_date" name="follow_up_date">
-            </div>
-            <br>
-
-            <div class="form-group row">
-                <label for="comments" class="col-sm-3 col-form-label">Agenda:</label>
-                <div class="col-sm-9">
-                    <textarea id="comments" name="comments" class="form-control" required></textarea>
-                </div>
-            </div>
-            <br>
-
-            <div class="form-group row">
-                <label for="remarks" class="col-sm-3 col-form-label">Remarks:</label>
-                <div class="col-sm-9">
-                    <textarea id="remarks" name="remarks" class="form-control" required></textarea>
-                </div>
-            </div>
-            <br>
-
-            <div class="form-group row">
-                <label for="attachments" class="col-sm-3 col-form-label">Attachments:</label>
-                <div class="col-sm-9">
-                    <input type="file" id="attachments" name="attachments" class="form-control">
-                </div>
-            </div>
-
-            <br>
-
-             <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Visible To:</label>
-                <div class="col-sm-9">
+        <div class="form-group row">
+            <label for="id_assigned_to" class="col-sm-3 col-form-label">Assigned To:</label>
+            <div class="col-sm-9">
+                <select name="assigned_to" id="id_assigned_to" class="form-control">
+                    <option value="">---------</option>
                     {% for user in users %}
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="visible_to" id="user_{{ user.id }}" value="{{ user.id }}">
-                            <label class="form-check-label" for="user_{{ user.id }}">
-                                {{ user.username }}
-                            </label>
-                        </div>
+                        <option value="{{ user.id }}">{{ user.username }}</option>
                     {% endfor %}
-                </div>
+                </select>
             </div>
-            <br>
+        </div>
+        <br>
 
-            <div class="form-group row">
-                <div class="col-sm-9 offset-sm-3">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    <br><br/>
-                </div>
+        <div class="form-group">
+            <label for="follow_up_date">Follow-Up Date:</label>
+            <input type="date" class="form-control" id="follow_up_date" name="follow_up_date">
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="comments" class="col-sm-3 col-form-label">Agenda:</label>
+            <div class="col-sm-9">
+                <textarea id="comments" name="comments" class="form-control" required></textarea>
             </div>
-        </form>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="remarks" class="col-sm-3 col-form-label">Remarks:</label>
+            <div class="col-sm-9">
+                <textarea id="remarks" name="remarks" class="form-control" required></textarea>
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="attachments" class="col-sm-3 col-form-label">Attachments:</label>
+            <div class="col-sm-9">
+                <input type="file" id="attachments" name="attachments" class="form-control">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Visible To:</label>
+            <div class="col-sm-9">
+                {% for user in users %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="visible_to" id="user_{{ user.id }}" value="{{ user.id }}">
+                        <label class="form-check-label" for="user_{{ user.id }}">
+                            {{ user.username }}
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <div class="col-sm-9 offset-sm-3">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <br><br/>
+            </div>
+        </div>
+        <input type="hidden" name="created_by" id="id_created_by" value="{{ request.user.id }}">
+    </form>
     </div>
 </div>
 

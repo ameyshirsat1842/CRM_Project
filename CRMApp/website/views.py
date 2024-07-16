@@ -103,10 +103,10 @@ def delete_record(request, pk, record=None):
 
 def add_record(request):
     if request.method == 'POST':
-        form = AddRecordForm(request.POST, request.FILES)
+        form = AddRecordForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
-            record = form.save(commit=False)  # Save the form data without committing to the database yet
-
+            record = form.save(commit=False)
+            record.created_by = request.user
             record.save()
 
             visible_to_ids = request.POST.getlist('visible_to')
@@ -128,26 +128,14 @@ def update_record(request, pk):
     if request.method == 'POST':
         form = UpdateRecordForm(request.POST, request.FILES, instance=record)
         if form.is_valid():
-            record = form.save(commit=False)
-
-            assigned_to_id = request.POST.get('assigned_to')
-            if assigned_to_id:
-                record.assigned_to = User.objects.get(id=assigned_to_id)
-
-            record.save()
-
-            visible_to_ids = request.POST.getlist('visible_to')
-            if visible_to_ids:
-                users = User.objects.filter(id__in=visible_to_ids)
-                record.visible_to.set(users)
-
+            form.save()
             messages.success(request, "Record updated successfully!")
             return redirect('leads')
     else:
         form = UpdateRecordForm(instance=record)
 
     users = User.objects.all()
-    return render(request, 'update_record.html', {'form': form, 'users': users})
+    return render(request, 'update_record.html', {'form': form, 'record': record, 'users': users})
 
 
 def notifications(request):

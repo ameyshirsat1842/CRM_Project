@@ -135,7 +135,7 @@ class UpdateRecordForm(forms.ModelForm):
         model = Record
         fields = [
             'company', 'client_name', 'dept_name', 'phone', 'email', 'city',
-            'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to', 'attachments', 'created_by'
+            'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to', 'attachments'
         ]
         widgets = {
             'visible_to': forms.CheckboxSelectMultiple,

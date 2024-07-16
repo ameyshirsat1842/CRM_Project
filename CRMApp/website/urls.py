@@ -22,4 +22,3 @@ urlpatterns = [
     path('meeting-records/delete/<int:pk>/', delete_meeting_record, name='delete_meeting_record'),
 
 ]
-
