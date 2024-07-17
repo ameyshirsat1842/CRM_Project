@@ -20,6 +20,7 @@ class Record(models.Model):
     visible_to = models.ManyToManyField(User, related_name='visible_tickets', blank=True)
     attachments = models.FileField(upload_to='attachments/', null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_records', null=True)
+    social_media_details = models.TextField(null=True, blank=True)
 
     class Meta:
         indexes = [
@@ -69,7 +70,7 @@ class Ticket(models.Model):
 
 class MeetingRecord(models.Model):
     objects = None
-    id = models.AutoField(primary_key=True)
+    record = models.ForeignKey(Record, on_delete=models.CASCADE, default=1)
     meeting_partner = models.CharField(max_length=255)
     products_discussed_partner = models.TextField()
     products_discussed_company = models.TextField()

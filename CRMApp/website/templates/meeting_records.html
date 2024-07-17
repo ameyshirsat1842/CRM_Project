@@ -18,7 +18,7 @@
             <thead class="table-dark">
                 <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">Meeting Partner</th>
+                    <th scope="col">Company</th>
                     <th scope="col">Products Discussed by Partner</th>
                     <th scope="col">Products Discussed by Company</th>
                     <th scope="col">Conclusion</th>
@@ -39,6 +39,8 @@
                     <td>{{ record.follow_up_date|date:"F d, Y" }}</td>
                     <td>{{ record.created_at|date:"F d, Y" }}</td>
                     <td>
+                        <a href="https://us05web.zoom.us/s/83827104906#success" class="btn btn-primary">Schedule Zoom Meeting</a>
+                         <br><br/>
                         <a href="{% url 'update_meeting_record' record.pk %}" class="btn btn-warning btn-sm">Update</a>
                         <a href="{% url 'delete_meeting_record' record.pk %}" class="btn btn-danger btn-sm">Delete</a>
                     </td>

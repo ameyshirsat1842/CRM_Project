@@ -2,11 +2,11 @@
 
 {% block content %}
 <br>
-<h1> Customer Record </h1>
+<h1>Customer Record</h1>
 <br>
 <div class="card">
   <div class="card-header">
-   {{ customer_record.client_name }}
+    <h2 class="font-weight-bold">{{ customer_record.client_name }}</h2>
   </div>
   <div class="card-body">
     <h5 class="card-title">
@@ -27,13 +27,62 @@
         {% else %}
             No attachments
         {% endif %}
+         <br>
+        <strong>Social Media Details:</strong> {{ customer_record.social_media_details|linebreaksbr }}<br> <!-- New field -->
     </h5>
   </div>
 </div>
 
-<br><br/>
+<br>
 
 <button class="btn btn-primary" onclick="window.history.back()">Back</button>
+<a href="{% url 'update_record' customer_record.id %}" class="btn btn-warning btn-sm">Update</a>
 <a href="{% url 'delete_record' customer_record.id %}" class="btn btn-danger">Delete</a>
 
+<br>
+
+<div class="container mt-4">
+    <h1 class="mb-4">Meeting Records</h1>
+    <a href="{% url 'add_meeting_record' customer_record.id %}" class="btn btn-success mb-2">Add Meeting Record</a>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Meeting Partner</th>
+                    <th scope="col">Products Discussed by Partner</th>
+                    <th scope="col">Products Discussed by Company</th>
+                    <th scope="col">Conclusion</th>
+                    <th scope="col">Follow-Up Date</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in meeting_records %}
+                <tr>
+                    <td>{{ record.id }}</td>
+                    <td>{{ record.meeting_partner }}</td>
+                    <td>{{ record.products_discussed_partner }}</td>
+                    <td>{{ record.products_discussed_company }}</td>
+                    <td>{{ record.conclusion }}</td>
+                    <td>{{ record.follow_up_date|date:"F d, Y" }}</td>
+                    <td>{{ record.created_at|date:"F d, Y H:i:s" }}</td>
+                    <td>
+                        <a href="https://us05web.zoom.us/s/83827104906#success" class="btn btn-primary">Schedule Zoom Meeting</a>
+                        <br><br/>
+                        <a href="{% url 'update_meeting_record' record.pk %}" class="btn btn-warning btn-sm">Update</a>
+                        <a href="{% url 'delete_meeting_record' record.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">No meeting records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

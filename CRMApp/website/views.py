@@ -4,9 +4,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, MeetingRecordForm
+from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm
 from .models import Record, Notification, Ticket, MeetingRecord
 from django.views.generic import ListView
+
 
 
 def home(request):
@@ -86,7 +87,9 @@ def leads_view(request):
 def customer_record(request, pk):
     if request.user.is_authenticated:
         customer_rec = get_object_or_404(Record, id=pk)
-        return render(request, 'record.html', {'customer_record': customer_rec})
+        meeting_records = MeetingRecord.objects.filter(record=customer_rec)
+        return render(request, 'record.html', {'customer_record': customer_rec, 'meeting_records': meeting_records})
+
     else:
         messages.error(request, "You must be logged in to view the record")
         return redirect('home')
@@ -202,23 +205,26 @@ def update_ticket(request, pk):
         return redirect('login')
 
 
-def meeting_records(request):
-    records = MeetingRecord.objects.filter(created_by=request.user)
-    return render(request, 'meeting_records.html', {'records': records})
-
-
-def add_meeting_record(request):
+def add_meeting_record(request, pk):
+    record = get_object_or_404(Record, pk=pk)
     if request.method == 'POST':
-        form = MeetingRecordForm(request.POST)
+        form = AddMeetingRecordForm(request.POST)
         if form.is_valid():
             meeting_record = form.save(commit=False)
+            meeting_record.record = record
             meeting_record.created_by = request.user
             meeting_record.save()
             messages.success(request, "Meeting record added successfully!")
-            return redirect('meeting_records')
+            return redirect('record', pk=record.pk)
     else:
-        form = MeetingRecordForm()
-    return render(request, 'add_meeting_record.html', {'form': form})
+        form = AddMeetingRecordForm()
+    return render(request, 'add_meeting_record.html', {'form': form, 'record': record})
+
+
+def meeting_records(request, pk):
+    record = get_object_or_404(Record, pk=pk)
+    records = record.meeting_records.all()
+    return render(request, 'meeting_records.html', {'records': records, 'record': record})
 
 
 class MeetingRecordListView(ListView):
@@ -244,13 +250,13 @@ class MeetingRecordListView(ListView):
 def update_meeting_record(request, pk):
     record = get_object_or_404(MeetingRecord, pk=pk)
     if request.method == 'POST':
-        form = MeetingRecordForm(request.POST, instance=record)
+        form = AddMeetingRecordForm(request.POST, instance=record)
         if form.is_valid():
             form.save()
             messages.success(request, "Meeting record updated successfully!")
             return redirect('meeting_records')
     else:
-        form = MeetingRecordForm(instance=record)
+        form = AddMeetingRecordForm(instance=record)
     return render(request, 'update_meeting_record.html', {'form': form})
 
 
@@ -261,3 +267,4 @@ def delete_meeting_record(request, pk):
         messages.success(request, "Meeting record deleted successfully!")
         return redirect('meeting_records')
     return render(request, 'delete_meeting_record.html', {'record': record})
+

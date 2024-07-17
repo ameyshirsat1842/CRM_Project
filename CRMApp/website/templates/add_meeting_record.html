@@ -2,12 +2,14 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Add Meeting Record</h1>
+    <br>
+    <h1>Add Meeting Record for {{ record.client_name }}</h1>
+    <br/>
     <form method="POST">
         {% csrf_token %}
 
         <div class="form-group row">
-            <label for="id_meeting_partner" class="col-sm-3 col-form-label">Meeting Partner:</label>
+            <label for="id_meeting_partner" class="col-sm-3 col-form-label">Company:</label>
             <div class="col-sm-9">
                 {{ form.meeting_partner }}
                 {% if form.meeting_partner.errors %}

@@ -107,21 +107,44 @@ class AddRecordForm(forms.ModelForm):
         label="Remarks"
     )
 
+    social_media_details = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'rows': 3, 'cols': 40, 'placeholder': 'Social Media Details', 'class': 'form-control'}),
+        label='Social Media Details'
+    )
+
     class Meta:
         model = Record
         fields = [
             'company', 'client_name', 'dept_name', 'phone', 'email', 'city',
             'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to', 'attachments', 'created_by'
+            , 'social_media_details'
         ]
         widgets = {
             'created_by': forms.HiddenInput(),
+            'social_media_details': forms.Textarea(attrs={'rows': 3, 'cols': 40}),
         }
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if self.user:
-            self.initial['created_by'] = self.user.username
+            self.fields['assigned_to'].queryset = User.objects.all()
+            self.fields['visible_to'].queryset = User.objects.exclude(username=self.user.username)
+            self.initial['assigned_to'] = self.user
+
+    def clean(self):
+        cleaned_data = super().clean()
+        assigned_to = cleaned_data.get('assigned_to')
+        visible_to = cleaned_data.get('visible_to')
+
+        if assigned_to and self.user:
+            if assigned_to == self.user:
+                raise forms.ValidationError("You cannot assign a record to yourself.")
+            if self.user not in visible_to:
+                visible_to.append(self.user)
+
+        return cleaned_data
 
 
 class UpdateRecordForm(forms.ModelForm):
@@ -135,7 +158,8 @@ class UpdateRecordForm(forms.ModelForm):
         model = Record
         fields = [
             'company', 'client_name', 'dept_name', 'phone', 'email', 'city',
-            'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to', 'attachments'
+            'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to', 'attachments',
+            'social_media_details'
         ]
         widgets = {
             'visible_to': forms.CheckboxSelectMultiple,
@@ -156,27 +180,34 @@ class AddTicketForm(forms.ModelForm):
     description = forms.CharField(required=False,
                                   widget=forms.Textarea(attrs={"placeholder": "Description", "class": "form-control"}))
     company_name = forms.CharField(required=True,
-                                   widget=forms.TextInput(attrs={"placeholder": "Company Name", "class": "form-control"}))
+                                   widget=forms.TextInput(
+                                       attrs={"placeholder": "Company Name", "class": "form-control"}))
     ticket_type = forms.CharField(required=True,
                                   widget=forms.TextInput(attrs={"placeholder": "Ticket Type", "class": "form-control"}))
     status = forms.CharField(required=True,
                              widget=forms.TextInput(attrs={"placeholder": "Status", "class": "form-control"}))
     account_name = forms.CharField(required=True,
-                                   widget=forms.TextInput(attrs={"placeholder": "Account Name", "class": "form-control"}))
+                                   widget=forms.TextInput(
+                                       attrs={"placeholder": "Account Name", "class": "form-control"}))
     detailed_summary = forms.CharField(required=False,
-                                       widget=forms.Textarea(attrs={"placeholder": "Detailed Summary", "class": "form-control"}))
+                                       widget=forms.Textarea(
+                                           attrs={"placeholder": "Detailed Summary", "class": "form-control"}))
     comments_history = forms.CharField(required=False,
-                                       widget=forms.Textarea(attrs={"placeholder": "Comments / History", "class": "form-control"}))
+                                       widget=forms.Textarea(
+                                           attrs={"placeholder": "Comments / History", "class": "form-control"}))
     contract = forms.CharField(required=False,
                                widget=forms.TextInput(attrs={"placeholder": "Contract", "class": "form-control"}))
     ticket_source = forms.CharField(required=False,
-                                    widget=forms.TextInput(attrs={"placeholder": "Ticket Source", "class": "form-control"}))
+                                    widget=forms.TextInput(
+                                        attrs={"placeholder": "Ticket Source", "class": "form-control"}))
     resolution = forms.CharField(required=False,
                                  widget=forms.Textarea(attrs={"placeholder": "Resolution", "class": "form-control"}))
     contact_name = forms.CharField(required=False,
-                                   widget=forms.TextInput(attrs={"placeholder": "Contact Name", "class": "form-control"}))
+                                   widget=forms.TextInput(
+                                       attrs={"placeholder": "Contact Name", "class": "form-control"}))
     support_mode = forms.CharField(required=False,
-                                   widget=forms.TextInput(attrs={"placeholder": "Support Mode", "class": "form-control"}))
+                                   widget=forms.TextInput(
+                                       attrs={"placeholder": "Support Mode", "class": "form-control"}))
     phone = forms.CharField(required=False,
                             widget=forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"}))
     email = forms.EmailField(required=False,
@@ -188,13 +219,34 @@ class AddTicketForm(forms.ModelForm):
         exclude = ("created_by", "created_at", "modified_at")
 
 
-class MeetingRecordForm(forms.ModelForm):
-    class Meta:
-        model = MeetingRecord
-        fields = ['id', 'meeting_partner', 'products_discussed_partner', 'products_discussed_company', 'conclusion', 'follow_up_date']
-
+class AddMeetingRecordForm(forms.ModelForm):
+    meeting_partner = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Meeting Partner", "class": "form-control"}),
+        label="Meeting Partner"
+    )
+    products_discussed_partner = forms.CharField(
+        required=True,
+        widget=forms.Textarea(attrs={"placeholder": "Products Discussed by Partner", "class": "form-control"}),
+        label="Products Discussed by Partner"
+    )
+    products_discussed_company = forms.CharField(
+        required=True,
+        widget=forms.Textarea(attrs={"placeholder": "Products Discussed by Company", "class": "form-control"}),
+        label="Products Discussed by Company"
+    )
+    conclusion = forms.CharField(
+        required=True,
+        widget=forms.Textarea(attrs={"placeholder": "Conclusion", "class": "form-control"}),
+        label="Conclusion"
+    )
     follow_up_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date', "class": "form-control"}),
         required=False,
         label='Follow-Up Date'
     )
+
+    class Meta:
+        model = MeetingRecord
+        fields = ['meeting_partner', 'products_discussed_partner', 'products_discussed_company', 'conclusion',
+                  'follow_up_date']
