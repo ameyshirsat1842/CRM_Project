@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Add Potential Lead</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
+        <button type="submit" class="btn btn-primary">Add Lead</button>
+    </form>
+</div>
+{% endblock %}

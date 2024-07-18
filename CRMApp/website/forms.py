@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Record, Ticket, MeetingRecord
+from .models import Record, Ticket, MeetingRecord, PotentialLead
 
 
 class SignUpForm(UserCreationForm):
@@ -106,20 +106,22 @@ class AddRecordForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"placeholder": "Remarks", "class": "form-control"}),
         label="Remarks"
     )
-
     social_media_details = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={'rows': 3, 'cols': 40, 'placeholder': 'Social Media Details', 'class': 'form-control'}),
         label='Social Media Details'
     )
+    classification = forms.ChoiceField(
+        choices=Record.CLASSIFICATION_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Classification"
+    )
 
     class Meta:
         model = Record
-        fields = [
-            'company', 'client_name', 'dept_name', 'phone', 'email', 'city',
-            'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to', 'attachments', 'created_by'
-            , 'social_media_details'
-        ]
+        fields = ['company', 'client_name', 'dept_name', 'phone', 'email', 'city', 'address', 'classification',
+                  'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details']
         widgets = {
             'created_by': forms.HiddenInput(),
             'social_media_details': forms.Textarea(attrs={'rows': 3, 'cols': 40}),
@@ -138,12 +140,10 @@ class AddRecordForm(forms.ModelForm):
         assigned_to = cleaned_data.get('assigned_to')
         visible_to = cleaned_data.get('visible_to')
 
-        if assigned_to and self.user:
-            if assigned_to == self.user:
-                raise forms.ValidationError("You cannot assign a record to yourself.")
-            if self.user not in visible_to:
-                visible_to.append(self.user)
+        if assigned_to == self.user:
+            visible_to = visible_to | User.objects.filter(id=self.user.id)
 
+        cleaned_data['visible_to'] = visible_to
         return cleaned_data
 
 
@@ -159,11 +159,17 @@ class UpdateRecordForm(forms.ModelForm):
         fields = [
             'company', 'client_name', 'dept_name', 'phone', 'email', 'city',
             'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to', 'attachments',
-            'social_media_details'
+            'social_media_details', 'classification'
         ]
         widgets = {
             'visible_to': forms.CheckboxSelectMultiple,
             'created_by': forms.HiddenInput(),
+            'classification': forms.Select(choices=[
+                ('assigned', 'Assigned'),
+                ('unassigned', 'Unassigned'),
+                ('dead', 'Dead'),
+                ('in_progress', 'In Progress'),
+            ])
         }
 
     def __init__(self, *args, **kwargs):
@@ -250,3 +256,16 @@ class AddMeetingRecordForm(forms.ModelForm):
         model = MeetingRecord
         fields = ['meeting_partner', 'products_discussed_partner', 'products_discussed_company', 'conclusion',
                   'follow_up_date']
+
+
+class PotentialLeadForm(forms.ModelForm):
+    class Meta:
+        model = PotentialLead
+        fields = ['company', 'client_name', 'phone', 'email', 'comments']
+        widgets = {
+            'company': forms.TextInput(attrs={"placeholder": "Company", "class": "form-control"}),
+            'client_name': forms.TextInput(attrs={"placeholder": "Client Name", "class": "form-control"}),
+            'phone': forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"}),
+            'email': forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
+            'comments': forms.Textarea(attrs={"placeholder": "Comments", "class": "form-control", 'rows': 3, 'cols': 40}),
+        }

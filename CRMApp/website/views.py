@@ -4,10 +4,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm
-from .models import Record, Notification, Ticket, MeetingRecord
+from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm
+from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
 from django.views.generic import ListView
-
 
 
 def home(request):
@@ -119,8 +118,11 @@ def add_record(request):
 
             messages.success(request, "Record added successfully!")
             return redirect('leads')
+        else:
+            print(form.errors)  # Print form errors to the console for debugging
+            messages.error(request, "There was an error with the form. Please check the details and try again.")
     else:
-        form = AddRecordForm()
+        form = AddRecordForm(user=request.user)
 
     users = User.objects.all()
     return render(request, 'add_record.html', {'form': form, 'users': users})
@@ -268,3 +270,51 @@ def delete_meeting_record(request, pk):
         return redirect('meeting_records')
     return render(request, 'delete_meeting_record.html', {'record': record})
 
+
+def leads_by_classification(request, classification):
+    if classification == 'all':
+        records = Record.objects.all()
+    else:
+        records = Record.objects.filter(classification=classification)
+
+    context = {
+        'user': request.user,
+        'records': records,
+    }
+    return render(request, 'leads.html', context)
+
+
+def add_potential_lead(request):
+    if request.method == 'POST':
+        form = PotentialLeadForm(request.POST)
+        if form.is_valid():
+            potential_lead = form.save(commit=False)
+            potential_lead.created_by = request.user
+            potential_lead.save()
+            messages.success(request, "Potential lead added successfully!")
+            return redirect('potential_leads')
+    else:
+        form = PotentialLeadForm()
+    return render(request, 'add_potential_lead.html', {'form': form})
+
+
+def potential_leads(request):
+    leads = PotentialLead.objects.filter(created_by=request.user)
+    return render(request, 'potential_leads.html', {'leads': leads})
+
+
+def move_to_main_leads(request, lead_id):
+    lead = PotentialLead.objects.get(id=lead_id)
+    # Add logic to move lead to main leads
+    main_lead = Record(
+        company=lead.company,
+        client_name=lead.client_name,
+        phone=lead.phone,
+        email=lead.email,
+        comments=lead.comments,
+        created_by=lead.created_by
+    )
+    main_lead.save()
+    lead.delete()
+    messages.success(request, "Lead moved to main leads successfully!")
+    return redirect('leads')

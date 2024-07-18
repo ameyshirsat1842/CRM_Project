@@ -158,13 +158,20 @@
             </div>
         </div>
         <br>
+
         <div class="form-group row">
             <label for="social_media_details" class="col-sm-3 col-form-label">Social Media Details:</label>
             <div class="col-sm-9">
-                <textarea id="social_media_details" name="social_media_details" class="form-control" rows="3">{{ record.social_media_details }}</textarea>
+                {{ form.social_media_details }}
+                {% if form.social_media_details.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.social_media_details.errors }}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <br>
+
         <div class="form-group row">
             <label for="attachments" class="col-sm-3 col-form-label">Attachments:</label>
             <div class="col-sm-9">
@@ -193,6 +200,20 @@
             </div>
         </div>
         <br>
+
+        <div class="form-group row">
+            <label for="classification" class="col-sm-3 col-form-label">Status:</label>
+            <div class="col-sm-9">
+                {{ form.classification }}
+                {% if form.classification.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.classification.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+
         <div class="form-group row">
             <div class="col-sm-9 offset-sm-3">
                 <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>

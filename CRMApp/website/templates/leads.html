@@ -1,12 +1,30 @@
+<!-- leads.html -->
+
 {% extends 'base.html' %}
 
 {% block content %}
 <div class="container mt-4">
 
     {% if user.is_authenticated %}
-    <h1 class="mb-4">Leads</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Leads</h1>
 
-    <form method="GET" action="{% url 'leads' %}" class="mb-4">
+        <!-- Buttons for Classification Choices -->
+        <div>
+            <a href="{% url 'leads' %}" class="btn btn-secondary mb-2 {% if not request.GET.classification %}active{% endif %}">All</a>
+            <a href="{% url 'leads_by_classification' classification='unassigned' %}" class="btn btn-primary mb-2 {% if request.GET.classification == 'unassigned' %}active{% endif %}">
+                Unassigned
+            </a>
+            <a href="{% url 'leads_by_classification' classification='dead' %}" class="btn btn-danger mb-2 {% if request.GET.classification == 'dead' %}active{% endif %}">
+                Dead
+            </a>
+            <a href="{% url 'leads_by_classification' classification='in_progress' %}" class="btn btn-warning mb-2 {% if request.GET.classification == 'in_progress' %}active{% endif %}">
+                In Progress
+            </a>
+        </div>
+    </div>
+
+       <form method="GET" action="{% url 'leads' %}" class="mb-4">
         <div class="input-group">
             <input type="text" name="search" class="form-control" placeholder="Search leads..." value="{{ request.GET.search }}">
             <div class="input-group-append">
@@ -17,7 +35,8 @@
 
     <div class="table-responsive">
         <table class="table table-striped table-hover">
-            <thead class="table">
+            <!-- Table headers -->
+            <thead>
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Company</th>
@@ -27,10 +46,9 @@
                     <th scope="col">Email</th>
                     <th scope="col">City</th>
                     <th scope="col">Assigned To</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Created</th>
                     <th scope="col">Follow-Up Date</th>
-                    <th scope="col">Agenda</th>
-                    <th scope="col">Remarks</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -44,17 +62,10 @@
                     <td>{{ record.phone }}</td>
                     <td>{{ record.email }}</td>
                     <td>{{ record.city }}</td>
-                    <td>
-                        {% if record.assigned_to %}
-                            {{ record.assigned_to.username }}
-                        {% else %}
-                            N/A
-                        {% endif %}
-                    </td>
+                    <td>{% if record.assigned_to %}{{ record.assigned_to.username }}{% else %}N/A{% endif %}</td>
+                    <td>{{ record.get_classification_display }}</td>
                     <td>{{ record.created_at|date:"F d, Y" }}</td>
                     <td>{{ record.follow_up_date|date:"F d, Y" }}</td>
-                    <td>{{ record.comments }}</td>
-                    <td>{{ record.remarks }}</td>
                     <td>
                         <a href="{% url 'update_record' record.id %}" class="btn btn-warning btn-sm">Update</a>
                         <a href="{% url 'delete_record' record.id %}" class="btn btn-danger btn-sm">Delete</a>
@@ -62,12 +73,17 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="13" class="text-center">No records found.</td>
+                    <td colspan="12" class="text-center">No records found.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
+<div class="form-group row">
+    <a href="javascript:history.back()" class="btn btn-primary">Back</a>
+</div>
+
     {% else %}
     <div class="alert alert-warning" role="alert">
         You need to <a href="{% url 'login' %}" class="alert-link">log in</a> to view the leads.

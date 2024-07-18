@@ -60,6 +60,11 @@
                         </li>
                     {% endif %}
 
+                    {% if request.path == '/potential-leads/' %}
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{% url 'add_potential_lead' %}">Add Lead</a>
+                        </li>
+                    {% endif %}
 
                     {% if request.path == '/tickets/' %}
                         <li class="nav-item">

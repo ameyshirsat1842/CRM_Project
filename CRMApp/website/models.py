@@ -9,11 +9,13 @@ class Record(models.Model):
     company = models.CharField(max_length=50)
     client_name = models.CharField(max_length=50)
     dept_name = models.CharField(max_length=50)
-    phone = models.CharField(max_length=10, validators=[RegexValidator(r'^\d{10}$', message="Phone number must be 10 digits.")])
+    phone = models.CharField(max_length=10,
+                             validators=[RegexValidator(r'^\d{10}$', message="Phone number must be 10 digits.")])
     email = models.EmailField(max_length=100)
     city = models.CharField(max_length=50)
     address = models.CharField(max_length=200)
-    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_leads', null=True, blank=True)
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_leads', null=True,
+                                    blank=True)
     follow_up_date = models.DateField(null=True, blank=True)
     comments = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
@@ -21,15 +23,22 @@ class Record(models.Model):
     attachments = models.FileField(upload_to='attachments/', null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_records', null=True)
     social_media_details = models.TextField(null=True, blank=True)
+    CLASSIFICATION_CHOICES = (
+        ('assigned', 'Assigned'),
+        ('unassigned', 'Unassigned'),
+        ('dead', 'Dead'),
+        ('in_progress', 'In Progress'),
+    )
+    classification = models.CharField(max_length=20, choices=CLASSIFICATION_CHOICES, default='unassigned')
+
+    def __str__(self):
+        return f"{self.company} - {self.client_name}"
 
     class Meta:
         indexes = [
             models.Index(fields=['assigned_to']),
             models.Index(fields=['created_at']),
         ]
-
-    def __str__(self):
-        return f"{self.client_name} from {self.company}"
 
 
 class Notification(models.Model):
@@ -81,3 +90,17 @@ class MeetingRecord(models.Model):
 
     def __str__(self):
         return f"Meeting with {self.meeting_partner} on {self.created_at}"
+
+
+class PotentialLead(models.Model):
+    objects = None
+    company = models.CharField(max_length=255)
+    client_name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=10)
+    email = models.EmailField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    comments = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.company
