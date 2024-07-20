@@ -14,8 +14,8 @@
             </div>
         {% endfor %}
     {% endif %}
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
         <div class="form-group row">
             <label for="company" class="col-sm-3 col-form-label">{{ form.company.label }}</label>
             <div class="col-sm-9">
@@ -166,6 +166,19 @@
                 {% if form.social_media_details.errors %}
                     <div class="invalid-feedback d-block">
                         {{ form.social_media_details.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group row">
+            <label for="lead_source" class="col-sm-3 col-form-label">Lead Source:</label>
+            <div class="col-sm-9">
+                {{ form.lead_source }}
+                {% if form.lead_source.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.lead_source.errors }}
                     </div>
                 {% endif %}
             </div>

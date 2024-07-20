@@ -9,7 +9,8 @@
         .custom-alert {
             position: fixed;
             top: 70px;
-            right: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1050;
             width: auto;
             max-width: 300px;
@@ -49,7 +50,8 @@
         <div class="col-md-2 side-panel">
             <div class="list-group list-group-flush">
                 <a href="{% url 'home' %}" class="list-group-item list-group-item-action active">Dashboard</a>
-                <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action">Potential Leads</a>                <a href="{% url 'leads' %}" class="list-group-item list-group-item-action">Leads</a>
+                <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action">Potential-Leads</a>
+                <a href="{% url 'leads' %}" class="list-group-item list-group-item-action">Leads</a>
                 <a href="{% url 'meeting_records' %}" class="list-group-item list-group-item-action">Meetings</a>
                 <a href="{% url 'tickets' %}" class="list-group-item list-group-item-action">Tickets</a>
                 <a href="#" class="list-group-item list-group-item-action">Contacts</a>
@@ -125,16 +127,16 @@
 
 <!-- Scripts -->
 <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                let alerts = document.querySelectorAll('.custom-alert');
-                alerts.forEach(alert => {
-                    let bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                });
-            }, 5000); // 5000 milliseconds = 5 seconds
-        });
-  </script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            let alerts = document.querySelectorAll('.custom-alert');
+            alerts.forEach(alert => {
+                let bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000); // 5000 milliseconds = 5 seconds
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-9ZyVdCGD1F5F1x7L/2D5WYTcL99gTrNEC9yWSn7nscEorAKhMLC6zrDjDgHvQ+1r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-kA1BFFoX6G71G2lfvzFFf6QT1YvsgKr+Tl0lE3gA3H6OcHlI3Fme3kuFpBZQb5P8" crossorigin="anonymous"></script>
 </body>

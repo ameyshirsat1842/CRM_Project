@@ -117,11 +117,17 @@ class AddRecordForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": "form-control"}),
         label="Classification"
     )
+    lead_source = forms.ChoiceField(
+        choices=Record.LEAD_SOURCE_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Lead Source"
+    )
 
     class Meta:
         model = Record
         fields = ['company', 'client_name', 'dept_name', 'phone', 'email', 'city', 'address', 'classification',
-                  'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details']
+                  'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details', 'lead_source']
         widgets = {
             'created_by': forms.HiddenInput(),
             'social_media_details': forms.Textarea(attrs={'rows': 3, 'cols': 40}),
@@ -153,13 +159,24 @@ class UpdateRecordForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": "form-control"}),
         required=False
     )
+    follow_up_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', "class": "form-control"}),
+        required=False,
+        label='Follow-Up Date'
+    )
+    lead_source = forms.ChoiceField(
+        choices=Record.LEAD_SOURCE_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Lead Source"
+    )
 
     class Meta:
         model = Record
         fields = [
             'company', 'client_name', 'dept_name', 'phone', 'email', 'city',
             'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to', 'attachments',
-            'social_media_details', 'classification'
+            'social_media_details', 'classification', 'lead_source'
         ]
         widgets = {
             'visible_to': forms.CheckboxSelectMultiple,
@@ -251,11 +268,28 @@ class AddMeetingRecordForm(forms.ModelForm):
         required=False,
         label='Follow-Up Date'
     )
+    speaker = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Speaker"
+    )
+    attendees = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        required=False,
+        widget=forms.SelectMultiple(attrs={"class": "form-control"}),
+        label="Attendees"
+    )
+    meeting_location = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Meeting Location", "class": "form-control"}),
+        label="Meeting Location"
+    )
 
     class Meta:
         model = MeetingRecord
         fields = ['meeting_partner', 'products_discussed_partner', 'products_discussed_company', 'conclusion',
-                  'follow_up_date']
+                  'follow_up_date', 'speaker', 'attendees', 'meeting_location']
 
 
 class PotentialLeadForm(forms.ModelForm):

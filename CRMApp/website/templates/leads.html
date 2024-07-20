@@ -49,6 +49,7 @@
                     <th scope="col">Status</th>
                     <th scope="col">Created</th>
                     <th scope="col">Follow-Up Date</th>
+                    <th scope="col">Lead Source</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -66,6 +67,7 @@
                     <td>{{ record.get_classification_display }}</td>
                     <td>{{ record.created_at|date:"F d, Y" }}</td>
                     <td>{{ record.follow_up_date|date:"F d, Y" }}</td>
+                    <td>{{ record.lead_source }}</td>
                     <td>
                         <a href="{% url 'update_record' record.id %}" class="btn btn-warning btn-sm">Update</a>
                         <a href="{% url 'delete_record' record.id %}" class="btn btn-danger btn-sm">Delete</a>

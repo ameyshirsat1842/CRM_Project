@@ -30,6 +30,17 @@ class Record(models.Model):
         ('in_progress', 'In Progress'),
     )
     classification = models.CharField(max_length=20, choices=CLASSIFICATION_CHOICES, default='unassigned')
+    LEAD_SOURCE_CHOICES = [
+        ('BNI Connect', 'BNI Connect'),
+        ('LinkedIn', 'LinkedIn'),
+        ('Google', 'Google'),
+        ('Event', 'Event'),
+        ('Reference', 'Reference'),
+        ('Walk in', 'Walk in'),
+        ('Social Media', 'Social Media'),
+        ('Other Source', 'Other Source'),
+    ]
+    lead_source = models.CharField(max_length=50, choices=LEAD_SOURCE_CHOICES, blank=True, null=True)
 
     def __str__(self):
         return f"{self.company} - {self.client_name}"
@@ -87,6 +98,9 @@ class MeetingRecord(models.Model):
     follow_up_date = models.DateField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    speaker = models.ForeignKey(User, related_name='speaker', on_delete=models.CASCADE, null=True)
+    attendees = models.ManyToManyField(User, related_name='attendees')
+    meeting_location = models.CharField(max_length=255, default='virtual')
 
     def __str__(self):
         return f"Meeting with {self.meeting_partner} on {self.created_at}"
