@@ -22,6 +22,9 @@
                     <th scope="col">Products Discussed by Partner</th>
                     <th scope="col">Products Discussed by Company</th>
                     <th scope="col">Conclusion</th>
+                    <th scope="col">Speaker</th> <!-- New column -->
+                    <th scope="col">Attendees</th> <!-- New column -->
+                    <th scope="col">Meeting Location</th> <!-- New column -->
                     <th scope="col">Follow-Up Date</th>
                     <th scope="col">Created At</th>
                     <th scope="col">Actions</th>
@@ -30,14 +33,21 @@
             </thead>
             <tbody>
                 {% for record in records %}
-                <tr>
-                    <th>{{ record.id }}</th>
+               <tr>
+                    <td>{{ record.id }}</td>
                     <td>{{ record.meeting_partner }}</td>
                     <td>{{ record.products_discussed_partner }}</td>
                     <td>{{ record.products_discussed_company }}</td>
                     <td>{{ record.conclusion }}</td>
+                    <td>{{ record.speaker.username }}</td>
+                    <td>
+                        {% for attendee in record.attendees.all %}
+                            {{ attendee.username }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ record.meeting_location }}</td>
                     <td>{{ record.follow_up_date|date:"F d, Y" }}</td>
-                    <td>{{ record.created_at|date:"F d, Y" }}</td>
+                    <td>{{ record.created_at|date:"F d, Y H:i:s" }}</td>
                     <td>
                         <a href="https://us05web.zoom.us/s/83827104906#success" class="btn btn-primary">Schedule Zoom Meeting</a>
                          <br><br/>

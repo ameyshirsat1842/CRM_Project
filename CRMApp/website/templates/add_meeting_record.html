@@ -43,13 +43,6 @@
                 {% endif %}
             </div>
         </div>
-            <br>
-
-            <div class="form-group">
-                <label for="follow_up_date">Follow-Up Date:</label>
-                <input type="date" class="form-control" id="follow_up_date" name="follow_up_date">
-            </div>
-            <br>
 
         <div class="form-group row">
             <label for="id_conclusion" class="col-sm-3 col-form-label">Conclusion:</label>
@@ -63,6 +56,54 @@
             </div>
         </div>
 
+        <div class="form-group row">
+            <label for="id_follow_up_date" class="col-sm-3 col-form-label">Follow-Up Date:</label>
+            <div class="col-sm-9">
+                {{ form.follow_up_date }}
+                {% if form.follow_up_date.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.follow_up_date.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="id_speaker" class="col-sm-3 col-form-label">Speaker:</label>
+            <div class="col-sm-9">
+                {{ form.speaker }}
+                {% if form.speaker.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.speaker.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="id_attendees" class="col-sm-3 col-form-label">Attendees:</label>
+            <div class="col-sm-9">
+                {{ form.attendees }}
+                {% if form.attendees.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.attendees.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+        <div class="form-group row">
+            <label for="id_meeting_location" class="col-sm-3 col-form-label">Meeting Location:</label>
+            <div class="col-sm-9">
+                {{ form.meeting_location }}
+                {% if form.meeting_location.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.meeting_location.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <br>
         <div class="form-group row">
             <div class="col-sm-9 offset-sm-3">
                 <button class="btn btn-primary" onclick="window.history.back()">Back</button>

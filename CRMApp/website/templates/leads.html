@@ -21,6 +21,8 @@
             <a href="{% url 'leads_by_classification' classification='in_progress' %}" class="btn btn-warning mb-2 {% if request.GET.classification == 'in_progress' %}active{% endif %}">
                 In Progress
             </a>
+            <a href="{% url 'leads' %}?filter=assigned_to_me" class="btn btn-success mb-2">Assigned to Me</a>
+
         </div>
     </div>
 

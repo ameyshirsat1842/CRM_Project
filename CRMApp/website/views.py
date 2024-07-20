@@ -61,7 +61,9 @@ def register_user(request):
 def leads_view(request):
     if request.user.is_authenticated:
         search_query = request.GET.get('search', '')
+        filter_option = request.GET.get('filter', '')
 
+        # Apply search query
         if search_query:
             records = Record.objects.filter(
                 Q(company__icontains=search_query) |
@@ -76,6 +78,10 @@ def leads_view(request):
             )
         else:
             records = Record.objects.all()
+
+        # Apply filter if specified
+        if filter_option == 'assigned_to_me':
+            records = records.filter(assigned_to=request.user)
 
         context = {'records': records}
         return render(request, 'leads.html', context)
@@ -119,7 +125,7 @@ def add_record(request):
             messages.success(request, "Record added successfully!")
             return redirect('leads')
         else:
-            print(form.errors)  # Print form errors to the console for debugging
+            print(form.errors)
             messages.error(request, "There was an error with the form. Please check the details and try again.")
     else:
         form = AddRecordForm(user=request.user)
@@ -162,7 +168,6 @@ def tickets(request):
     # Query all tickets
     ticket = Ticket.objects.all()
 
-    # Pass tickets to the template for rendering
     return render(request, 'tickets.html', {'tickets': ticket})
 
 

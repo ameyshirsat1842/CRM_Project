@@ -100,7 +100,7 @@ class MeetingRecord(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     speaker = models.ForeignKey(User, related_name='speaker', on_delete=models.CASCADE, null=True)
     attendees = models.ManyToManyField(User, related_name='attendees')
-    meeting_location = models.CharField(max_length=255, default='virtual')
+    meeting_location = models.CharField(max_length=255, default='Virtual')
 
     def __str__(self):
         return f"Meeting with {self.meeting_partner} on {self.created_at}"
