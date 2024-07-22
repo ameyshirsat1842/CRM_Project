@@ -40,19 +40,18 @@
                     <li class="nav-item">
                         <a class="nav-link active text-light" aria-current="page" href="{% url 'home' %}">Home</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link text-light dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Notifications <span class="badge bg-danger"></span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
-                            <!-- Fetch notifications from backend and loop through them -->
-                            {% for notification in notifications %}
-                                <li><a class="dropdown-item" href="#">{{ notification.message }}</a></li>
-                            {% empty %}
-                                <li><a class="dropdown-item" href="#">No notifications</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
+                   <li class="nav-item dropdown">
+                    <a class="nav-link text-light dropdown-toggle" href="{% url 'notifications' %}" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Notifications <span class="badge bg-danger">{{ notifications_count }}</span>
+                    </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                {% for notification in notifications %}
+                <li><a class="dropdown-item" href="#">{{ notification.message }}</a></li>
+                    {% empty %}
+                        <li><a class="dropdown-item" href="#">No notifications</a></li>
+                        {% endfor %}
+                </ul>
+                   </li>
 
                     {% if request.path == '/leads/' %}
                         <li class="nav-item">

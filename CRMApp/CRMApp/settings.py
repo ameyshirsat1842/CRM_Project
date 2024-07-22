@@ -1,5 +1,4 @@
 import os
-from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -75,12 +74,7 @@ DATABASES = {
 
     }
 }
-CELERY_BEAT_SCHEDULE = {
-    'check-reminders-every-day': {
-        'task': 'CRMApp.tasks.check_reminders',
-        'schedule': timedelta(days=1),  # Run daily
-    },
-}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

@@ -16,6 +16,7 @@ class Record(models.Model):
     address = models.CharField(max_length=200)
     assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_leads', null=True,
                                     blank=True)
+    last_modified_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='modified_records', null=True, blank=True)
     follow_up_date = models.DateField(null=True, blank=True)
     comments = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
@@ -52,15 +53,25 @@ class Record(models.Model):
         ]
 
 
+class NotificationManager(models.Manager):
+    def unread_for_user(self, user):
+        return self.filter(user=user, is_read=False)
+
+
 class Notification(models.Model):
-    objects = None
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
 
+    objects = NotificationManager()
+
     def __str__(self):
         return 'Notification for {self.user.username}'
+
+    def mark_as_read(self):
+        self.is_read = True
+        self.save()
 
 
 class Ticket(models.Model):

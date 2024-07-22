@@ -139,6 +139,8 @@ def update_record(request, pk):
     if request.method == 'POST':
         form = UpdateRecordForm(request.POST, request.FILES, instance=record)
         if form.is_valid():
+            updated_record = form.save(commit=False)
+            updated_record.last_modified_by = request.user  # Save the user who modified the record
             form.save()
             messages.success(request, "Record updated successfully!")
             return redirect('leads')
@@ -149,19 +151,19 @@ def update_record(request, pk):
     return render(request, 'update_record.html', {'form': form, 'record': record, 'users': users})
 
 
-def notifications(request):
+def notifications_view(request):
     if request.user.is_authenticated:
-        user_notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
-        return render(request, 'notifications.html', {'notifications': user_notifications})
+        notifications = Notification.objects.unread_for_user(request.user)
     else:
-        messages.error(request, "You must be logged in to view notifications")
-        return redirect('home')
+        notifications = []
+
+    return render(request, 'notifications.html', {'notifications': notifications})
 
 
-def create_notification(sender, instance, **kwargs):
-    if instance.follow_up_date and instance.follow_up_date == timezone.now().date():
-        message = f"Follow up with {instance.client_name} from {instance.company} is due today."
-        Notification.objects.create(user=instance.user, message=message)
+def mark_notification_as_read(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notification.mark_as_read()
+    return redirect('notifications')
 
 
 def tickets(request):

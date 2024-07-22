@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Notifications</h1>
+    {% if notifications %}
+        <ul class="list-group">
+            {% for notification in notifications %}
+                <li class="list-group-item {% if not notification.is_read %}list-group-item-warning{% endif %}">
+                    {{ notification.message }}
+                    <small class="text-muted">- {{ notification.created_at|date:"F d, Y H:i:s" }}</small>
+                    {% if not notification.is_read %}
+                        <a href="{% url 'mark_notification_as_read' notification.id %}" class="btn btn-sm btn-primary float-end mark-as-read">Mark as Read</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No notifications available.</p>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.mark-as-read').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.getAttribute('href');
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    this.closest('.list-group-item').classList.add('list-group-item-success');
+                    this.remove();
+                }
+            });
+        });
+    });
+});
+</script>
+
+{% endblock %}
