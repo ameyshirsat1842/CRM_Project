@@ -1,238 +1,261 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="col-md-6 offset-md-3">
-    <br>
-    <h1>Update Record</h1>
-    <br/>
-    <!-- Display messages if any -->
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group row">
-            <label for="company" class="col-sm-3 col-form-label">{{ form.company.label }}</label>
-            <div class="col-sm-9">
-                {{ form.company }}
-                {% if form.company.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.company.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="client_name" class="col-sm-3 col-form-label">{{ form.client_name.label }}</label>
-            <div class="col-sm-9">
-                {{ form.client_name }}
-                {% if form.client_name.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.client_name.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="dept_name" class="col-sm-3 col-form-label">{{ form.dept_name.label }}</label>
-            <div class="col-sm-9">
-                {{ form.dept_name }}
-                {% if form.dept_name.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.dept_name.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="phone" class="col-sm-3 col-form-label">{{ form.phone.label }}</label>
-            <div class="col-sm-9">
-                {{ form.phone }}
-                {% if form.phone.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.phone.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="email" class="col-sm-3 col-form-label">{{ form.email.label }}</label>
-            <div class="col-sm-9">
-                {{ form.email }}
-                {% if form.email.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.email.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="city" class="col-sm-3 col-form-label">{{ form.city.label }}</label>
-            <div class="col-sm-9">
-                {{ form.city }}
-                {% if form.city.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.city.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="address" class="col-sm-3 col-form-label">{{ form.address.label }}</label>
-            <div class="col-sm-9">
-                {{ form.address }}
-                {% if form.address.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.address.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="assigned_to" class="col-sm-3 col-form-label">{{ form.assigned_to.label }}</label>
-            <div class="col-sm-9">
-                {{ form.assigned_to }}
-                {% if form.assigned_to.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.assigned_to.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="follow_up_date" class="col-sm-3 col-form-label">{{ form.follow_up_date.label }}</label>
-            <div class="col-sm-9">
-                {{ form.follow_up_date }}
-                {% if form.follow_up_date.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.follow_up_date.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="comments" class="col-sm-3 col-form-label">{{ form.comments.label }}</label>
-            <div class="col-sm-9">
-                {{ form.comments }}
-                {% if form.comments.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.comments.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="remarks" class="col-sm-3 col-form-label">{{ form.remarks.label }}</label>
-            <div class="col-sm-9">
-                {{ form.remarks }}
-                {% if form.remarks.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.remarks.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="social_media_details" class="col-sm-3 col-form-label">Social Media Details:</label>
-            <div class="col-sm-9">
-                {{ form.social_media_details }}
-                {% if form.social_media_details.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.social_media_details.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="lead_source" class="col-sm-3 col-form-label">Lead Source:</label>
-            <div class="col-sm-9">
-                {{ form.lead_source }}
-                {% if form.lead_source.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.lead_source.errors }}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label for="attachments" class="col-sm-3 col-form-label">Attachments:</label>
-            <div class="col-sm-9">
-                <input type="file" id="attachments" name="attachments" class="form-control">
-                {% if record.attachments %}
-                    <br>
-                    <strong>Current Attachment:</strong>
-                    <a href="{{ record.attachments.url }}" target="_blank">{{ record.attachments.name }}</a>
-                {% endif %}
-            </div>
-        </div>
-        <br>
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Visible To:</label>
-            <div class="col-sm-9">
-                {% for user in users %}
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="visible_to" id="user_{{ user.id }}" value="{{ user.id }}"
-                            {% if user == request.user or user in record.visible_to.all %}checked{% endif %}>
-                        <label class="form-check-label" for="user_{{ user.id }}">
-                            {{ user.username }}
-                        </label>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <h1 class="text-center mb-4">Update Record</h1>
+            <!-- Display messages if any -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endfor %}
-            </div>
-        </div>
-        <br>
+            {% endif %}
+            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
 
-        <div class="form-group row">
-            <label for="classification" class="col-sm-3 col-form-label">Status:</label>
-            <div class="col-sm-9">
-                {{ form.classification }}
-                {% if form.classification.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.classification.errors }}
+                <!-- Company Information -->
+                <fieldset>
+                    <legend class="legend-custom">Company Information</legend>
+                    <div class="form-group row">
+                        <label for="company" class="col-sm-3 col-form-label">{{ form.company.label }}</label>
+                        <div class="col-sm-9">
+                            {{ form.company }}
+                            {% if form.company.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.company.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
-                {% endif %}
-            </div>
-        </div>
-        <br>
+                    <br>
+                    <div class="form-group row">
+                        <label for="client_name" class="col-sm-3 col-form-label">{{ form.client_name.label }}</label>
+                        <div class="col-sm-9">
+                            {{ form.client_name }}
+                            {% if form.client_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.client_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label for="dept_name" class="col-sm-3 col-form-label">{{ form.dept_name.label }}</label>
+                        <div class="col-sm-9">
+                            {{ form.dept_name }}
+                            {% if form.dept_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.dept_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label for="phone" class="col-sm-3 col-form-label">{{ form.phone.label }}</label>
+                        <div class="col-sm-9">
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.phone.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label for="email" class="col-sm-3 col-form-label">{{ form.email.label }}</label>
+                        <div class="col-sm-9">
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.email.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+                <br>
 
-        <div class="form-group row">
-            <div class="col-sm-9 offset-sm-3">
-                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
-                <button type="submit" class="btn btn-primary">Update</button>
-            </div>
+                <!-- Location Information -->
+                <fieldset>
+                    <legend class="legend-custom">Location Information</legend>
+                    <div class="form-group row">
+                        <label for="city" class="col-sm-3 col-form-label">{{ form.city.label }}</label>
+                        <div class="col-sm-9">
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.city.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label for="address" class="col-sm-3 col-form-label">{{ form.address.label }}</label>
+                        <div class="col-sm-9">
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.address.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+                <br>
+
+                <!-- Lead Details -->
+                <fieldset>
+                    <legend class="legend-custom">Lead Details</legend>
+                    <div class="form-group row">
+                        <label for="assigned_to" class="col-sm-3 col-form-label">{{ form.assigned_to.label }}</label>
+                        <div class="col-sm-9">
+                            {{ form.assigned_to }}
+                            {% if form.assigned_to.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.assigned_to.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label for="follow_up_date" class="col-sm-3 col-form-label">{{ form.follow_up_date.label }}</label>
+                        <div class="col-sm-9">
+                            {{ form.follow_up_date }}
+                            {% if form.follow_up_date.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.follow_up_date.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label for="comments" class="col-sm-3 col-form-label">{{ form.comments.label }}</label>
+                        <div class="col-sm-9">
+                            {{ form.comments }}
+                            {% if form.comments.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.comments.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label for="remarks" class="col-sm-3 col-form-label">{{ form.remarks.label }}</label>
+                        <div class="col-sm-9">
+                            {{ form.remarks }}
+                            {% if form.remarks.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.remarks.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label for="social_media_details" class="col-sm-3 col-form-label">Social Media Details:</label>
+                        <div class="col-sm-9">
+                            {{ form.social_media_details }}
+                            {% if form.social_media_details.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.social_media_details.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label for="lead_source" class="col-sm-3 col-form-label">Lead Source:</label>
+                        <div class="col-sm-9">
+                            {{ form.lead_source }}
+                            {% if form.lead_source.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.lead_source.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label for="attachments" class="col-sm-3 col-form-label">Attachments:</label>
+                        <div class="col-sm-9">
+                            <input type="file" id="attachments" name="attachments" class="form-control">
+                            {% if record.attachments %}
+                                <br>
+                                <strong>Current Attachment:</strong>
+                                <a href="{{ record.attachments.url }}" target="_blank">{{ record.attachments.name }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Visible To:</label>
+                        <div class="col-sm-9">
+                            {% for user in users %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="visible_to" id="user_{{ user.id }}" value="{{ user.id }}"
+                                        {% if user == request.user or user in record.visible_to.all %}checked{% endif %}>
+                                    <label class="form-check-label" for="user_{{ user.id }}">
+                                        {{ user.username }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row">
+                        <label for="classification" class="col-sm-3 col-form-label">Status:</label>
+                        <div class="col-sm-9">
+                            {{ form.classification }}
+                            {% if form.classification.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.classification.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+                <br>
+
+                <!-- Form Buttons -->
+                <div class="form-group row">
+                    <div class="col-sm-9 offset-sm-3">
+                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
+
+{% block scripts %}
+<script>
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+{% endblock %}
 {% endblock %}

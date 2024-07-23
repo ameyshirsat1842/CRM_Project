@@ -38,6 +38,7 @@
             max-width: 300px;
             font-size: 0.8rem;
             padding: 0.5rem 1.5rem;
+            animation: fadeIn 1s, fadeOut 1s 4s;
         }
 
         .custom-alert .bi {
@@ -50,6 +51,7 @@
             color: #c3cbe2;
             padding: 50px 0;
             text-align: center;
+            animation: slideInUp 1s;
         }
 
         .footer p {
@@ -60,10 +62,48 @@
             border-right: 1px solid #ddd;
             background-color: var(--side-panel-bg-color);
             flex: 0 0 250px; /* Adjust the width of the side panel as needed */
+            animation: slideInLeft 1s;
         }
 
         .main-content {
             flex: 1;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+            }
+            to {
+                transform: translateX(0);
+            }
         }
     </style>
 </head>
@@ -163,6 +203,17 @@
                 bsAlert.close();
             });
         }, 5000); // 5000 milliseconds = 5 seconds
+
+        // Add smooth scrolling to all links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-9ZyVdCGD1F5F1x7L/2D5WYTcL99gTrNEC9yWSn7nscEorAKhMLC6zrDjDgHvQ+1r" crossorigin="anonymous"></script>

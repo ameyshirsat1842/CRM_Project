@@ -2,139 +2,232 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-                <!-- Main Content -->
-                <div class="col-md-10 main-content">
-                    <h1>Dashboard</h1>
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+            <h1>Dashboard</h1>
 
-                    <!-- Key Metrics -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Total Leads</h5>
-                                    <p class="card-text">{{ total_leads }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Total Clients</h5>
-                                    <p class="card-text">{{ total_clients }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Open Tickets</h5>
-                                    <p class="card-text">{{ open_tickets }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Closed Deals</h5>
-                                    <p class="card-text">{{ closed_deals }}</p>
-                                </div>
-                            </div>
+            <!-- Key Metrics -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Leads</h5>
+                            <p class="card-text" id="totalLeads">{{ total_leads }}</p>
                         </div>
                     </div>
-
-                    <!-- Charts and Graphs -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Sales Performance</h5>
-                                    <canvas id="salesPerformanceChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Leads by Source</h5>
-                                    <canvas id="leadsBySourceChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Recent Activities -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Recent Leads Added</h5>
-                                    <ul class="list-group list-group-flush">
-                                        {% for lead in recent_leads %}
-                                            <li class="list-group-item">{{ lead.client_name }} - {{ lead.created_at }}</li>
-                                        {% empty %}
-                                            <li class="list-group-item">No recent leads.</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Recent Tickets</h5>
-                                    <ul class="list-group list-group-flush">
-                                        {% for ticket in recent_tickets %}
-                                            <li class="list-group-item">{{ ticket.title }} - {{ ticket.created_at }}</li>
-                                        {% empty %}
-                                            <li class="list-group-item">No recent tickets.</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Upcoming Events -->
-                    <div class="row mb-4">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Upcoming Events</h5>
-                                    <ul class="list-group list-group-flush">
-                                        {% for event in upcoming_events %}
-                                            <li class="list-group-item">{{ event.title }} - {{ event.date }}</li>
-                                        {% empty %}
-                                            <li class="list-group-item">No upcoming events.</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Clients</h5>
+                            <p class="card-text" id="totalClients">{{ total_clients }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Open Tickets</h5>
+                            <p class="card-text" id="openTickets">{{ open_tickets }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Closed Deals</h5>
+                            <p class="card-text" id="closedDeals">{{ closed_deals }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-{% else %}
-<!-- Display login form if the user is not authenticated -->
-<div class="col-md-6 offset-md-3">
-    <br>
-    <h2>Login</h2>
-    <br>
-    <form method="POST" action="{% url 'login' %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" class="form-control" id="username" name="username" required>
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-        <br>
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-</div>
-{% endif %}
+            <!-- Charts and Graphs -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Sales Performance</h5>
+                            <canvas id="salesPerformanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Leads by Source</h5>
+                            <canvas id="leadsBySourceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Recent Activities -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Recent Leads Added</h5>
+                            <ul class="list-group list-group-flush" id="recentLeads">
+                                {% for lead in recent_leads %}
+                                    <li class="list-group-item">{{ lead.client_name }} - {{ lead.created_at|date:"F d, Y H:i" }}</li>
+                                {% empty %}
+                                    <li class="list-group-item">No recent leads.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Recent Tickets</h5>
+                            <ul class="list-group list-group-flush" id="recentTickets">
+                                {% for ticket in recent_tickets %}
+                                    <li class="list-group-item">{{ ticket.title }} - {{ ticket.created_at|date:"F d, Y H:i" }}</li>
+                                {% empty %}
+                                    <li class="list-group-item">No recent tickets.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Upcoming Events</h5>
+                            <ul class="list-group list-group-flush" id="upcomingEvents">
+                                {% for event in upcoming_events %}
+                                    <li class="list-group-item">{{ event.title }} - {{ event.date|date:"F d, Y" }}</li>
+                                {% empty %}
+                                    <li class="list-group-item">No upcoming events.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    {% else %}
+        <!-- Display login form if the user is not authenticated -->
+        <div class="col-md-6 offset-md-3">
+            <br>
+            <h2>Login</h2>
+            <br>
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Sales Performance Chart
+        var ctx1 = document.getElementById('salesPerformanceChart').getContext('2d');
+        var salesPerformanceChart = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                datasets: [{
+                    label: 'Sales Performance',
+                    data: [12, 19, 3, 5, 2, 3], // Replace with dynamic data
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Leads by Source Chart
+        var ctx2 = document.getElementById('leadsBySourceChart').getContext('2d');
+        var leadsBySourceChart = new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: ['Source A', 'Source B', 'Source C'], // Replace with dynamic data
+                datasets: [{
+                    label: 'Leads by Source',
+                    data: [300, 150, 100], // Replace with dynamic data
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        // Refresh Dashboard Data
+        function refreshDashboardData() {
+            fetch('{% url 'refresh_dashboard_data' %}')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('totalLeads').textContent = data.total_leads;
+                    document.getElementById('totalClients').textContent = data.total_clients;
+                    document.getElementById('openTickets').textContent = data.open_tickets;
+                    document.getElementById('closedDeals').textContent = data.closed_deals;
+                    updateList('recentLeads', data.recent_leads);
+                    updateList('recentTickets', data.recent_tickets);
+                    updateList('upcomingEvents', data.upcoming_events);
+                });
+        }
+
+        function updateList(elementId, items) {
+            var list = document.getElementById(elementId);
+            list.innerHTML = ''; // Clear existing items
+            if (items.length > 0) {
+                items.forEach(item => {
+                    var listItem = document.createElement('li');
+                    listItem.className = 'list-group-item';
+                    listItem.textContent = item.text; // Adjust according to your data structure
+                    list.appendChild(listItem);
+                });
+            } else {
+                list.innerHTML = '<li class="list-group-item">No items.</li>';
+            }
+        }
+
+        // Refresh data every 5 minutes
+        setInterval(refreshDashboardData, 300000); // 300000ms = 5 minutes
+
+        // Initial data fetch
+        refreshDashboardData();
+    });
+</script>
 {% endblock %}
