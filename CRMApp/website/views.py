@@ -6,6 +6,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
 from django.views.generic import ListView
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 def home(request):
@@ -120,6 +122,9 @@ def add_record(request):
             if visible_to_ids:
                 users = User.objects.filter(id__in=visible_to_ids)
                 record.visible_to.set(users)
+                for user in users:
+                    message = f"New record added by {request.user.username}: {record.company}"
+                    send_notification_to_user(user, message)
 
             messages.success(request, "Record added successfully!")
             return redirect('leads')
@@ -324,3 +329,27 @@ def move_to_main_leads(request, lead_id):
     lead.delete()
     messages.success(request, "Lead moved to main leads successfully!")
     return redirect('leads')
+
+
+def assign_lead(request, pk):
+    lead = get_object_or_404(Record, pk=pk)
+    if request.method == 'POST':
+        lead.assigned_to = request.user
+        lead.save()
+
+        message = f"Lead assigned to you: {lead.company}"
+        send_notification_to_user(request.user, message)
+
+        messages.success(request, "Lead assigned successfully!")
+        return redirect('leads')
+
+
+def send_notification_to_user(user, message):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        user.username,
+        {
+            'type': 'send_notification',
+            'notification': message
+        }
+    )

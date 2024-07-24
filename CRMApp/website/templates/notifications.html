@@ -20,8 +20,23 @@
     {% endif %}
 </div>
 
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const notificationSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/notifications/'
+    );
+
+    notificationSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const notificationsList = document.getElementById('notifications');
+        notificationsList.innerHTML += `<li class="list-group-item">${data.message}</li>`;
+    };
+
+    notificationSocket.onclose = function(e) {
+        console.error('Notification socket closed unexpectedly');
+    };
+
     document.querySelectorAll('.mark-as-read').forEach(function(button) {
         button.addEventListener('click', function(e) {
             e.preventDefault();

@@ -6,6 +6,25 @@
         <div class="col-md-10 main-content">
             <h1>Dashboard</h1>
 
+            <!-- Upcoming Events -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Upcoming Events</h5>
+                            <ul class="list-group list-group-flush" id="upcomingEvents">
+                                {% for event in upcoming_events %}
+                                    <li class="list-group-item">{{ event.title }} - {{ event.date|date:"F d, Y" }}</li>
+                                {% empty %}
+                                    <li class="list-group-item">No upcoming events.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
             <!-- Key Metrics -->
             <div class="row mb-4">
                 <div class="col-md-3">
@@ -94,25 +113,7 @@
                 </div>
             </div>
 
-            <!-- Upcoming Events -->
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Upcoming Events</h5>
-                            <ul class="list-group list-group-flush" id="upcomingEvents">
-                                {% for event in upcoming_events %}
-                                    <li class="list-group-item">{{ event.title }} - {{ event.date|date:"F d, Y" }}</li>
-                                {% empty %}
-                                    <li class="list-group-item">No upcoming events.</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-        </div>
 
     {% else %}
         <!-- Display login form if the user is not authenticated -->

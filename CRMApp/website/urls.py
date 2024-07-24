@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from .views import MeetingRecordListView, update_meeting_record, delete_meeting_record
 
+
 urlpatterns = [
     path('', views.home, name='home'),
     path('login/', views.login_user, name='login'),
