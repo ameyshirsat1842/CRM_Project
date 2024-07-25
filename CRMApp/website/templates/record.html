@@ -41,6 +41,7 @@
     <div>
         <a href="{% url 'update_record' customer_record.id %}" class="btn btn-warning btn-sm">Update</a>
         <a href="{% url 'delete_record' customer_record.id %}" class="btn btn-danger btn-sm">Delete</a>
+        <a href="{% url 'export_record' customer_record.id %}" class="btn btn-info btn-sm">Export to Excel</a>
     </div>
 </div>
 
@@ -89,6 +90,7 @@
                         <br><br/>
                         <a href="{% url 'update_meeting_record' record.pk %}" class="btn btn-warning btn-sm">Update</a>
                         <a href="{% url 'delete_meeting_record' record.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this meeting record?')">Delete</a>
+
                     </td>
                 </tr>
                 {% empty %}

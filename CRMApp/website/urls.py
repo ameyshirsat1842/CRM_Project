@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
-from .views import MeetingRecordListView, update_meeting_record, delete_meeting_record
-
+from .views import MeetingRecordListView, update_meeting_record, delete_meeting_record, import_records_from_excel
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -27,5 +26,7 @@ urlpatterns = [
     path('potential-leads/', views.potential_leads, name='potential_leads'),
     path('add-potential-lead/', views.add_potential_lead, name='add_potential_lead'),
     path('move-to-main-leads/<int:lead_id>/', views.move_to_main_leads, name='move_to_main_leads'),
+    path('export_record/<int:record_id>/', views.export_record_to_excel, name='export_record'),
+    path('import-leads/', import_records_from_excel, name='import_leads'),
 
 ]

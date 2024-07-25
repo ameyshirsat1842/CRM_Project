@@ -24,8 +24,8 @@
         }
 
         .navbar-nav .nav-link:hover {
-            color: #071229;
-            background-color: #ffffff;
+            color: #000000 !important; /* Black text color on hover */
+            background-color: #d4e2ff; /* Light blue hover background color */
             border-radius: 5px;
         }
 
@@ -92,6 +92,9 @@
                     {% if request.path == '/leads/' %}
                         <li class="nav-item">
                             <a class="nav-link text-light" href="{% url 'add_record' %}">Add Lead</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{% url 'import_leads' %}">Import Lead</a>
                         </li>
                     {% endif %}
                     {% if request.path == '/potential-leads/' %}

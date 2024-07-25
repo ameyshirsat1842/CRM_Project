@@ -8,6 +8,11 @@ from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
 from django.views.generic import ListView
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+import pandas as pd
+import pytz
+from django.core.files.storage import FileSystemStorage
+from io import BytesIO
+from django.http import HttpResponse, HttpResponseBadRequest
 
 
 def home(request):
@@ -353,3 +358,99 @@ def send_notification_to_user(user, message):
             'notification': message
         }
     )
+
+
+def export_record_to_excel(request, record_id):
+    try:
+        # Fetch the record by ID
+        record = Record.objects.get(pk=record_id)
+
+        # Convert timezone-aware datetime to timezone-naive
+        if record.created_at.tzinfo is not None:
+            created_at = record.created_at.astimezone(pytz.utc).replace(tzinfo=None)
+        else:
+            created_at = record.created_at
+
+        if record.follow_up_date:
+            follow_up_date = record.follow_up_date
+        else:
+            follow_up_date = None
+
+        # Convert the record to a DataFrame
+        data = {
+            'ID': [record.id],
+            'Company': [record.company],
+            'Client Name': [record.client_name],
+            'Department': [record.dept_name],
+            'Phone': [record.phone],
+            'Email': [record.email],
+            'City': [record.city],
+            'Address': [record.address],
+            'Follow-Up Date': [follow_up_date],
+            'Comments': [record.comments],
+            'Remarks': [record.remarks],
+            'Attachments': [record.attachments.name if record.attachments else 'No attachments'],
+            'Assigned To': [record.assigned_to.username if record.assigned_to else 'N/A'],
+            'Created By': [record.created_by.username],
+            'Social Media Details': [record.social_media_details],
+            'Classification': [record.classification],
+            'Lead Source': [record.lead_source],
+            'Created At': [created_at],
+        }
+        df = pd.DataFrame(data)
+
+        # Create a BytesIO buffer
+        buffer = BytesIO()
+        with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False)
+
+        # Set the buffer position to the beginning
+        buffer.seek(0)
+
+        # Create the HttpResponse object
+        response = HttpResponse(buffer,
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename=record_{record_id}.xlsx'
+
+        return response
+    except Record.DoesNotExist:
+        return HttpResponse("Record not found.", status=404)
+
+
+def import_records_from_excel(request):
+    if request.method == 'POST' and request.FILES.get('excel_file'):
+        excel_file = request.FILES['excel_file']
+        fs = FileSystemStorage()
+        filename = fs.save(excel_file.name, excel_file)
+        file_path = fs.path(filename)
+
+        try:
+            df = pd.read_excel(file_path)
+            for _, row in df.iterrows():
+                Record.objects.create(
+                    created_at=row.get('created_at', None),
+                    company=row.get('company', ''),
+                    client_name=row.get('client_name', ''),
+                    dept_name=row.get('dept_name', ''),
+                    phone=row.get('phone', ''),
+                    email=row.get('email', ''),
+                    city=row.get('city', ''),
+                    address=row.get('address', ''),
+                    follow_up_date=row.get('follow_up_date', None),
+                    comments=row.get('comments', ''),
+                    remarks=row.get('remarks', ''),
+                    attachments=row.get('attachments', ''),
+                    assigned_to=User.objects.get(id=row.get('assigned_to_id')) if row.get('assigned_to_id') else None,
+                    created_by=User.objects.get(id=row.get('created_by_id')) if row.get('created_by_id') else None,
+                    social_media_details=row.get('social_media_details', ''),
+                    classification=row.get('classification', ''),
+                    lead_source=row.get('lead_source', ''),
+                    last_modified_by=User.objects.get(id=row.get('last_modified_by_id')) if row.get('last_modified_by_id') else None
+                )
+            return redirect('leads')
+
+        except Exception as e:
+            return HttpResponseBadRequest(f"Error processing file: {e}")
+
+    return render(request, 'import_leads.html')
+
