@@ -7,22 +7,28 @@
             <h1>Dashboard</h1>
             <br>
             <!-- Upcoming Events -->
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Upcoming Events</h5>
-                            <ul class="list-group list-group-flush" id="upcomingEvents">
-                                {% for event in upcoming_events %}
-                                    <li class="list-group-item">{{ event.title }} - {{ event.date|date:"F d, Y" }}</li>
-                                {% empty %}
-                                    <li class="list-group-item">No upcoming events.</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+           <div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Upcoming Events</h5>
+                <ul class="list-group list-group-flush" id="upcomingEvents">
+                    {% for event in upcoming_events %}
+                        <li class="list-group-item">
+                            {% if event.follow_up_date %}
+                                {{ event.title }} - {{ event.follow_up_date|date:"F d, Y" }}
+                            {% else %}
+                                No upcoming events.
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">No upcoming events.</li>
+                    {% endfor %}
+                </ul>
             </div>
+        </div>
+    </div>
+</div>
 
             <!-- Key Metrics -->
             <div class="row mb-4">

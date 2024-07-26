@@ -6,7 +6,6 @@
         <div class="col-md-6">
             <h1 class="text-center mb-4">Add Leads</h1>
 
-
             <form action="{% url 'add_record' %}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                 {% csrf_token %}
 
@@ -110,17 +109,15 @@
                         <div class="col-sm-9">
                             <select name="lead_source" id="lead_source" class="form-control" required>
                                 <option value="">Select Lead Source</option>
-                                <option value="referral">Referral</option>
-                                <option value="website">Website</option>
-                                <option value="social_media">Social Media</option>
-                                <option value="advertisement">Advertisement</option>
-                                <option value="other">Other</option>
+                                {% for choice in form.fields.lead_source.widget.choices %}
+                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
                             </select>
                             <div class="invalid-feedback">Please select a lead source.</div>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="follow_up_date">Follow-Up Date:</label>
                         <input type="date" class="form-control" id="follow_up_date" name="follow_up_date">
                     </div>

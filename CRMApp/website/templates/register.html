@@ -16,7 +16,7 @@
                 {% endfor %}
             {% endif %}
 
-            <form method="POST" action="">
+            <form method="POST" action="" id="registerForm">
                 {% csrf_token %}
                 <div class="mb-3">
                     {{ form.username.label_tag }}
@@ -79,4 +79,54 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle form submission
+        const form = document.getElementById('registerForm');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+
+            fetch('', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Clear previous errors
+                document.querySelectorAll('.text-danger').forEach(el => el.remove());
+
+                if (data.errors) {
+                    // Display validation errors
+                    for (const [field, errors] of Object.entries(data.errors)) {
+                        const fieldElement = form.querySelector(`[name=${field}]`);
+                        if (fieldElement) {
+                            errors.forEach(error => {
+                                const errorDiv = document.createElement('div');
+                                errorDiv.classList.add('text-danger');
+                                errorDiv.textContent = error;
+                                fieldElement.parentNode.appendChild(errorDiv);
+                            });
+                        }
+                    }
+                } else if (data.success) {
+                    // Display success message
+                    const alertDiv = document.createElement('div');
+                    alertDiv.classList.add('alert', 'alert-success', 'alert-dismissible', 'fade', 'show');
+                    alertDiv.role = 'alert';
+                    alertDiv.innerHTML = `${data.success} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+                    form.parentNode.insertBefore(alertDiv, form);
+                    form.reset();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
 {% endblock %}

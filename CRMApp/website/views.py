@@ -3,6 +3,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
+from openpyxl.workbook import Workbook
+from django.core.paginator import Paginator
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
 from django.views.generic import ListView
@@ -12,7 +15,7 @@ import pandas as pd
 import pytz
 from django.core.files.storage import FileSystemStorage
 from io import BytesIO
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 
 
 def home(request):
@@ -89,7 +92,11 @@ def leads_view(request):
         if filter_option == 'assigned_to_me':
             records = records.filter(assigned_to=request.user)
 
-        context = {'records': records}
+        paginator = Paginator(records, 10)  # Show 10 leads per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context = {'records': records, 'page_obj': page_obj}
         return render(request, 'leads.html', context)
     else:
         return redirect('login')
@@ -360,6 +367,22 @@ def send_notification_to_user(user, message):
     )
 
 
+def dashboard(request):
+    upcoming_records = Record.objects.filter(follow_up_date__gte=timezone.now())
+    upcoming_meetings = MeetingRecord.objects.filter(follow_up_date__gte=timezone.now())
+
+    # Combine the events
+    upcoming_events = list(upcoming_records) + list(upcoming_meetings)
+
+    # Sort the events by follow-up date
+    upcoming_events.sort(key=lambda event: event.follow_up_date)
+
+    context = {
+        'upcoming_events': upcoming_events,
+    }
+    return render(request, 'home.html', context)
+
+
 def export_record_to_excel(request, record_id):
     try:
         # Fetch the record by ID
@@ -425,32 +448,131 @@ def import_records_from_excel(request):
         file_path = fs.path(filename)
 
         try:
+            # Read the Excel file into a DataFrame
             df = pd.read_excel(file_path)
+
+            # Ensure the DataFrame contains the expected columns
+            expected_columns = [
+                'ID', 'Company', 'Client Name', 'Department', 'Phone', 'Email',
+                'City', 'Address', 'Follow-Up Date', 'Comments', 'Remarks',
+                'Attachments', 'Assigned To', 'Created By', 'Social Media Details',
+                'Classification', 'Lead Source', 'Created At'
+            ]
+            if not all(col in df.columns for col in expected_columns):
+                raise ValueError('Excel file does not contain all required columns.')
+
+            # Iterate over the rows in the DataFrame and create Record objects
             for _, row in df.iterrows():
-                Record.objects.create(
-                    created_at=row.get('created_at', None),
-                    company=row.get('company', ''),
-                    client_name=row.get('client_name', ''),
-                    dept_name=row.get('dept_name', ''),
-                    phone=row.get('phone', ''),
-                    email=row.get('email', ''),
-                    city=row.get('city', ''),
-                    address=row.get('address', ''),
-                    follow_up_date=row.get('follow_up_date', None),
-                    comments=row.get('comments', ''),
-                    remarks=row.get('remarks', ''),
-                    attachments=row.get('attachments', ''),
-                    assigned_to=User.objects.get(id=row.get('assigned_to_id')) if row.get('assigned_to_id') else None,
-                    created_by=User.objects.get(id=row.get('created_by_id')) if row.get('created_by_id') else None,
-                    social_media_details=row.get('social_media_details', ''),
-                    classification=row.get('classification', ''),
-                    lead_source=row.get('lead_source', ''),
-                    last_modified_by=User.objects.get(id=row.get('last_modified_by_id')) if row.get('last_modified_by_id') else None
+                # Extract and process each field
+                created_at = row.get('Created At')
+                follow_up_date = row.get('Follow-Up Date')
+
+                # Ensure proper conversion for dates
+                if pd.notna(created_at):
+                    created_at = pd.to_datetime(created_at)
+                if pd.notna(follow_up_date):
+                    follow_up_date = pd.to_datetime(follow_up_date)
+
+                # Create or update the Record object
+                record = Record(
+                    created_at=created_at,
+                    company=row.get('Company'),
+                    client_name=row.get('Client Name'),
+                    dept_name=row.get('Department'),
+                    phone=row.get('Phone'),
+                    email=row.get('Email'),
+                    city=row.get('City'),
+                    address=row.get('Address'),
+                    follow_up_date=follow_up_date,
+                    comments=row.get('Comments'),
+                    remarks=row.get('Remarks'),
+                    attachments=None,  # Handle file attachments separately if needed
+                    assigned_to=User.objects.get(username=row.get('Assigned To')) if pd.notna(
+                        row.get('Assigned To')) else None,
+                    created_by=User.objects.get(username=row.get('Created By')) if pd.notna(
+                        row.get('Created By')) else None,
+                    social_media_details=row.get('Social Media Details'),
+                    classification=row.get('Classification'),
+                    lead_source=row.get('Lead Source'),
                 )
+
+                # Save the record
+                record.save()
+
+            # Redirect to the leads view with a success message
+            messages.success(request, 'Records imported successfully.')
             return redirect('leads')
 
         except Exception as e:
-            return HttpResponseBadRequest(f"Error processing file: {e}")
+            # Print the exception to the console and display an error message
+            print("Error processing file:", str(e))
+            messages.error(request, 'Error processing file. Please ensure the file is in the correct format.')
+            return redirect('import_leads')
 
     return render(request, 'import_leads.html')
 
+
+def export_leads(request):
+    # Extract query parameters for filtering
+    search_query = request.GET.get('search', '')
+    classification_filter = request.GET.get('classification', '')
+    assigned_filter = request.GET.get('filter', '')
+
+    # Build the queryset with search and filters applied
+    queryset = Record.objects.all()
+
+    if search_query:
+        queryset = queryset.filter(
+            Q(company__icontains=search_query) |
+            Q(client_name__icontains=search_query) |
+            Q(dept_name__icontains=search_query) |
+            Q(phone__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(city__icontains=search_query) |
+            Q(address__icontains=search_query) |
+            Q(comments__icontains=search_query) |
+            Q(remarks__icontains=search_query) |
+            Q(social_media_details__icontains=search_query) |
+            Q(lead_source__icontains=search_query)
+        )
+
+    if classification_filter:
+        queryset = queryset.filter(classification=classification_filter)
+
+    if assigned_filter == 'assigned_to_me':
+        queryset = queryset.filter(assigned_to=request.user)
+
+    # Create the Excel workbook and worksheet
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'Leads'
+
+    # Define the headers
+    headers = [
+        'ID', 'Company', 'Client Name', 'Department', 'Phone', 'Email',
+        'City', 'Address', 'Comments', 'Remarks', 'Social Media Details',
+        'Lead Source', 'Assigned To', 'Status', 'Created', 'Follow-Up'
+    ]
+    worksheet.append(headers)
+
+    # Write data rows
+    for record in queryset:
+        worksheet.append([
+            record.id, record.company, record.client_name, record.dept_name,
+            record.phone, record.email, record.city, record.address,
+            record.comments, record.remarks, record.social_media_details,
+            record.lead_source, record.assigned_to.username if record.assigned_to else 'N/A',
+            record.get_classification_display(),
+            record.created_at.strftime('%Y-%m-%d'),
+            record.follow_up_date.strftime('%Y-%m-%d') if record.follow_up_date else ''
+        ])
+
+    # Save workbook to a BytesIO stream
+    stream = BytesIO()
+    workbook.save(stream)
+    stream.seek(0)
+
+    # Create HTTP response
+    response = HttpResponse(stream, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=leads.xlsx'
+    return response

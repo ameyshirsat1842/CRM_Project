@@ -128,9 +128,22 @@
     </div>
 </nav>
 
+<div class="alert alert-warning alert-dismissible fade show" role="alert" id="notificationAlert" style="display:none;">
+    You have new notifications!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
 <!-- Include Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var notificationsCount = {{ notifications_count|default:0 }};
+        if (notificationsCount > 0) {
+            $('#notificationAlert').show();
+        }
+    });
+</script>
 </body>
 </html>

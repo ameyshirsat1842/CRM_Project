@@ -6,9 +6,14 @@ from .models import Notification, Record, MeetingRecord
 
 @receiver(post_save, sender=Record)
 def create_lead_notification(sender, instance, created, **kwargs):
-    if created and instance.assigned_to:
-        message = f"Lead '{instance.client_name}' has been assigned to {instance.assigned_to.username} by {instance.created_by.username}."
-        Notification.objects.create(user=instance.assigned_to, message=message)
+    if created:
+        if instance.assigned_to:
+            message = f"Lead '{instance.client_name}' has been assigned to {instance.assigned_to.username} by {instance.created_by.username}."
+            Notification.objects.create(user=instance.assigned_to, message=message)
+    else:
+        if instance.assigned_to:
+            message = f"Lead '{instance.client_name}' has been updated and is assigned to {instance.assigned_to.username} by {instance.created_by.username}."
+            Notification.objects.create(user=instance.assigned_to, message=message)
 
 
 @receiver(post_save, sender=MeetingRecord)
