@@ -71,6 +71,7 @@ def leads_view(request):
     if request.user.is_authenticated:
         search_query = request.GET.get('search', '')
         filter_option = request.GET.get('filter', '')
+        classification = request.GET.get('classification', '')
 
         # Apply search query
         if search_query:
@@ -92,11 +93,20 @@ def leads_view(request):
         if filter_option == 'assigned_to_me':
             records = records.filter(assigned_to=request.user)
 
+        # Apply classification filter if specified
+        if classification:
+            records = records.filter(classification=classification)
+
         paginator = Paginator(records, 10)  # Show 10 leads per page
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-        context = {'records': records, 'page_obj': page_obj}
+        context = {
+            'page_obj': page_obj,
+            'search_query': search_query,
+            'filter_option': filter_option,
+            'classification': classification
+        }
         return render(request, 'leads.html', context)
     else:
         return redirect('login')
