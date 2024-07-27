@@ -65,6 +65,20 @@
             animation: slideInLeft 1s;
         }
 
+        .side-panel .list-group-item {
+            color: #000000; /* Default dark color */
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .side-panel .list-group-item:hover {
+            background-color: #1d2b4a;
+            color: #ffffff; /* White color on hover */
+        }
+
+        .side-panel .list-group-item.dashboard {
+            color: #ffffff; /* White color for Dashboard */
+        }
+
         .main-content {
             flex: 1;
             animation: fadeIn 1s;
@@ -105,6 +119,16 @@
                 transform: translateX(0);
             }
         }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .button-group .btn {
+            margin: 0 10px;
+        }
     </style>
 </head>
 <body>
@@ -119,8 +143,8 @@
         {% if user.is_authenticated %}
         <div class="col-md-2 side-panel">
             <div class="list-group list-group-flush">
-                <a href="{% url 'home' %}" class="list-group-item list-group-item-action active">Dashboard</a>
-                <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action">Potential-Leads</a>
+                <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard">Dashboard</a>
+                <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action">Potential Leads</a>
                 <a href="{% url 'leads' %}" class="list-group-item list-group-item-action">Leads</a>
                 <a href="{% url 'meeting_records' %}" class="list-group-item list-group-item-action">Meetings</a>
                 <a href="{% url 'tickets' %}" class="list-group-item list-group-item-action">Tickets</a>
@@ -184,57 +208,15 @@
                     <li><a href="https://tecstaq.com/office-365/" style="color: #c3cbe2;" target="_blank">Office 365</a></li>
                     <li><a href="https://tecstaq.com/mfa/" style="color: #c3cbe2;" target="_blank">MFA</a></li>
                     <li><a href="https://tecstaq.com/zoom/" style="color: #c3cbe2;" target="_blank">Zoom</a></li>
+                    <li><a href="https://tecstaq.com/services/" style="color: #c3cbe2;" target="_blank">All Services</a></li>
                 </ul>
             </div>
         </div>
     </div>
-    <div class="text-center" style="font-size: 1rem;">
-        <p>&copy; 2024 CRM by Amey. All rights reserved.</p>
-    </div>
 </footer>
 
-<!-- WebSocket script -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // WebSocket connection
-        const socket = new WebSocket('ws://' + window.location.host + '/ws/notifications/');
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+8e1iLj8qI4V4R80+AdpnERkQ3Ij8" crossorigin="anonymous"></script>
 
-        socket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-info custom-alert alert-dismissible fade show';
-            alert.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-info-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Info:">
-                        <path d="M8 3.5a.5.5 0 0 1 .5.5V8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
-                        <path d="M7.5 12a.5.5 0 0 1 1 0v.5a.5.5 0 0 1-1 0V12z"/>
-                    </svg>
-                    <div>${data.message}</div>
-                </div>
-            `;
-            document.body.appendChild(alert);
-            setTimeout(() => alert.classList.remove('show'), 5000);
-        };
-
-        socket.onclose = function(e) {
-            console.error('WebSocket closed unexpectedly');
-        };
-
-        // Smooth scrolling for internal links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-    });
-</script>
-
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-9ZyVdCGD1F5F1x7L/2D5WYTcL99gTrNEC9yWSn7nscEorAKhMLC6zrDjDgHvQ+1r" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-kA1BFFoX6G71G2lfvzFFf6QT1YvsgKr+Tl0lE3gA3H6OcHlI3Fme3kuFpBZQb5P8" crossorigin="anonymous"></script>
 </body>
 </html>

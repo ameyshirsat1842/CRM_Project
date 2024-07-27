@@ -2,7 +2,6 @@
 
 {% block content %}
 <div class="container mt-4">
-
     {% if user.is_authenticated %}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Leads</h1>
@@ -10,13 +9,13 @@
         <!-- Buttons for Classification Choices -->
         <div>
             <a href="{% url 'leads' %}" class="btn btn-secondary mb-2 {% if not request.GET.classification %}active{% endif %}">All</a>
-            <a href="{% url 'leads_by_classification' classification='unassigned' %}" class="btn btn-primary mb-2 {% if request.GET.classification == 'unassigned' %}active{% endif %}">
+            <a href="{% url 'leads' %}?classification=unassigned" class="btn btn-primary mb-2 {% if request.GET.classification == 'unassigned' %}active{% endif %}">
                 Unassigned
             </a>
-            <a href="{% url 'leads_by_classification' classification='dead' %}" class="btn btn-danger mb-2 {% if request.GET.classification == 'dead' %}active{% endif %}">
+            <a href="{% url 'leads' %}?classification=dead" class="btn btn-danger mb-2 {% if request.GET.classification == 'dead' %}active{% endif %}">
                 Dead
             </a>
-            <a href="{% url 'leads_by_classification' classification='in_progress' %}" class="btn btn-warning mb-2 {% if request.GET.classification == 'in_progress' %}active{% endif %}">
+            <a href="{% url 'leads' %}?classification=in_progress" class="btn btn-warning mb-2 {% if request.GET.classification == 'in_progress' %}active{% endif %}">
                 In Progress
             </a>
             <a href="{% url 'leads' %}?filter=assigned_to_me" class="btn btn-success mb-2 {% if request.GET.filter == 'assigned_to_me' %}active{% endif %}">Assigned to Me</a>
@@ -81,7 +80,7 @@
         </table>
     </div>
 
-       <!-- Pagination controls -->
+    <!-- Pagination controls -->
     <div class="d-flex justify-content-between">
         <nav aria-label="Page navigation">
             <ul class="pagination">

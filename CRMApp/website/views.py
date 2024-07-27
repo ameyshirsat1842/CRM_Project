@@ -70,12 +70,13 @@ def register_user(request):
 def leads_view(request):
     if request.user.is_authenticated:
         search_query = request.GET.get('search', '')
-        filter_option = request.GET.get('filter', '')
         classification = request.GET.get('classification', '')
+        filter_option = request.GET.get('filter', '')
 
         # Apply search query
+        records = Record.objects.all()
         if search_query:
-            records = Record.objects.filter(
+            records = records.filter(
                 Q(company__icontains=search_query) |
                 Q(client_name__icontains=search_query) |
                 Q(dept_name__icontains=search_query) |
@@ -86,16 +87,14 @@ def leads_view(request):
                 Q(comments__icontains=search_query) |
                 Q(remarks__icontains=search_query)
             )
-        else:
-            records = Record.objects.all()
 
-        # Apply filter if specified
+        # Apply classification filter
+        if classification and classification != 'all':
+            records = records.filter(classification=classification)
+
+        # Apply 'assigned_to_me' filter
         if filter_option == 'assigned_to_me':
             records = records.filter(assigned_to=request.user)
-
-        # Apply classification filter if specified
-        if classification:
-            records = records.filter(classification=classification)
 
         paginator = Paginator(records, 10)  # Show 10 leads per page
         page_number = request.GET.get('page')
@@ -104,8 +103,8 @@ def leads_view(request):
         context = {
             'page_obj': page_obj,
             'search_query': search_query,
+            'classification': classification,
             'filter_option': filter_option,
-            'classification': classification
         }
         return render(request, 'leads.html', context)
     else:
@@ -302,19 +301,6 @@ def delete_meeting_record(request, pk):
         messages.success(request, "Meeting record deleted successfully!")
         return redirect('meeting_records')
     return render(request, 'delete_meeting_record.html', {'record': record})
-
-
-def leads_by_classification(request, classification):
-    if classification == 'all':
-        records = Record.objects.all()
-    else:
-        records = Record.objects.filter(classification=classification)
-
-    context = {
-        'user': request.user,
-        'records': records,
-    }
-    return render(request, 'leads.html', context)
 
 
 def add_potential_lead(request):

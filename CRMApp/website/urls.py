@@ -11,7 +11,6 @@ urlpatterns = [
     path('update_record/<int:pk>/', views.update_record, name='update_record'),
     path('delete/<int:pk>/', views.delete_record, name='delete_record'),
     path('leads/', views.leads_view, name='leads'),
-    path('leads/<str:classification>/', views.leads_by_classification, name='leads_by_classification'),
     path('add/', views.add_record, name='add_record'),
     path('add_meeting_record/<int:pk>/', views.add_meeting_record, name='add_meeting_record'),
     path('meeting-records/', MeetingRecordListView.as_view(), name='meeting_records'),
@@ -28,6 +27,6 @@ urlpatterns = [
     path('move-to-main-leads/<int:lead_id>/', views.move_to_main_leads, name='move_to_main_leads'),
     path('export_record/<int:record_id>/', views.export_record_to_excel, name='export_record'),
     path('import-leads/', import_records_from_excel, name='import_leads'),
-    path('export-leads/', views.export_leads, name='export_leads'),  # New URL for exporting leads
+    path('export-leads/', views.export_leads, name='export_leads'),
 
 ]
