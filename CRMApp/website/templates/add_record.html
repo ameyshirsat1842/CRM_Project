@@ -6,7 +6,7 @@
         <div class="col-md-6">
             <h1 class="text-center mb-4">Add Leads</h1>
 
-            <form action="{% url 'add_record' %}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <form id="lead-form" action="{% url 'add_record' %}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                 {% csrf_token %}
 
                 <!-- Company Information -->
@@ -40,6 +40,7 @@
                         <label for="phone" class="col-sm-3 col-form-label">Phone:</label>
                         <div class="col-sm-9">
                             <input type="text" id="phone" name="phone" class="form-control" required maxlength="10" pattern="\d{10}">
+                            <div id="phone-error" class="text-danger"></div>
                             <div class="invalid-feedback">Please provide a valid 10-digit phone number.</div>
                         </div>
                     </div>
@@ -48,6 +49,7 @@
                         <label for="email" class="col-sm-3 col-form-label">Email:</label>
                         <div class="col-sm-9">
                             <input type="email" id="email" name="email" class="form-control" required>
+                            <div id="email-error" class="text-danger"></div>
                             <div class="invalid-feedback">Please provide a valid email address.</div>
                         </div>
                     </div>
@@ -190,34 +192,53 @@
         border-bottom: 2px solid #000;
         margin-bottom: 1rem;
     }
+
+    .text-danger {
+        color: #dc3545;
+    }
+
+    #phone-error,
+    #email-error {
+        margin-top: 0.5rem;
+    }
 </style>
 
 <script>
-    // Auto-resize textareas
     document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('textarea').forEach(function (textarea) {
-            textarea.addEventListener('input', function () {
-                this.style.height = 'auto';
-                this.style.height = (this.scrollHeight) + 'px';
-            });
+        const phoneField = document.getElementById('phone');
+        const emailField = document.getElementById('email');
+        const phoneError = document.getElementById('phone-error');
+        const emailError = document.getElementById('email-error');
+
+        async function checkDuplicate() {
+            const phone = phoneField.value;
+            const email = emailField.value;
+
+            try {
+                const response = await fetch(`/check-duplicate/?phone=${phone}&email=${email}`);
+                const data = await response.json();
+
+                phoneError.textContent = data.phone || '';
+                emailError.textContent = data.email || '';
+
+                // Clear invalid feedback if there's no error
+                phoneField.classList.toggle('is-invalid', !!data.phone);
+                emailField.classList.toggle('is-invalid', !!data.email);
+            } catch (error) {
+                console.error('Error checking duplicates:', error);
+            }
+        }
+
+        phoneField.addEventListener('blur', checkDuplicate);
+        emailField.addEventListener('blur', checkDuplicate);
+
+        document.getElementById('lead-form').addEventListener('submit', async (event) => {
+            await checkDuplicate();
+            const errors = document.querySelectorAll('.text-danger');
+            if ([...errors].some(error => error.textContent)) {
+                event.preventDefault();
+            }
         });
     });
-
-    // Bootstrap form validation
-    (function () {
-        'use strict';
-        window.addEventListener('load', function () {
-            var forms = document.getElementsByClassName('needs-validation');
-            Array.prototype.filter.call(forms, function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        }, false);
-    })();
 </script>
 {% endblock %}

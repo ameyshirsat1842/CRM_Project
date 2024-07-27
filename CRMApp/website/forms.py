@@ -144,7 +144,14 @@ class AddRecordForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         assigned_to = cleaned_data.get('assigned_to')
-        visible_to = cleaned_data.get('visible_to')
+        visible_to = cleaned_data.get('visible_to', User.objects.none())  # Ensure visible_to is a QuerySet
+
+        # Check for duplicates based on phone and email
+        phone = cleaned_data.get('phone')
+        email = cleaned_data.get('email')
+
+        if Record.objects.filter(phone=phone, email=email).exists():
+            raise forms.ValidationError("A record with this phone number and email already exists.")
 
         if assigned_to == self.user:
             visible_to = visible_to | User.objects.filter(id=self.user.id)

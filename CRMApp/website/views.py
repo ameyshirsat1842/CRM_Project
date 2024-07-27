@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
@@ -15,7 +16,7 @@ import pandas as pd
 import pytz
 from django.core.files.storage import FileSystemStorage
 from io import BytesIO
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 
 def home(request):
@@ -135,10 +136,20 @@ def add_record(request):
     if request.method == 'POST':
         form = AddRecordForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
+            phone = form.cleaned_data.get("phone")
+            email = form.cleaned_data.get("email")
+
+            # Check if a record with the same phone number and email exists
+            if Record.objects.filter(phone=phone, email=email).exists():
+                messages.error(request, "A record with this phone number and email already exists.")
+                return render(request, 'add_record.html', {'form': form, 'users': User.objects.all()})
+
+            # Create and save the record
             record = form.save(commit=False)
             record.created_by = request.user
             record.save()
 
+            # Handle visibility settings
             visible_to_ids = request.POST.getlist('visible_to')
             if visible_to_ids:
                 users = User.objects.filter(id__in=visible_to_ids)
@@ -179,16 +190,24 @@ def update_record(request, pk):
 def notifications_view(request):
     if request.user.is_authenticated:
         notifications = Notification.objects.unread_for_user(request.user)
+        notifications_count = notifications.count()
     else:
         notifications = []
+        notifications_count = 0
 
-    return render(request, 'notifications.html', {'notifications': notifications})
+    return render(request, 'notifications.html', {
+        'notifications': notifications,
+        'notifications_count': notifications_count
+    })
 
 
 def mark_notification_as_read(request, notification_id):
-    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
-    notification.mark_as_read()
-    return redirect('notifications')
+    if request.method == 'GET':
+        notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+        notification.is_read = True
+        notification.save()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
 
 
 def tickets(request):
@@ -447,53 +466,66 @@ def import_records_from_excel(request):
             # Read the Excel file into a DataFrame
             df = pd.read_excel(file_path)
 
-            # Ensure the DataFrame contains the expected columns
+            # Clean up column names
+            df.columns = df.columns.str.strip()
+
+            # Print columns for debugging
+            print("Detected columns:", df.columns.tolist())
+
+            # Update the expected columns list according to the actual columns
             expected_columns = [
                 'ID', 'Company', 'Client Name', 'Department', 'Phone', 'Email',
-                'City', 'Address', 'Follow-Up Date', 'Comments', 'Remarks',
-                'Attachments', 'Assigned To', 'Created By', 'Social Media Details',
-                'Classification', 'Lead Source', 'Created At'
+                'City', 'Address', 'Follow-Up', 'Comments', 'Remarks',
+                'Social Media Details', 'Lead Source', 'Assigned To', 'Status',
+                'Created', 'Follow-Up'
             ]
-            if not all(col in df.columns for col in expected_columns):
-                raise ValueError('Excel file does not contain all required columns.')
+
+            missing_columns = [col for col in expected_columns if col not in df.columns]
+            if missing_columns:
+                raise ValueError(f'Excel file is missing the following columns: {", ".join(missing_columns)}')
 
             # Iterate over the rows in the DataFrame and create Record objects
-            for _, row in df.iterrows():
-                # Extract and process each field
-                created_at = row.get('Created At')
-                follow_up_date = row.get('Follow-Up Date')
+            for index, row in df.iterrows():
+                try:
+                    created_at = row.get('Created')
+                    follow_up_date = row.get('Follow-Up')
 
-                # Ensure proper conversion for dates
-                if pd.notna(created_at):
-                    created_at = pd.to_datetime(created_at)
-                if pd.notna(follow_up_date):
-                    follow_up_date = pd.to_datetime(follow_up_date)
+                    # Ensure proper conversion for dates
+                    if pd.notna(created_at):
+                        created_at = pd.to_datetime(created_at)
+                    if pd.notna(follow_up_date):
+                        follow_up_date = pd.to_datetime(follow_up_date)
 
-                # Create or update the Record object
-                record = Record(
-                    created_at=created_at,
-                    company=row.get('Company'),
-                    client_name=row.get('Client Name'),
-                    dept_name=row.get('Department'),
-                    phone=row.get('Phone'),
-                    email=row.get('Email'),
-                    city=row.get('City'),
-                    address=row.get('Address'),
-                    follow_up_date=follow_up_date,
-                    comments=row.get('Comments'),
-                    remarks=row.get('Remarks'),
-                    attachments=None,  # Handle file attachments separately if needed
-                    assigned_to=User.objects.get(username=row.get('Assigned To')) if pd.notna(
-                        row.get('Assigned To')) else None,
-                    created_by=User.objects.get(username=row.get('Created By')) if pd.notna(
-                        row.get('Created By')) else None,
-                    social_media_details=row.get('Social Media Details'),
-                    classification=row.get('Classification'),
-                    lead_source=row.get('Lead Source'),
-                )
+                    # Create or update the Record object
+                    record = Record(
+                        created_at=created_at,
+                        company=row.get('Company'),
+                        client_name=row.get('Client Name'),
+                        dept_name=row.get('Department'),
+                        phone=row.get('Phone'),
+                        email=row.get('Email'),
+                        city=row.get('City'),
+                        address=row.get('Address'),
+                        follow_up_date=follow_up_date,
+                        comments=row.get('Comments'),
+                        remarks=row.get('Remarks'),
+                        attachments=None,  # Handle file attachments separately if needed
+                        assigned_to=User.objects.get(username=row.get('Assigned To')) if pd.notna(
+                            row.get('Assigned To')) else None,
+                        created_by=User.objects.get(username=row.get('Created By')) if pd.notna(
+                            row.get('Created By')) else None,
+                        social_media_details=row.get('Social Media Details'),
+                        classification=row.get('Classification'),
+                        lead_source=row.get('Lead Source'),
+                    )
 
-                # Save the record
-                record.save()
+                    # Save the record
+                    record.save()
+
+                except ValidationError as ve:
+                    print(f"Validation error for row {index}: {ve}")
+                except Exception as e:
+                    print(f"Error saving row {index}: {e}")
 
             # Redirect to the leads view with a success message
             messages.success(request, 'Records imported successfully.')
@@ -572,3 +604,4 @@ def export_leads(request):
     response = HttpResponse(stream, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=leads.xlsx'
     return response
+
