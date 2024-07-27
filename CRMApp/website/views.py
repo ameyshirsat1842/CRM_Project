@@ -75,7 +75,7 @@ def leads_view(request):
         filter_option = request.GET.get('filter', '')
 
         # Apply search query
-        records = Record.objects.all()
+        records = Record.objects.all().order_by('-created_at')
         if search_query:
             records = records.filter(
                 Q(company__icontains=search_query) |
