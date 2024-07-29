@@ -20,6 +20,7 @@ urlpatterns = [
     path('notifications/', views.notifications_view, name='notifications'),
     path('notifications/mark-as-read/<int:notification_id>/', views.mark_notification_as_read,
          name='mark_notification_as_read'),
+    path('notification/<int:pk>/', views.notification_detail, name='notification_detail'),
     path('meeting-records/update/<int:pk>/', update_meeting_record, name='update_meeting_record'),
     path('meeting-records/delete/<int:pk>/', delete_meeting_record, name='delete_meeting_record'),
     path('potential-leads/', views.potential_leads, name='potential_leads'),

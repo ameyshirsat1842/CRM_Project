@@ -93,7 +93,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
                             {% for notification in notifications %}
-                                <li><a class="dropdown-item {% if not notification.is_read %}bg-light-red{% endif %}" href="#">{{ notification.message }}</a></li>
+                                <li><a class="dropdown-item {% if not notification.is_read %}bg-light-red{% endif %}" href="{% url 'notification_detail' notification.id %}">{{ notification.message }}</a></li>
                             {% empty %}
                                 <li><a class="dropdown-item" href="#">No notifications</a></li>
                             {% endfor %}
@@ -132,6 +132,9 @@
         </div>
     </div>
 </nav>
+
+{% block content %}
+{% endblock %}
 
 <!-- Include Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

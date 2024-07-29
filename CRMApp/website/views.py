@@ -116,20 +116,32 @@ def customer_record(request, pk):
     if request.user.is_authenticated:
         customer_rec = get_object_or_404(Record, id=pk)
         meeting_records = MeetingRecord.objects.filter(record=customer_rec)
-        return render(request, 'record.html', {'customer_record': customer_rec, 'meeting_records': meeting_records})
-
+        can_delete = customer_rec.created_by == request.user  # Assuming 'created_by' is the field indicating the lead creator
+        return render(request, 'record.html', {
+            'customer_record': customer_rec,
+            'meeting_records': meeting_records,
+            'can_delete': can_delete
+        })
     else:
         messages.error(request, "You must be logged in to view the record")
         return redirect('home')
 
 
-def delete_record(request, pk, record=None):
-    if request.method == 'POST':
+def delete_record(request, pk):
+    if request.user.is_authenticated:
         record = get_object_or_404(Record, pk=pk)
-        record.delete()
-        messages.success(request, "Record deleted successfully")
-        return redirect('leads')
-    return render(request, 'delete_record.html', {'record': record})
+        if record.created_by == request.user:
+            if request.method == 'POST':
+                record.delete()
+                messages.success(request, "Record deleted successfully")
+                return redirect('leads')
+            return render(request, 'delete_record.html', {'record': record})
+        else:
+            messages.error(request, "You do not have permission to delete this record")
+            return redirect('record', pk=pk)  # Redirect back to the record view
+    else:
+        messages.error(request, "You must be logged in to delete the record")
+        return redirect('home')
 
 
 def add_record(request):
@@ -199,6 +211,13 @@ def notifications_view(request):
         'notifications': notifications,
         'notifications_count': notifications_count
     })
+
+
+def notification_detail(request, pk):
+    notification = get_object_or_404(Notification, pk=pk)
+    notification.is_read = True
+    notification.save()
+    return render(request, 'notification_detail.html', {'notification': notification})
 
 
 def mark_notification_as_read(request, notification_id):
@@ -287,7 +306,7 @@ class MeetingRecordListView(ListView):
     paginate_by = 10  # Adjust as needed
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().order_by('-created_at')
         query = self.request.GET.get('q')
         if query:
             queryset = queryset.filter(

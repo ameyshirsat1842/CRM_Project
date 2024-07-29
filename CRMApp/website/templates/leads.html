@@ -48,7 +48,7 @@
                     <th scope="col">Created</th>
                     <th scope="col">Follow-Up</th>
                     <th scope="col">Lead Source</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col">Edit</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,7 +68,6 @@
                     <td>{{ record.lead_source }}</td>
                     <td>
                         <a href="{% url 'update_record' record.id %}" class="btn btn-warning btn-sm">Update</a>
-                        <a href="{% url 'delete_record' record.id %}" class="btn btn-danger btn-sm">Delete</a>
                     </td>
                 </tr>
                 {% empty %}
