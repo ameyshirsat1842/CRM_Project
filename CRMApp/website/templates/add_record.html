@@ -153,23 +153,8 @@
                             <textarea id="social_media_details" name="social_media_details" class="form-control" rows="3"></textarea>
                         </div>
                     </div>
-                    <br>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Visible To:</label>
-                        <div class="col-sm-9">
-                            {% for user in users %}
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="visible_to" id="user_{{ user.id }}" value="{{ user.id }}">
-                                    <label class="form-check-label" for="user_{{ user.id }}">
-                                        {{ user.username }}
-                                    </label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
                 </fieldset>
                 <br>
-
                 <!-- Form Actions -->
                 <div class="form-group row">
                     <div class="col-sm-9 offset-sm-3">

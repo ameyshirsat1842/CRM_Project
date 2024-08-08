@@ -66,6 +66,24 @@
             background-color: #f8d7da; /* Light red background */
             color: #721c24; /* Dark red text color */
         }
+
+        @media (max-width: 575.98px) {
+            .navbar-nav .nav-link {
+                font-size: 1rem; /* Adjust font size for smaller screens */
+            }
+
+            .main-content {
+                padding: 10px; /* Reduce padding on smaller screens */
+            }
+
+            .navbar-nav {
+                text-align: center; /* Center navbar items on smaller screens */
+            }
+
+            .navbar-nav .dropdown-menu {
+                width: 100%; /* Ensure dropdown menu takes full width on smaller screens */
+            }
+        }
     </style>
 </head>
 <body>
@@ -73,7 +91,7 @@
     <div class="container-fluid">
         <a class="navbar-brand text-light" href="https://tecstaq.com/" target="_blank">
             <img src="https://tecstaq.com/wp-content/uploads/2023/06/Tecstaq-new-logo-transeparent.png" alt="Tecstaq Logo">
-            CRM
+            Lead Management
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

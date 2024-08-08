@@ -133,6 +133,45 @@
         .button-group .btn {
             margin: 0 10px;
         }
+
+        @media (max-width: 768px) {
+            .container-fluid {
+                flex-direction: column;
+            }
+
+            .side-panel {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                left: 0;
+                background-color: #f8f9fa;
+            }
+
+            .side-panel-container:hover .side-panel {
+                left: 0;
+            }
+
+            .main-content {
+                flex: none;
+                width: 100%;
+                padding: 0 15px;
+            }
+
+            .footer {
+                text-align: center;
+                padding: 20px 0;
+            }
+
+            .footer .row {
+                flex-direction: column;
+            }
+
+            .footer .col-md-4 {
+                margin-bottom: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -220,7 +259,7 @@
     <p style="text-align: center; color: #c3cbe2; margin-top: 20px;">© 2023 Tecstaq Solutions Pvt. Ltd. All Rights Reserved.</p>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-mQ93bda+DB6pF9AnN2kKCIx7XzIc2r+Hrb8gxBqLplC5CZmf2Z4QZUIyyL4KcG8X" crossorigin="anonymous"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzOg8pHIL1DdfQk5X1M3aKUd1j3/jrqkTx62g00d0K4L" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-cuTCHlT9nCiw8wQnXRKWsMlz9kaN2+dZYtTLp4gbLIeGVoPjG3UUOJ+tIObE6GI4" crossorigin="anonymous"></script>
 </body>
 </html>

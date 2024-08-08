@@ -3,36 +3,36 @@
 {% block content %}
     {% if user.is_authenticated %}
         <!-- Main Content -->
-        <div class="col-md-10 main-content">
+        <div class="container main-content">
             <h1>Dashboard</h1>
             <br>
             <!-- Upcoming Events -->
-           <div class="row mb-4">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Upcoming Events</h5>
-                <ul class="list-group list-group-flush" id="upcomingEvents">
-                    {% for event in upcoming_events %}
-                        <li class="list-group-item">
-                            {% if event.follow_up_date %}
-                                {{ event.title }} - {{ event.follow_up_date|date:"F d, Y" }}
-                            {% else %}
-                                No upcoming events.
-                            {% endif %}
-                        </li>
-                    {% empty %}
-                        <li class="list-group-item">No upcoming events.</li>
-                    {% endfor %}
-                </ul>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Upcoming Events</h5>
+                            <ul class="list-group list-group-flush" id="upcomingEvents">
+                                {% for event in upcoming_events %}
+                                    <li class="list-group-item">
+                                        {% if event.follow_up_date %}
+                                            {{ event.title }} - {{ event.follow_up_date|date:"F d, Y" }}
+                                        {% else %}
+                                            No upcoming events.
+                                        {% endif %}
+                                    </li>
+                                {% empty %}
+                                    <li class="list-group-item">No upcoming events.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
 
             <!-- Key Metrics -->
             <div class="row mb-4">
-                <div class="col-md-3">
+                <div class="col-6 col-md-3 mb-3 mb-md-0">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Total Leads</h5>
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3 mb-3 mb-md-0">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Total Clients</h5>
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3 mb-3 mb-md-0">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Open Tickets</h5>
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3 mb-3 mb-md-0">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Closed Deals</h5>
@@ -68,7 +68,7 @@
 
             <!-- Charts and Graphs -->
             <div class="row mb-4">
-                <div class="col-md-6">
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Sales Performance</h5>
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Leads by Source</h5>
@@ -88,7 +88,7 @@
 
             <!-- Recent Activities -->
             <div class="row mb-4">
-                <div class="col-md-6">
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Recent Leads Added</h5>
@@ -102,7 +102,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Recent Tickets</h5>
@@ -222,15 +222,18 @@
                     list.appendChild(listItem);
                 });
             } else {
-                list.innerHTML = '<li class="list-group-item">No items.</li>';
+                var listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.textContent = 'No items.';
+                list.appendChild(listItem);
             }
         }
 
-        // Refresh data every 5 minutes
-        setInterval(refreshDashboardData, 300000); // 300000ms = 5 minutes
-
-        // Initial data fetch
+        // Initial data load
         refreshDashboardData();
+
+        // Set up interval to refresh data every 5 minutes
+        setInterval(refreshDashboardData, 5 * 60 * 1000);
     });
 </script>
 {% endblock %}
