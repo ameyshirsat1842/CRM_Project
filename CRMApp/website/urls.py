@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 from .views import MeetingRecordListView, update_meeting_record, delete_meeting_record, import_records_from_excel
 
 urlpatterns = [
@@ -29,5 +30,8 @@ urlpatterns = [
     path('export_record/<int:record_id>/', views.export_record_to_excel, name='export_record'),
     path('import-leads/', import_records_from_excel, name='import_leads'),
     path('export-leads/', views.export_leads, name='export_leads'),
-
+    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]

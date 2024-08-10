@@ -2,23 +2,26 @@
 
 {% block content %}
 <div class="col-md-6 offset-md-3">
-        <br><br>
-        <h2> Login </h2>
+    <br><br>
+    <h2>Login</h2>
+    <br>
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
         <br>
-        <form method="POST" action="{% url 'login' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <br>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <br>
-            <button type="submit" class="btn btn-primary">Login</button>
-            <br><br/>
-        </form>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Login</button>
+        <br><br/>
+        <p>
+            <a href="{% url 'password_reset' %}">Forgot your password?</a>
+        </p>
+    </form>
 </div>
 {% endblock %}
