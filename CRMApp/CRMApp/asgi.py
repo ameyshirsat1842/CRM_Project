@@ -2,15 +2,16 @@ import os
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-import website.routing
+from django.urls import path
+from consumers import NotificationConsumer  # Adjust path based on your project structure
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CRMApp.settings')
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
-        URLRouter(
-            website.routing.websocket_urlpatterns
-        )
+        URLRouter([
+            path("ws/notifications/", NotificationConsumer.as_asgi()),
+        ])
     ),
 })

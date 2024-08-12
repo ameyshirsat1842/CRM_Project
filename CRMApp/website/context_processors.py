@@ -1,5 +1,3 @@
-# website/context_processors.py
-
 from .models import Notification
 
 

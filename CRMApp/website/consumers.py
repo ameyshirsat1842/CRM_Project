@@ -1,21 +1,25 @@
+from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from channels.generic.websocket import WebsocketConsumer
 
 
-class NotificationConsumer(WebsocketConsumer):
-    def connect(self):
-        # Code to handle WebSocket connection
-        self.accept()
+class NotificationConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        # Accept the connection
+        await self.accept()
 
-    def disconnect(self, close_code):
-        # Code to handle WebSocket disconnection
+    async def disconnect(self, close_code):
+        # Handle disconnection
         pass
 
-    def receive(self, text_data=None, bytes_data=None):
-        text_data_json = json.loads(text_data)
-        message = text_data_json.get('message', '')
+    async def receive(self, text_data):
+        # Handle incoming messages if any
+        pass
 
-        # Send message back to WebSocket
-        self.send(text_data=json.dumps({
+    async def send_notification(self, event):
+        # Receive message from the group
+        message = event['message']
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({
             'message': message
         }))
