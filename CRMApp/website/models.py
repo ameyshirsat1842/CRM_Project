@@ -130,3 +130,21 @@ class PotentialLead(models.Model):
 
     def __str__(self):
         return self.company
+
+
+class UserSettings(models.Model):
+    objects = None
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    side_panel_slide = models.BooleanField(default=False)
+    notification_preferences = models.CharField(max_length=10, choices=[
+        ('email', 'Email'),
+        ('sms', 'SMS'),
+        ('none', 'None')
+    ], default='email')
+    theme_selection = models.CharField(max_length=10, choices=[
+        ('light', 'Light'),
+        ('dark', 'Dark')
+    ], default='light')
+
+    def __str__(self):
+        return f'{self.user.username} Settings'

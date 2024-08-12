@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Settings</h2>
+    <form method="post" action="{% url 'settings' %}">
+        {% csrf_token %}
+        <!-- Additional settings -->
+        <div class="form-group mt-4">
+            <label for="notification-preferences">Notification Preferences:</label>
+            <select id="notification-preferences" name="notification_preferences" class="form-control">
+                <option value="email" {% if settings.notification_preferences == 'email' %}selected{% endif %}>Email</option>
+                <option value="sms" {% if settings.notification_preferences == 'sms' %}selected{% endif %}>SMS</option>
+                <option value="none" {% if settings.notification_preferences == 'none' %}selected{% endif %}>Site</option>
+            </select>
+        </div>
+
+        <div class="form-group mt-4">
+            <label for="theme-selection">Theme Selection:</label>
+            <select id="theme-selection" name="theme_selection" class="form-control">
+                <option value="light" {% if settings.theme_selection == 'light' %}selected{% endif %}>Light</option>
+                <option value="dark" {% if settings.theme_selection == 'dark' %}selected{% endif %}>Dark</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4">Save Changes</button>
+    </form>
+</div>
+{% endblock %}  <!-- Add this line to close the content block -->
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Retrieve the slide setting from the server or local storage
+        const sidePanelSlide = {{ settings.side_panel_slide|yesno:"true,false" }};
+
+        // Get the side panel container
+        const sidePanelContainer = document.querySelector('.side-panel-container');
+
+        // Apply or remove the hover and locked class based on the setting
+        if (sidePanelSlide) {
+            sidePanelContainer.classList.add('hover-slide');
+            sidePanelContainer.classList.remove('locked');
+        } else {
+            sidePanelContainer.classList.remove('hover-slide');
+            sidePanelContainer.classList.add('locked');
+        }
+    });
+</script>
+{% endblock %}

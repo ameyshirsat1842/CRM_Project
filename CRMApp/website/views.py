@@ -1,22 +1,23 @@
+from io import BytesIO
+import pandas as pd
+import pytz
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.files.storage import FileSystemStorage
+from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.views.generic import ListView
 from openpyxl.workbook import Workbook
-from django.core.paginator import Paginator
+
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
-from django.views.generic import ListView
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-import pandas as pd
-import pytz
-from django.core.files.storage import FileSystemStorage
-from io import BytesIO
-from django.http import HttpResponse, JsonResponse
 
 
 def home(request):
@@ -624,3 +625,7 @@ def export_leads(request):
     response['Content-Disposition'] = 'attachment; filename=leads.xlsx'
     return response
 
+
+def settings_view(request):
+    # Fetch or create the user's settings
+    return render(request, 'settings.html')
