@@ -55,6 +55,15 @@
                     {% endif %}
                 </div>
                 <div class="mb-3">
+                    {{ form.phone_number.label_tag }}
+                    {{ form.phone_number }}
+                    {% if form.phone_number.errors %}
+                        {% for error in form.phone_number.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="mb-3">
                     {{ form.password1.label_tag }}
                     {{ form.password1 }}
                     {% if form.password1.errors %}

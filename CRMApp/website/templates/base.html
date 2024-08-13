@@ -193,8 +193,12 @@
                     <a href="{% url 'meeting_records' %}" class="list-group-item list-group-item-action">Meetings</a>
                     <a href="{% url 'tickets' %}" class="list-group-item list-group-item-action">Tickets</a>
                     <a href="{% url 'notifications' %}" class="list-group-item list-group-item-action">Notifications</a>
-                    <a href="#" class="list-group-item list-group-item-action">Reports</a>
+                    <a href="{% url 'update_user_info' %}" class="list-group-item list-group-item-action">Edit Profile</a>
                     <a href="{% url 'settings' %}" class="list-group-item list-group-item-action">Settings</a>
+                    {% if user.is_staff %}
+                    <!-- Admin Panel link visible only to staff users (admins) -->
+                    <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action">Admin Panel</a>
+                    {% endif %}
                     <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Logout</a>
                 </div>
             </div>

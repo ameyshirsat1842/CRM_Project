@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Record, Ticket, MeetingRecord, PotentialLead
+from .models import Profile
 
 
 class SignUpForm(UserCreationForm):
@@ -12,10 +13,13 @@ class SignUpForm(UserCreationForm):
                                      attrs={'class': 'form-control', 'placeholder': 'First Name'}))
     last_name = forms.CharField(label="", max_length=100,
                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}))
+    phone_number = forms.CharField(label="", max_length=15,
+                                   widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}),
+                                   required=False)
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone_number', 'password1', 'password2')
 
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
@@ -42,6 +46,30 @@ class SignUpForm(UserCreationForm):
         self.fields[
             'password2'].help_text = ('<span class="form-text text-muted"><small>Enter the same password as before, '
                                       'for verification.</small></span>')
+
+    def save(self, commit=True):
+        user = super(SignUpForm, self).save(commit=False)
+        if commit:
+            user.save()
+            Profile.objects.create(user=user, phone_number=self.cleaned_data['phone_number'])
+        return user
+
+
+class UserUpdateForm(forms.ModelForm):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    phone_number = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
+
+    class Meta:
+        model = Profile
+        fields = ['phone_number']
 
 
 class AddRecordForm(forms.ModelForm):

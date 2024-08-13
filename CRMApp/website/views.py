@@ -15,8 +15,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView
 from openpyxl.workbook import Workbook
-
-from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm
+from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, UserUpdateForm, ProfileUpdateForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
 
 
@@ -67,6 +66,26 @@ def register_user(request):
         form = SignUpForm()
 
     return render(request, 'register.html', {'form': form})
+
+
+def update_user_info(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('update_user_info')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+
+    return render(request, 'update_user_info.html', {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    })
 
 
 def leads_view(request):

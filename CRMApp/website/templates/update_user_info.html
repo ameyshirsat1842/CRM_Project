@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Update Your Information</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ user_form|crispy }}
+        {{ profile_form|crispy }}
+        <button type="submit" class="btn btn-primary mt-3">Update</button>
+    </form>
+</div>
+{% endblock %}

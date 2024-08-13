@@ -60,7 +60,7 @@ class NotificationManager(models.Manager):
 
 
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
@@ -68,7 +68,7 @@ class Notification(models.Model):
     objects = NotificationManager()
 
     def __str__(self):
-        return 'Notification for {self.user.username}'
+        return 'Notification for {self.user.username}: {self.message}'
 
     def mark_as_read(self):
         self.is_read = True
@@ -148,3 +148,12 @@ class UserSettings(models.Model):
 
     def __str__(self):
         return f'{self.user.username} Settings'
+
+
+class Profile(models.Model):
+    objects = None
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=15, blank=True)
+
+    def __str__(self):
+        return f'{self.user.username} Profile'
