@@ -58,11 +58,28 @@
             margin-bottom: 0;
         }
 
+        .side-panel-container {
+            position: relative;
+        }
+
         .side-panel {
+            position: absolute;
+            top: 0;
+            left: -250px; /* Initially hidden */
+            width: 250px; /* Adjust the width of the side panel as needed */
+            height: 100%;
             border-right: 1px solid #ddd;
             background-color: var(--side-panel-bg-color);
-            flex: 0 0 250px; /* Adjust the width of the side panel as needed */
-            animation: slideInLeft 1s;
+            transition: left 0.3s;
+            z-index: 1050;
+        }
+
+        .side-panel-container:hover .side-panel {
+            left: 0; /* Slide in on hover */
+        }
+
+        .side-panel.hold {
+            left: 0 !important; /* Hold in place */
         }
 
         .side-panel .list-group-item {
@@ -111,15 +128,6 @@
             }
         }
 
-        @keyframes slideInLeft {
-            from {
-                transform: translateX(-100%);
-            }
-            to {
-                transform: translateX(0);
-            }
-        }
-
         .button-group {
             display: flex;
             justify-content: center;
@@ -128,6 +136,45 @@
 
         .button-group .btn {
             margin: 0 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container-fluid {
+                flex-direction: column;
+            }
+
+            .side-panel {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                left: 0;
+                background-color: #f8f9fa;
+            }
+
+            .side-panel-container:hover .side-panel {
+                left: 0;
+            }
+
+            .main-content {
+                flex: none;
+                width: 100%;
+                padding: 0 15px;
+            }
+
+            .footer {
+                text-align: center;
+                padding: 20px 0;
+            }
+
+            .footer .row {
+                flex-direction: column;
+            }
+
+            .footer .col-md-4 {
+                margin-bottom: 20px;
+            }
         }
     </style>
 </head>
@@ -141,17 +188,29 @@
     <div class="row">
         <!-- Side panel -->
         {% if user.is_authenticated %}
-        <div class="col-md-2 side-panel">
-            <div class="list-group list-group-flush">
-                <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard">Dashboard</a>
-                <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action">Potential Leads</a>
-                <a href="{% url 'leads' %}" class="list-group-item list-group-item-action">Leads</a>
-                <a href="{% url 'meeting_records' %}" class="list-group-item list-group-item-action">Meetings</a>
-                <a href="{% url 'tickets' %}" class="list-group-item list-group-item-action">Tickets</a>
-                <a href="{% url 'notifications' %}" class="list-group-item list-group-item-action">Notifications</a>
-                <a href="#" class="list-group-item list-group-item-action">Reports</a>
-                <a href="#" class="list-group-item list-group-item-action">Settings</a>
-                <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Logout</a>
+        <div class="col-md-2 side-panel-container">
+            <div class="side-panel">
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard">Dashboard</a>
+                    <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action">Potential Leads</a>
+                    <a href="{% url 'leads' %}" class="list-group-item list-group-item-action">Leads</a>
+                    <a href="{% url 'meeting_records' %}" class="list-group-item list-group-item-action">Meetings</a>
+                    <a href="{% url 'tickets' %}" class="list-group-item list-group-item-action">Tickets</a>
+                    <a href="{% url 'notifications' %}" class="list-group-item list-group-item-action">Notifications</a>
+                    <a href="{% url 'update_user_info' %}" class="list-group-item list-group-item-action">Edit Profile</a>
+                    <a href="{% url 'settings' %}" class="list-group-item list-group-item-action">Settings</a>
+                    {% if user.is_staff %}
+                    <!-- Admin Panel link visible only to staff users (admins) -->
+                    <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action">Admin Panel</a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Logout</a>
+                </div>
+                <!-- Hold Switch -->
+                <div class="form-check mt-3 ms-3">
+                    <input class="form-check-input" type="checkbox" id="holdSwitch">
+                    <label class="form-check-label" for="holdSwitch">
+                    </label>
+                </div>
             </div>
         </div>
         {% endif %}
@@ -207,26 +266,23 @@
                     <li><a href="https://tecstaq.com/acronis/" style="color: #c3cbe2;" target="_blank">Acronis</a></li>
                     <li><a href="https://tecstaq.com/microsoft-azure/" style="color: #c3cbe2;" target="_blank">Azure</a></li>
                     <li><a href="https://tecstaq.com/office-365/" style="color: #c3cbe2;" target="_blank">Office 365</a></li>
-                    <li><a href="https://tecstaq.com/web-application-firewall/" style="color: #c3cbe2;" target="_blank">WAF</a></li>
-                    <li><a href="https://tecstaq.com/web-hosting/" style="color: #c3cbe2;" target="_blank">Web Hosting</a></li>
                 </ul>
             </div>
         </div>
     </div>
+    <p style="text-align: center; color: #c3cbe2; margin-top: 20px;">© 2024 Tecstaq Solutions Pvt. Ltd. All Rights Reserved.</p>
 </footer>
 
-<script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-r4Ny2rR38zexMLT8NYNj/jM3o5b7WnppQUanJbUgYTsBDy5z5oy5EpMCVOz9YkmX" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzOg8pHIL1DdfQk5X1M3aKUd1j3/jrqkTx62g00d0K4L" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-cuTCHlT9nCiw8wQnXRKWsMlz9kaN2+dZYtTLp4gbLIeGVoPjG3UUOJ+tIObE6GI4" crossorigin="anonymous"></script>
 <script>
-    // Hide alerts after 5 seconds
-    $(document).ready(function() {
-        setTimeout(function() {
-            $('.custom-alert').fadeOut('slow', function() {
-                $(this).remove();
-            });
-        }, 5000);
+    document.getElementById('holdSwitch').addEventListener('change', function () {
+        const sidePanel = document.querySelector('.side-panel');
+        if (this.checked) {
+            sidePanel.classList.add('hold');
+        } else {
+            sidePanel.classList.remove('hold');
+        }
     });
 </script>
 </body>
