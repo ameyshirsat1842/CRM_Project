@@ -3,7 +3,6 @@ from celery import shared_task
 from django.utils import timezone
 from django.core.mail import send_mail
 from .models import Record, Notification
-from .views import send_sms
 
 logger = logging.getLogger(__name__)
 
@@ -26,9 +25,6 @@ def send_follow_up_alerts():
             # Send an in-app notification
             Notification.objects.create(user=record.assigned_to, message=message)
 
-            # Send an SMS notification
-            if record.assigned_to.profile.phone_number:  # Assuming the user's phone number is stored in their profile
-                send_sms(record.assigned_to.profile.phone_number, message)
 
             # Send an email notification (optional)
             send_mail(
