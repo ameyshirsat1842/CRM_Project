@@ -17,6 +17,8 @@ from django.views.generic import ListView
 from openpyxl.workbook import Workbook
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, UserUpdateForm, ProfileUpdateForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
+from twilio.rest import Client
+from django.conf import settings
 
 
 def home(request):
@@ -648,3 +650,13 @@ def export_leads(request):
 def settings_view(request):
     # Fetch or create the user's settings
     return render(request, 'settings.html')
+
+
+def send_sms(to, message):
+    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+    message = client.messages.create(
+        body=message,
+        from_=settings.TWILIO_PHONE_NUMBER,
+        to=to
+    )
+    return message.sid

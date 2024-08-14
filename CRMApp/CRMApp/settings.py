@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
     #'unfold',
-    'jazzmin',
+    #'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -149,3 +149,9 @@ CELERY_BEAT_SCHEDULE = {
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+broker_connection_retry_on_startup = True
+
+
+TWILIO_ACCOUNT_SID = 'AC46d91a42fc4f229ee47c03570f628f5c'
+TWILIO_AUTH_TOKEN = '980ed7a11710c334fb58ff131b1902f5'
+TWILIO_PHONE_NUMBER = '+12564881593'

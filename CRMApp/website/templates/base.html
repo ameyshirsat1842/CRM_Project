@@ -78,6 +78,10 @@
             left: 0; /* Slide in on hover */
         }
 
+        .side-panel.hold {
+            left: 0 !important; /* Hold in place */
+        }
+
         .side-panel .list-group-item {
             color: #000000; /* Default dark color */
             transition: background-color 0.3s, color 0.3s;
@@ -201,6 +205,12 @@
                     {% endif %}
                     <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Logout</a>
                 </div>
+                <!-- Hold Switch -->
+                <div class="form-check mt-3 ms-3">
+                    <input class="form-check-input" type="checkbox" id="holdSwitch">
+                    <label class="form-check-label" for="holdSwitch">
+                    </label>
+                </div>
             </div>
         </div>
         {% endif %}
@@ -265,5 +275,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzOg8pHIL1DdfQk5X1M3aKUd1j3/jrqkTx62g00d0K4L" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-cuTCHlT9nCiw8wQnXRKWsMlz9kaN2+dZYtTLp4gbLIeGVoPjG3UUOJ+tIObE6GI4" crossorigin="anonymous"></script>
+<script>
+    document.getElementById('holdSwitch').addEventListener('change', function () {
+        const sidePanel = document.querySelector('.side-panel');
+        if (this.checked) {
+            sidePanel.classList.add('hold');
+        } else {
+            sidePanel.classList.remove('hold');
+        }
+    });
+</script>
 </body>
 </html>

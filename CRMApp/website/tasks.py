@@ -1,12 +1,17 @@
-# tasks.py
+import logging
 from celery import shared_task
 from django.utils import timezone
 from django.core.mail import send_mail
 from .models import Record, Notification
+from .views import send_sms
+
+logger = logging.getLogger(__name__)
 
 
 @shared_task
 def send_follow_up_alerts():
+    logger.info("Starting send_follow_up_alerts task")
+
     now = timezone.now()
     upcoming_followups = Record.objects.filter(
         follow_up_date__gte=now,
@@ -21,11 +26,15 @@ def send_follow_up_alerts():
             # Send an in-app notification
             Notification.objects.create(user=record.assigned_to, message=message)
 
+            # Send an SMS notification
+            if record.assigned_to.profile.phone_number:  # Assuming the user's phone number is stored in their profile
+                send_sms(record.assigned_to.profile.phone_number, message)
+
             # Send an email notification (optional)
             send_mail(
                 'Upcoming Follow-Up Reminder',
                 message,
-                'from@example.com',
+                'amey.tecstaq@gmail.com',
                 [record.assigned_to.email],
                 fail_silently=False,
             )
@@ -33,3 +42,5 @@ def send_follow_up_alerts():
         # Mark the notification as sent to avoid duplicate notifications
         record.notification_sent = True
         record.save()
+
+    logger.info("Finished send_follow_up_alerts task")

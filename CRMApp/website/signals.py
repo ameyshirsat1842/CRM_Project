@@ -24,7 +24,7 @@ def notify_user_assignment(sender, instance, **kwargs):
             if instance.follow_up_date:
                 assignee = instance.assigned_to
                 if assignee:
-                    message = f"Follow-up scheduled on {instance.follow_up_date.strftime('%Y-%m-%d %H:%M:%S')} for lead: {instance.company}"
+                    message = f"Meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d')} for lead: {instance.company}"
                     send_notification_to_user(assignee, message)
                     Notification.objects.create(user=assignee, message=message)
     else:
@@ -44,7 +44,7 @@ def notify_meeting_follow_up(sender, instance, **kwargs):
             if instance.follow_up_date:
                 speaker = instance.speaker
                 if speaker:
-                    message = f"You have a follow-up meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d %H:%M:%S')} regarding your meeting with {instance.meeting_partner}"
+                    message = f"You have a follow-up meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d')} with {instance.meeting_partner}"
                     send_notification_to_user(speaker, message)
                     Notification.objects.create(user=speaker, message=message)
 

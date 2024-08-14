@@ -3,7 +3,7 @@ from django.conf import settings
 
 
 def send_notification_to_user(user, message):
-    subject = "Notification from Tecstaq Lead Management System"
+    subject = "Notification from Tecstaq Lead Management"
     send_mail(
         subject,
         message,
