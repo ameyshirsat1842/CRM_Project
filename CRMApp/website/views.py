@@ -17,8 +17,6 @@ from django.views.generic import ListView
 from openpyxl.workbook import Workbook
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, UserUpdateForm, ProfileUpdateForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
-from twilio.rest import Client
-from django.conf import settings
 
 
 def home(request):
