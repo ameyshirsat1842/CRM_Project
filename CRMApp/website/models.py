@@ -152,7 +152,7 @@ class UserSettings(models.Model):
 
 class Profile(models.Model):
     objects = None
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     phone_number = models.CharField(max_length=15, blank=True)
 
     def __str__(self):
