@@ -646,7 +646,6 @@ def export_leads(request):
 
 
 def settings_view(request):
-    # Fetch or create the user's settings
     return render(request, 'settings.html')
 
 
