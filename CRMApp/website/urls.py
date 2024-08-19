@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 from .views import MeetingRecordListView, update_meeting_record, delete_meeting_record, import_records_from_excel, \
-    settings_view, update_user_info
+    settings_view, update_user_info, dashboard
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -37,5 +37,6 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('settings/', settings_view, name='settings'),
     path('update-info/', update_user_info, name='update_user_info'),
+    path('dashboard/', dashboard, name='dashboard'),
 
 ]

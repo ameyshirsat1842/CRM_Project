@@ -422,18 +422,33 @@ def send_notification_to_user(user, message):
 
 
 def dashboard(request):
-    upcoming_records = Record.objects.filter(follow_up_date__gte=timezone.now())
-    upcoming_meetings = MeetingRecord.objects.filter(follow_up_date__gte=timezone.now())
+    # Get data for key metrics
+    total_leads = Record.objects.count()
+    total_clients = Record.objects.values('client_name').distinct().count()
+    open_tickets = Ticket.objects.filter(status='Open').count()
+    closed_deals = Record.objects.filter(classification='in_progress').count()
 
-    # Combine the events
-    upcoming_events = list(upcoming_records) + list(upcoming_meetings)
+    # Get recent activities
+    recent_leads = Record.objects.order_by('-created_at')[:5]
+    recent_tickets = Ticket.objects.order_by('-created_at')[:5]
 
-    # Sort the events by follow-up date
-    upcoming_events.sort(key=lambda event: event.follow_up_date)
+    # Get upcoming meetings based on follow-up dates
+    upcoming_meetings = Record.objects.filter(follow_up_date__gte=timezone.now()).order_by('follow_up_date')[:5]
+
+    # Notifications for the logged-in user
+    notifications = Notification.objects.unread_for_user(request.user)
 
     context = {
-        'upcoming_events': upcoming_events,
+        'total_leads': total_leads,
+        'total_clients': total_clients,
+        'open_tickets': open_tickets,
+        'closed_deals': closed_deals,
+        'recent_leads': recent_leads,
+        'recent_tickets': recent_tickets,
+        'upcoming_meetings': upcoming_meetings,
+        'notifications': notifications,
     }
+
     return render(request, 'home.html', context)
 
 
