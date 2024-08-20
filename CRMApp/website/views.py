@@ -19,10 +19,6 @@ from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, A
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
 
 
-def home(request):
-    return render(request, 'home.html')
-
-
 def login_user(request):
     if request.method == 'POST':
         username = request.POST['username']
