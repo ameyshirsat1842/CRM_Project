@@ -19,6 +19,39 @@ from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, A
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
 
 
+def home(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    total_leads = Record.objects.count()
+    total_clients = Record.objects.values('client_name').distinct().count()
+    open_tickets = Ticket.objects.filter(status='Open').count()
+    closed_deals = Record.objects.filter(classification='in_progress').count()
+
+    # Get recent activities
+    recent_leads = Record.objects.order_by('-created_at')[:5]
+    recent_tickets = Ticket.objects.order_by('-created_at')[:5]
+
+    # Get upcoming meetings based on follow-up dates
+    upcoming_meetings = Record.objects.filter(follow_up_date__gte=timezone.now()).order_by('follow_up_date')[:5]
+
+    # Notifications for the logged-in user
+    notifications = Notification.objects.unread_for_user(request.user)
+
+    context = {
+        'total_leads': total_leads,
+        'total_clients': total_clients,
+        'open_tickets': open_tickets,
+        'closed_deals': closed_deals,
+        'recent_leads': recent_leads,
+        'recent_tickets': recent_tickets,
+        'upcoming_meetings': upcoming_meetings,
+        'notifications': notifications,
+    }
+
+    return render(request, 'home.html', context)
+
+
 def login_user(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -32,7 +65,7 @@ def login_user(request):
             messages.error(request, "Invalid User")
             return redirect('login')
     else:
-        return render(request, 'login.html')
+        return render(request, 'login')
 
 
 def logout_user(request):
@@ -417,35 +450,35 @@ def send_notification_to_user(user, message):
     )
 
 
-def dashboard(request):
-    # Get data for key metrics
-    total_leads = Record.objects.count()
-    total_clients = Record.objects.values('client_name').distinct().count()
-    open_tickets = Ticket.objects.filter(status='Open').count()
-    closed_deals = Record.objects.filter(classification='in_progress').count()
-
-    # Get recent activities
-    recent_leads = Record.objects.order_by('-created_at')[:5]
-    recent_tickets = Ticket.objects.order_by('-created_at')[:5]
-
-    # Get upcoming meetings based on follow-up dates
-    upcoming_meetings = Record.objects.filter(follow_up_date__gte=timezone.now()).order_by('follow_up_date')[:5]
-
-    # Notifications for the logged-in user
-    notifications = Notification.objects.unread_for_user(request.user)
-
-    context = {
-        'total_leads': total_leads,
-        'total_clients': total_clients,
-        'open_tickets': open_tickets,
-        'closed_deals': closed_deals,
-        'recent_leads': recent_leads,
-        'recent_tickets': recent_tickets,
-        'upcoming_meetings': upcoming_meetings,
-        'notifications': notifications,
-    }
-
-    return render(request, 'home.html', context)
+# def dashboard(request):
+#     # Get data for key metrics
+#     total_leads = Record.objects.count()
+#     total_clients = Record.objects.values('client_name').distinct().count()
+#     open_tickets = Ticket.objects.filter(status='Open').count()
+#     closed_deals = Record.objects.filter(classification='in_progress').count()
+#
+#     # Get recent activities
+#     recent_leads = Record.objects.order_by('-created_at')[:5]
+#     recent_tickets = Ticket.objects.order_by('-created_at')[:5]
+#
+#     # Get upcoming meetings based on follow-up dates
+#     upcoming_meetings = Record.objects.filter(follow_up_date__gte=timezone.now()).order_by('follow_up_date')[:5]
+#
+#     # Notifications for the logged-in user
+#     notifications = Notification.objects.unread_for_user(request.user)
+#
+#     context = {
+#         'total_leads': total_leads,
+#         'total_clients': total_clients,
+#         'open_tickets': open_tickets,
+#         'closed_deals': closed_deals,
+#         'recent_leads': recent_leads,
+#         'recent_tickets': recent_tickets,
+#         'upcoming_meetings': upcoming_meetings,
+#         'notifications': notifications,
+#     }
+#
+#     return render(request, 'home.html', context)
 
 
 def export_record_to_excel(request, record_id):
