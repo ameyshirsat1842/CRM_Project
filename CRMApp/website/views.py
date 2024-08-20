@@ -20,36 +20,38 @@ from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
 
 
 def home(request):
-    if not request.user.is_authenticated:
+    if request.user.is_authenticated:
+
+        # Get data specific to the logged-in user
+        total_leads = Record.objects.filter(assigned_to=request.user).count()
+        total_clients = Record.objects.filter(assigned_to=request.user).values('client_name').distinct().count()
+        open_tickets = Ticket.objects.filter(created_by=request.user, status='Open').count()
+        closed_deals = Record.objects.filter(assigned_to=request.user, classification='in_progress').count()
+
+        # Get recent activities specific to the logged-in user
+        recent_leads = Record.objects.filter(assigned_to=request.user).order_by('-created_at')[:5]
+        recent_tickets = Ticket.objects.filter(created_by=request.user).order_by('-created_at')[:5]
+
+        # Get upcoming meetings based on follow-up dates specific to the logged-in user
+        upcoming_meetings = Record.objects.filter(assigned_to=request.user, follow_up_date__gte=timezone.now()).order_by('follow_up_date')[:5]
+
+        # Notifications for the logged-in user
+        notifications = Notification.objects.unread_for_user(request.user)
+
+        context = {
+            'total_leads': total_leads,
+            'total_clients': total_clients,
+            'open_tickets': open_tickets,
+            'closed_deals': closed_deals,
+            'recent_leads': recent_leads,
+            'recent_tickets': recent_tickets,
+            'upcoming_meetings': upcoming_meetings,
+            'notifications': notifications,
+        }
+
+        return render(request, 'home.html', context)
+    else:
         return redirect('login')
-
-    total_leads = Record.objects.count()
-    total_clients = Record.objects.values('client_name').distinct().count()
-    open_tickets = Ticket.objects.filter(status='Open').count()
-    closed_deals = Record.objects.filter(classification='in_progress').count()
-
-    # Get recent activities
-    recent_leads = Record.objects.order_by('-created_at')[:5]
-    recent_tickets = Ticket.objects.order_by('-created_at')[:5]
-
-    # Get upcoming meetings based on follow-up dates
-    upcoming_meetings = Record.objects.filter(follow_up_date__gte=timezone.now()).order_by('follow_up_date')[:5]
-
-    # Notifications for the logged-in user
-    notifications = Notification.objects.unread_for_user(request.user)
-
-    context = {
-        'total_leads': total_leads,
-        'total_clients': total_clients,
-        'open_tickets': open_tickets,
-        'closed_deals': closed_deals,
-        'recent_leads': recent_leads,
-        'recent_tickets': recent_tickets,
-        'upcoming_meetings': upcoming_meetings,
-        'notifications': notifications,
-    }
-
-    return render(request, 'home.html', context)
 
 
 def login_user(request):
@@ -65,13 +67,13 @@ def login_user(request):
             messages.error(request, "Invalid User")
             return redirect('login')
     else:
-        return render(request, 'login')
+        return render(request, 'login.html')  # Ensure this is 'login.html'
 
 
 def logout_user(request):
     logout(request)
     messages.success(request, "You have been logged out")
-    return redirect('home')
+    return redirect('login')  # Redirect to the login page after logout
 
 
 def register_user(request):
