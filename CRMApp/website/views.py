@@ -17,6 +17,7 @@ from django.views.generic import ListView
 from openpyxl.workbook import Workbook
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, UserUpdateForm, ProfileUpdateForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
+from .utils import send_otp_to_email, verify_otp
 
 
 def home(request):
@@ -80,23 +81,37 @@ def register_user(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, "You have successfully registered!")
-                return redirect('home')
-            else:
-                messages.error(request, "Registration successful but login failed. Please log in manually.")
-                return redirect('login')
+            user = form.save(commit=False)
+            user.is_active = False  # Deactivate the account until email verification
+            user.save()
+            send_otp_to_email(user)  # Send OTP to the user's email
+
+            messages.success(request, "Registration successful! Please check your email for the OTP.")
+            return redirect('otp_verify', user_id=user.id)  # Redirect to OTP verification page
         else:
-            messages.error(request, "There was an error with your registration. Please try again.")
+            errors = form.errors.as_json()
+            return JsonResponse({'errors': errors}, status=400)
     else:
         form = SignUpForm()
 
     return render(request, 'register.html', {'form': form})
+
+
+def otp_verify(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+
+    if request.method == 'POST':
+        otp = request.POST.get('otp')
+        if verify_otp(user, otp):  # Assuming `verify_otp` is implemented in `utils.py`
+            user.is_active = True  # Activate the user after successful OTP verification
+            user.save()
+            login(request, user)  # Log the user in after OTP verification
+            messages.success(request, "Your account has been activated. You are now logged in.")
+            return redirect('home')
+        else:
+            messages.error(request, "Invalid OTP. Please try again.")
+
+    return render(request, 'otp_verify.html', {'user_id': user.id})
 
 
 def update_user_info(request):
@@ -693,5 +708,4 @@ def export_leads(request):
 
 def settings_view(request):
     return render(request, 'settings.html')
-
 

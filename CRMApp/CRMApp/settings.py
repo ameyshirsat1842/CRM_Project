@@ -29,6 +29,9 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     #'unfold',
     #'jazzmin',
+    'django_otp',
+    'django_otp.plugins.otp_email',
+    'django_otp.plugins.otp_static',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,6 +48,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_otp.middleware.OTPMiddleware',
+
 ]
 
 ROOT_URLCONF = 'CRMApp.urls'
@@ -140,6 +145,9 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
+# Django OTP Configuration
+OTP_EMAIL_SUBJECT = 'Your One-Time Password for Tecstaq Lead Management'
+OTP_EMAIL_BODY_TEMPLATE = 'Your OTP is: %(token)s'
 
 CELERY_BEAT_SCHEDULE = {
     'send-follow-up-alerts-daily': {
@@ -151,3 +159,6 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 broker_connection_retry_on_startup = True
+
+LOGIN_URL = 'two_factor:login'
+LOGIN_REDIRECT_URL = 'home'

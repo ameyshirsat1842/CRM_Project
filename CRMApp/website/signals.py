@@ -4,6 +4,7 @@ from .models import Record, MeetingRecord, Profile, Notification
 from .notifications import send_notification_to_user
 from django.contrib.auth.models import User
 from datetime import datetime
+from .utils import send_otp_to_email, verify_otp
 
 
 @receiver(pre_save, sender=Record)
@@ -58,3 +59,9 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+@receiver(post_save, sender=User)
+def send_otp_on_user_creation(sender, instance, created, **kwargs):
+    if created:
+        send_otp_to_email(instance)  # Send OTP when a new user is created

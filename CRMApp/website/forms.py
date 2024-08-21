@@ -338,3 +338,5 @@ class PotentialLeadForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
             'comments': forms.Textarea(attrs={"placeholder": "Comments", "class": "form-control", 'rows': 3, 'cols': 40}),
         }
+
+
