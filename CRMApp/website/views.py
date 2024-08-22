@@ -22,6 +22,7 @@ from .utils import send_otp_to_email, verify_otp
 
 def home(request):
     if request.user.is_authenticated:
+        today = timezone.now().date()  # Correctly define the 'today' variable
 
         # Get data specific to the logged-in user
         total_leads = Record.objects.filter(assigned_to=request.user).count()
@@ -35,6 +36,7 @@ def home(request):
 
         # Get upcoming meetings based on follow-up dates specific to the logged-in user
         upcoming_meetings = Record.objects.filter(assigned_to=request.user, follow_up_date__gte=timezone.now()).order_by('follow_up_date')[:5]
+        meetings_today = Record.objects.filter(assigned_to=request.user, follow_up_date=today)
 
         # Notifications for the logged-in user
         notifications = Notification.objects.unread_for_user(request.user)
@@ -47,6 +49,7 @@ def home(request):
             'recent_leads': recent_leads,
             'recent_tickets': recent_tickets,
             'upcoming_meetings': upcoming_meetings,
+            'meetings_today': meetings_today,
             'notifications': notifications,
         }
 
@@ -615,7 +618,7 @@ def import_records_from_excel(request):
                         created_by=User.objects.get(username=row.get('Created By')) if pd.notna(
                             row.get('Created By')) else None,
                         social_media_details=row.get('Social Media Details'),
-                        classification=row.get('Classification'),
+                        classification=row.get('Status'),
                         lead_source=row.get('Lead Source'),
                     )
 
@@ -708,4 +711,3 @@ def export_leads(request):
 
 def settings_view(request):
     return render(request, 'settings.html')
-
