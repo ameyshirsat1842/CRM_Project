@@ -6,6 +6,7 @@
         <div class="container main-content">
             <h1>{{ user.first_name }}'s Dashboard</h1>
             <br>
+
             <!-- Meetings Today -->
             <div class="row mb-4">
                 <div class="col-12">
@@ -15,7 +16,10 @@
                             <ul class="list-group list-group-flush" id="meetingsToday">
                                 {% for meeting in meetings_today %}
                                     <li class="list-group-item">
-                                    {{ meeting.client_name }} from {{ meeting.company }} on {{ meeting.follow_up_date|date:"F d, Y" }}
+                                        {{ meeting.client_name }} from {{ meeting.company }} on {{ meeting.follow_up_date|date:"F d, Y" }}
+                                        <a href="https://outlook.live.com/calendar/0/view/month" target="_blank" class="btn btn-primary btn-sm float-right">
+                                            Open in Outlook
+                                        </a>
                                     </li>
                                 {% empty %}
                                     <li class="list-group-item">No meetings scheduled for today.</li>
@@ -25,6 +29,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Upcoming Meetings -->
             <div class="row mb-4">
                 <div class="col-12">
@@ -35,6 +40,9 @@
                                 {% for meeting in upcoming_meetings %}
                                     <li class="list-group-item">
                                         {{ meeting.client_name }} from {{ meeting.company }} on {{ meeting.follow_up_date|date:"F d, Y" }}
+                                        <a href="https://outlook.live.com/calendar/0/view/month" target="_blank" class="btn btn-primary btn-sm float-right">
+                                            Open in Outlook
+                                        </a>
                                     </li>
                                 {% empty %}
                                     <li class="list-group-item">No upcoming meetings.</li>
@@ -51,7 +59,9 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">My Total Leads</h5>
-                            <p class="card-text" id="totalLeads">{{ total_leads }}</p>
+                                                        <p class="card-text" id="totalLeads">{{ total_leads }}</p>
+
+                            <canvas id="leadsChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -59,7 +69,8 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">My Total Clients</h5>
-                            <p class="card-text" id="totalClients">{{ total_clients }}</p>
+                                                        <p class="card-text" id="totalClients">{{ total_clients }}</p>
+                            <canvas id="clientsChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -67,7 +78,8 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">My Open Tickets</h5>
-                            <p class="card-text" id="openTickets">{{ open_tickets }}</p>
+                                                        <p class="card-text" id="openTickets">{{ open_tickets }}</p>
+                            <canvas id="ticketsChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -75,7 +87,8 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">My Over Dues</h5>
-                            <p class="card-text" id="closedDeals">{{ closed_deals }}</p>
+                                                        <p class="card-text" id="closedDeals">{{ closed_deals }}</p>
+                            <canvas id="dealsChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -142,10 +155,133 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- JavaScript for animations and charts -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Additional chart and JavaScript setup code if needed
+        // Function to check if an element is in the viewport
+        function isInViewport(element) {
+            const rect = element.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        // Add a class for animation when elements are in the viewport
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.card, .list-group-item');
+            elements.forEach(element => {
+                if (isInViewport(element)) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // Add event listener for scrolling
+        window.addEventListener('scroll', animateOnScroll);
+
+        // Initial check in case elements are already in the viewport
+        animateOnScroll();
+
+        // Chart.js for Key Metrics
+        const ctxLeads = document.getElementById('leadsChart').getContext('2d');
+        const ctxClients = document.getElementById('clientsChart').getContext('2d');
+        const ctxTickets = document.getElementById('ticketsChart').getContext('2d');
+        const ctxDeals = document.getElementById('dealsChart').getContext('2d');
+
+        new Chart(ctxLeads, {
+            type: 'doughnut',
+            data: {
+                labels: ['Leads'],
+                datasets: [{
+                    data: [{{ total_leads }}, 100 - {{ total_leads }}], // Example data
+                    backgroundColor: ['#4caf50', '#ccc'],
+                    hoverBackgroundColor: ['#66bb6a', '#ddd']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        new Chart(ctxClients, {
+            type: 'doughnut',
+            data: {
+                labels: ['Clients'],
+                datasets: [{
+                    data: [{{ total_clients }}, 100 - {{ total_clients }}], // Example data
+                    backgroundColor: ['#2196f3', '#ccc'],
+                    hoverBackgroundColor: ['#42a5f5', '#ddd']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        new Chart(ctxTickets, {
+            type: 'doughnut',
+            data: {
+                labels: ['Open Tickets'],
+                datasets: [{
+                    data: [{{ open_tickets }}, 100 - {{ open_tickets }}], // Example data
+                    backgroundColor: ['#ff9800', '#ccc'],
+                    hoverBackgroundColor: ['#ffb74d', '#ddd']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        new Chart(ctxDeals, {
+            type: 'doughnut',
+            data: {
+                labels: ['Over Dues'],
+                datasets: [{
+                    data: [{{ closed_deals }}, 100 - {{ closed_deals }}], // Example data
+                    backgroundColor: ['#f44336', '#ccc'],
+                    hoverBackgroundColor: ['#e57373', '#ddd']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
     });
 </script>
+
+<!-- CSS for animations -->
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card, .list-group-item {
+        animation: fadeIn 0.5s ease-in-out;
+        opacity: 0; /* Initially hidden */
+        transform: translateY(10px); /* Initial position for animation */
+    }
+
+    .card.visible, .list-group-item.visible {
+        opacity: 1; /* Visible when in the viewport */
+        transform: translateY(0); /* Final position after animation */
+    }
+</style>
 {% endblock %}
