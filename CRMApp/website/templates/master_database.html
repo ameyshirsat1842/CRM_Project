@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <!-- Main Content -->
+        <div class="container main-content">
+            <h1>Master Database</h1>
+            <br>
+
+            <!-- Table for Leads -->
+            <h5>Leads</h5>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Client Name</th>
+                                        <th>Company</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Assigned To</th>
+                                        <th>Follow-Up Date</th>
+                                        <th>Actions</th> <!-- New Actions Column -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for lead in leads %}
+                                        <tr>
+                                            <td>{{ lead.id }}</td>
+                                            <td>{{ lead.client_name }}</td>
+                                            <td>{{ lead.company }}</td>
+                                            <td>{{ lead.email }}</td>
+                                            <td>{{ lead.phone }}</td>
+                                            <td>
+                                                {% if lead.assigned_to %}
+                                                    {{ lead.assigned_to.username }}
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ lead.follow_up_date|date:"F d, Y" }}</td>
+                                            <td>
+                                                <!-- View Details Button -->
+                                                <a href="{% url 'record' lead.id %}" class="btn btn-sm btn-info">View</a>
+                                                <!-- Edit Button -->
+                                                <a href="{% url 'update_record' lead.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                                <!-- Delete Button -->
+                                                <a href="{% url 'delete_record' lead.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this lead?');">Delete</a>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="8">No leads available.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table for Users -->
+            <h5>Users</h5>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Date Joined</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                        <tr>
+                                            <td>{{ user.id }}</td>
+                                            <td>{{ user.username }}</td>
+                                            <td>{{ user.email }}</td>
+                                            <td>{{ user.first_name }}</td>
+                                            <td>{{ user.last_name }}</td>
+                                            <td>{{ user.date_joined|date:"F d, Y" }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="7">No users available.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Redirect to login page if the user is not authenticated -->
+        <div class="alert alert-danger" role="alert">
+            Please <a href="{% url 'login' %}">login</a> to view the Master Database.
+        </div>
+    {% endif %}
+{% endblock %}

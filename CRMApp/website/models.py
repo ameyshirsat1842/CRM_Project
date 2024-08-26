@@ -158,3 +158,12 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} Profile'
+
+
+class Comment(models.Model):
+    objects = None
+    record = models.ForeignKey(Record, on_delete=models.CASCADE, related_name='comment_history')
+    text = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    

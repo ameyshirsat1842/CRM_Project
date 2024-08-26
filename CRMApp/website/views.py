@@ -16,7 +16,7 @@ from django.utils import timezone
 from django.views.generic import ListView
 from openpyxl.workbook import Workbook
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, UserUpdateForm, ProfileUpdateForm
-from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead
+from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment
 from .utils import send_otp_to_email, verify_otp
 
 
@@ -253,12 +253,22 @@ def add_record(request):
 
 def update_record(request, pk):
     record = get_object_or_404(Record, pk=pk)
+
     if request.method == 'POST':
         form = UpdateRecordForm(request.POST, request.FILES, instance=record)
+
         if form.is_valid():
             updated_record = form.save(commit=False)
-            updated_record.last_modified_by = request.user  # Save the user who modified the record
-            form.save()
+            updated_record.last_modified_by = request.user
+            updated_record.save()
+
+            # Process additional comments from the dynamically added comment fields
+            additional_comments = request.POST.getlist('additional_comments[]')
+            for comment in additional_comments:
+                if comment.strip():  # Only save non-empty comments
+                    # Assuming there is a Comment model linked to the Record model
+                    Comment.objects.create(record=record, text=comment, user=request.user)
+
             messages.success(request, "Record updated successfully!")
             return redirect('leads')
     else:
@@ -711,3 +721,26 @@ def export_leads(request):
 
 def settings_view(request):
     return render(request, 'settings.html')
+
+
+def master_database(request):
+    # Fetch all leads and users
+    leads = Record.objects.all()
+    users = User.objects.all()
+
+    context = {
+        'leads': leads,
+        'users': users,
+    }
+
+    return render(request, 'master_database.html', context)
+
+
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        messages.success(request, "Your account has been deleted successfully.")
+        logout(request)  # Log out the user after deletion
+        return redirect('home')  # Redirect to home page after deletion
+    return redirect('update_info')  # Redirect back if accessed via GET

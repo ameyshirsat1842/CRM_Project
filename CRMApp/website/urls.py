@@ -38,5 +38,7 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('settings/', settings_view, name='settings'),
     path('update-info/', update_user_info, name='update_user_info'),
+    path('master-database/', views.master_database, name='master_database'),
+    path('delete-account/', views.delete_account, name='delete_account'),  # Add this line
     # path('dashboard/', views.dashboard, name='dashboard'),
 ]

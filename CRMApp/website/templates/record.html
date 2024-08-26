@@ -30,7 +30,40 @@
         <br>
         <strong>Social Media Details:</strong> {{ customer_record.social_media_details|linebreaksbr }}<br>
         <strong>Lead Source:</strong> {{ customer_record.lead_source }}<br>
+        <strong>Comments:</strong> {{ customer_record.comments|linebreaksbr }}<br> <!-- Added Comments -->
+        <strong>Remarks:</strong> {{ customer_record.remarks|linebreaksbr }}<br> <!-- Added Remarks -->
     </h5>
+    <!-- Comment History Button -->
+    <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#commentHistoryModal">
+        View Comment History
+    </button>
+  </div>
+</div>
+
+<!-- Comment History Modal -->
+<div class="modal fade" id="commentHistoryModal" tabindex="-1" aria-labelledby="commentHistoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="commentHistoryModalLabel">Comment History</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          {% for comment in customer_record.comment_history.all %}
+            <li class="list-group-item">
+              <strong>{{ comment.user.username }}</strong>: {{ comment.text }} <br>
+              <small class="text-muted">{{ comment.created_at|date:"F d, Y H:i:s" }}</small>
+            </li>
+          {% empty %}
+            <li class="list-group-item">No comment history available.</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -90,7 +123,6 @@
                         <br><br/>
                         <a href="{% url 'update_meeting_record' record.pk %}" class="btn btn-warning btn-sm">Update</a>
                         <a href="{% url 'delete_meeting_record' record.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this meeting record?')">Delete</a>
-
                     </td>
                 </tr>
                 {% empty %}

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lead Management</title>
     <link rel="icon" href="/media/img/logo/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         :root {
             --side-panel-bg-color: #FFFFFF;
@@ -29,7 +30,7 @@
             flex-wrap: nowrap;
         }
 
-    .custom-alert {
+          .custom-alert {
             position: fixed;
             top: 70px;
             left: 50%;
@@ -47,30 +48,32 @@
             height: 1em;
         }
 
-.footer {
-    background-color: #FFFFFF;
-    background-image: url('/media/img/footer-img.png');
-    background-size: cover;
-    background-position: center top;
-    padding: 50px 0;
-    text-align: center;
-    animation: slideInUp 1s;
-    color: #003366; /* Darker blue for text */
-    min-height: 200px;
-}
 
-.footer p {
-    margin-bottom: 0;
-    color: #003366; /* Darker blue for paragraphs */
-}
+        .footer {
+            background-color: #FFFFFF;
+            background-image: url('/media/img/footer-img.png');
+            background-size: cover;
+            background-position: center top;
+            padding: 50px 0;
+            text-align: center;
+            animation: slideInUp 1s;
+            color: #003366; /* Darker blue for text */
+            min-height: 200px;
+        }
 
-.footer h3, .footer a {
-    color: #003366; /* Darker blue for headings and links */
-}
+        .footer p {
+            margin-bottom: 0;
+            color: #003366; /* Darker blue for paragraphs */
+        }
 
-.footer a {
-    text-decoration: none;
-}
+        .footer h3, .footer a {
+            color: #003366; /* Darker blue for headings and links */
+        }
+
+        .footer a {
+            text-decoration: none;
+        }
+
         .side-panel-container {
             position: relative;
         }
@@ -205,15 +208,15 @@
             <div class="side-panel">
                 <div class="list-group list-group-flush">
                     <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard">Dashboard</a>
-                    <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action">Potential Leads</a>
+                    <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action">Connections</a>
                     <a href="{% url 'leads' %}" class="list-group-item list-group-item-action">Leads</a>
                     <a href="{% url 'meeting_records' %}" class="list-group-item list-group-item-action">Meetings</a>
                     <a href="{% url 'tickets' %}" class="list-group-item list-group-item-action">Tickets</a>
                     <a href="{% url 'notifications' %}" class="list-group-item list-group-item-action">Notifications</a>
                     <a href="{% url 'update_user_info' %}" class="list-group-item list-group-item-action">Edit Profile</a>
+                    <a href="{% url 'master_database' %}" class="list-group-item list-group-item-action">Master Database</a>
                     <a href="{% url 'settings' %}" class="list-group-item list-group-item-action">Settings</a>
                     {% if user.is_staff %}
-                    <!-- Admin Panel link visible only to staff users (admins) -->
                     <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action">Admin Panel</a>
                     {% endif %}
                     <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Logout</a>
@@ -286,10 +289,10 @@
     <p style="text-align: center; color: black; margin-top: 20px;">© 2024 Tecstaq Solutions Pvt. Ltd. All Rights Reserved. Made by Amey Shirsat</p>
 </footer>
 
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 
-
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzOg8pHIL1DdfQk5X1M3aKUd1j3/jrqkTx62g00d0K4L" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-cuTCHlT9nCiw8wQnXRKWsMlz9kaN2+dZYtTLp4gbLIeGVoPjG3UUOJ+tIObE6GI4" crossorigin="anonymous"></script>
 <script>
     document.getElementById('holdSwitch').addEventListener('change', function () {
         const sidePanel = document.querySelector('.side-panel');
@@ -300,5 +303,6 @@
         }
     });
 </script>
+
 </body>
 </html>
