@@ -15,7 +15,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView
 from openpyxl.workbook import Workbook
-from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, UserUpdateForm, ProfileUpdateForm
+from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, \
+    UserUpdateForm, ProfileUpdateForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment
 from .utils import send_otp_to_email, verify_otp
 
@@ -197,20 +198,25 @@ def customer_record(request, pk):
 
 
 def delete_record(request, pk):
-    if request.user.is_authenticated:
-        record = get_object_or_404(Record, pk=pk)
-        if record.created_by == request.user:
-            if request.method == 'POST':
-                record.delete()
-                messages.success(request, "Record deleted successfully")
-                return redirect('leads')
-            return render(request, 'delete_record.html', {'record': record})
-        else:
-            messages.error(request, "You do not have permission to delete this record")
-            return redirect('record', pk=pk)  # Redirect back to the record view
-    else:
-        messages.error(request, "You must be logged in to delete the record")
-        return redirect('home')
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to delete records.")
+        return redirect('login')  # Redirect to login page if not authenticated
+
+    # Check if the user is an admin
+    if not request.user.is_staff:
+        messages.error(request, "You do not have permission to delete this record.")
+        return redirect('record', pk=pk)  # Redirect back to the record view if not an admin
+
+    # If the user is an admin, proceed to delete the record
+    record = get_object_or_404(Record, pk=pk)
+
+    if request.method == 'POST':
+        record.delete()
+        messages.success(request, "Record deleted successfully.")
+        return redirect('leads')  # Redirect to leads page after successful deletion
+
+    return render(request, 'delete_record.html', {'record': record})  # Render the confirmation page if it's a GET request
 
 
 def add_record(request):
