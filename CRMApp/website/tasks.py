@@ -25,7 +25,6 @@ def send_follow_up_alerts():
             # Send an in-app notification
             Notification.objects.create(user=record.assigned_to, message=message)
 
-
             # Send an email notification (optional)
             send_mail(
                 'Upcoming Follow-Up Reminder',
