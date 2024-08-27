@@ -3,8 +3,7 @@ from django.dispatch import receiver
 from .models import Record, MeetingRecord, Profile, Notification
 from .notifications import send_notification_to_user
 from django.contrib.auth.models import User
-from datetime import datetime
-from .utils import send_otp_to_email, verify_otp
+from .utils import send_otp_to_email
 
 
 @receiver(pre_save, sender=Record)
