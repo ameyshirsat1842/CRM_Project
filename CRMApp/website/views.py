@@ -1,3 +1,4 @@
+from datetime import timedelta
 from io import BytesIO
 import pandas as pd
 import pytz
@@ -750,3 +751,43 @@ def delete_account(request):
         logout(request)  # Log out the user after deletion
         return redirect('home')  # Redirect to home page after deletion
     return redirect('update_info')  # Redirect back if accessed via GET
+
+
+def report_view(request):
+    # Get filter parameters from the request
+    selected_period = request.GET.get('period', 'all')
+    selected_classification = request.GET.get('status', 'all')
+    selected_user = request.GET.get('user', 'all')
+
+    # Get all users for the user filter dropdown
+    users = User.objects.all()
+
+    # Start with all records
+    records = Record.objects.all()
+
+    # Filter by period
+    if selected_period == 'last_3_days':
+        records = records.filter(created_at__gte=timezone.now() - timedelta(days=3))
+    elif selected_period == 'last_week':
+        records = records.filter(created_at__gte=timezone.now() - timedelta(weeks=1))
+    elif selected_period == 'last_month':
+        records = records.filter(created_at__gte=timezone.now() - timedelta(days=30))
+
+    # Filter by classification (assuming this represents status)
+    if selected_classification != 'all':
+        records = records.filter(classification=selected_classification)
+
+    # Filter by user
+    if selected_user != 'all':
+        records = records.filter(assigned_to_id=selected_user)
+
+    context = {
+        'records': records,
+        'selected_period': selected_period,
+        'selected_classification': selected_classification,
+        'selected_user': selected_user,
+        'users': users,
+    }
+
+    return render(request, 'reports.html', context)
+
