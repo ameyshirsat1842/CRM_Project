@@ -29,34 +29,6 @@
             border-radius: 5px;
         }
 
-        .dropdown-menu {
-            animation: slideDown 0.5s ease-in-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .navbar, .navbar-nav .nav-item {
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
         .badge.bg-danger {
             font-size: 0.75rem;
             padding: 0.4em 0.7em;
@@ -78,10 +50,6 @@
 
             .navbar-nav {
                 text-align: center; /* Center navbar items on smaller screens */
-            }
-
-            .navbar-nav .dropdown-menu {
-                width: 100%; /* Ensure dropdown menu takes full width on smaller screens */
             }
         }
     </style>
@@ -105,23 +73,10 @@
                     <li class="nav-item">
                         <a class="nav-link active text-light" aria-current="page" href="{% url 'home' %}">Home</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link text-light dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="#" data-bs-toggle="modal" data-bs-target="#notificationModal">
                             Notifications <span class="badge bg-danger">{{ notifications_count|default:"0" }}</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
-                            {% for notification in notifications %}
-                                <li>
-                                    <a class="dropdown-item {% if not notification.is_read %}bg-light-red{% endif %}" href="{% url 'notification_detail' notification.id %}">
-                                        {{ notification.message }}
-                                    </a>
-                                </li>
-                            {% empty %}
-                                <li><a class="dropdown-item" href="#">No notifications</a></li>
-                            {% endfor %}
-                            <li><hr class="dropdown-divider"></li>
-                            <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#notificationModal">View All Notifications</button></li>
-                        </ul>
                     </li>
                     {% if request.path == '/leads/' %}
                         <li class="nav-item">
@@ -199,7 +154,7 @@
 {% endblock %}
 
 <!-- Include Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/js/bootstrap.min.js"></script>
 

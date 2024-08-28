@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Record, Ticket, MeetingRecord, PotentialLead
+from .models import Record, Ticket, MeetingRecord, PotentialLead, Customer
 from .models import Profile
 
 
@@ -340,3 +340,7 @@ class PotentialLeadForm(forms.ModelForm):
         }
 
 
+class CustomerForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ['company', 'client_name', 'phone', 'email', 'city', 'comments']

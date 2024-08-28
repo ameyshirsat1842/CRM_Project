@@ -210,13 +210,14 @@
                     <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard">Dashboard</a>
                     <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action">Connections</a>
                     <a href="{% url 'leads' %}" class="list-group-item list-group-item-action">Leads</a>
+                    <a href="{% url 'customers' %}" class="list-group-item list-group-item-action">Customers</a>
                     <a href="{% url 'meeting_records' %}" class="list-group-item list-group-item-action">Meetings</a>
                     <a href="{% url 'tickets' %}" class="list-group-item list-group-item-action">Tickets</a>
                     <a href="{% url 'master_database' %}" class="list-group-item list-group-item-action">Master Database</a>
                     <a href="{% url 'reports' %}" class="list-group-item list-group-item-action">Reports</a>
                     <a href="{% url 'notifications' %}" class="list-group-item list-group-item-action">Notifications</a>
                     <a href="{% url 'update_user_info' %}" class="list-group-item list-group-item-action">Edit Profile</a>
-                    <a href="{% url 'settings' %}" class="list-group-item list-group-item-action">Settings</a>
+<!--                    <a href="{% url 'settings' %}" class="list-group-item list-group-item-action">Settings</a>-->
                     {% if user.is_staff %}
                     <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action">Admin Panel</a>
                     {% endif %}

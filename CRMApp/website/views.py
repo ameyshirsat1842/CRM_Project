@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator
+from django.db import IntegrityError
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -17,8 +18,8 @@ from django.utils import timezone
 from django.views.generic import ListView
 from openpyxl.workbook import Workbook
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, \
-    UserUpdateForm, ProfileUpdateForm
-from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment
+    UserUpdateForm, ProfileUpdateForm, CustomerForm
+from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment, Customer
 from .utils import send_otp_to_email, verify_otp
 
 
@@ -187,7 +188,7 @@ def customer_record(request, pk):
     if request.user.is_authenticated:
         customer_rec = get_object_or_404(Record, id=pk)
         meeting_records = MeetingRecord.objects.filter(record=customer_rec)
-        can_delete = customer_rec.created_by == request.user  # Assuming 'created_by' is the field indicating the lead creator
+        can_delete = customer_rec.created_by == request.user
         return render(request, 'record.html', {
             'customer_record': customer_rec,
             'meeting_records': meeting_records,
@@ -448,7 +449,6 @@ def potential_leads(request):
 
 def move_to_main_leads(request, lead_id):
     lead = PotentialLead.objects.get(id=lead_id)
-    # Add logic to move lead to main leads
     main_lead = Record(
         company=lead.company,
         client_name=lead.client_name,
@@ -461,6 +461,109 @@ def move_to_main_leads(request, lead_id):
     lead.delete()
     messages.success(request, "Lead moved to main leads successfully!")
     return redirect('leads')
+
+
+def customers(request):
+    search_query = request.GET.get('search', '')
+    status = request.GET.get('status', '')
+    filter_option = request.GET.get('filter', '')
+
+    customers_list = Customer.objects.filter(created_by=request.user)
+
+    if search_query:
+        customers_list = customers_list.filter(client_name__icontains=search_query)
+
+    if status:
+        customers_list = customers_list.filter(status=status)
+
+    if filter_option == 'assigned_to_me':
+        customers_list = customers_list.filter(assigned_to=request.user)
+
+    # Add ordering to the queryset
+    customers_list = customers_list.order_by('client_name')
+
+    paginator = Paginator(customers_list, 10)  # Show 10 customers per page.
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'customers.html', {'page_obj': page_obj})
+
+
+def move_to_customers(request, record_id):
+    try:
+        record = get_object_or_404(Record, id=record_id)
+
+        # Check if a Customer with the same email already exists
+        if Customer.objects.filter(email=record.email).exists():
+            messages.error(request, f"A customer with email {record.email} already exists.")
+            return redirect('customers')
+
+        # Create a new Customer instance from the Record
+        customer = Customer(
+            company=record.company,
+            client_name=record.client_name,
+            phone=record.phone,
+            email=record.email,
+            address=record.address,
+            city=record.city,
+            dept_name=record.dept_name,
+            assigned_to=record.assigned_to,
+            lead_source=record.lead_source,
+            remarks=record.remarks,
+            comments=record.comments,
+            created_by=record.created_by,
+            created_at=record.created_at,
+            last_modified_by=record.last_modified_by,
+            classification='active'
+        )
+
+        # Save the new customer to the database
+        customer.save()
+
+        messages.success(request, "Record moved to customers successfully!")
+        return redirect('customers')
+
+    except IntegrityError:
+        messages.error(request, "An integrity error occurred. There was an issue with moving the record to customers.")
+        return redirect('leads')
+
+    except Record.DoesNotExist:
+        messages.error(request, "The lead you are trying to move does not exist.")
+        return redirect('leads')
+
+    except Exception as e:
+        messages.error(request, f"An unexpected error occurred: {e}")
+        return redirect('leads')
+
+
+def customer_detail(request, customer_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    return render(request, 'customer_detail.html', {'customer': customer})
+
+
+def update_customer(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Customer updated successfully!")
+            return redirect('customers')
+    else:
+        form = CustomerForm(instance=customer)
+
+    return render(request, 'update_customer.html', {'form': form, 'customer': customer})
+
+
+def delete_customer(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    if request.method == 'POST':
+        customer.delete()
+        messages.success(request, "Customer deleted successfully!")
+        return redirect('customers')
+
+    return render(request, 'delete_customer.html', {'customer': customer})
 
 
 def assign_lead(request, pk):
@@ -753,41 +856,39 @@ def delete_account(request):
     return redirect('update_info')  # Redirect back if accessed via GET
 
 
-def report_view(request):
-    # Get filter parameters from the request
+def reports(request):
     selected_period = request.GET.get('period', 'all')
-    selected_classification = request.GET.get('status', 'all')
+    selected_classification = request.GET.get('classification', 'all')
     selected_user = request.GET.get('user', 'all')
 
-    # Get all users for the user filter dropdown
-    users = User.objects.all()
+    # Define the time filter based on selected_period
+    if selected_period == 'last_3_days':
+        start_date = timezone.now() - timedelta(days=3)
+    elif selected_period == 'last_week':
+        start_date = timezone.now() - timedelta(weeks=1)
+    elif selected_period == 'last_month':
+        start_date = timezone.now() - timedelta(days=30)
+    else:
+        start_date = None  # No date filter for 'all'
 
-    # Start with all records
     records = Record.objects.all()
 
-    # Filter by period
-    if selected_period == 'last_3_days':
-        records = records.filter(created_at__gte=timezone.now() - timedelta(days=3))
-    elif selected_period == 'last_week':
-        records = records.filter(created_at__gte=timezone.now() - timedelta(weeks=1))
-    elif selected_period == 'last_month':
-        records = records.filter(created_at__gte=timezone.now() - timedelta(days=30))
+    if start_date:
+        records = records.filter(created_at__gte=start_date)
 
-    # Filter by classification (assuming this represents status)
     if selected_classification != 'all':
         records = records.filter(classification=selected_classification)
 
-    # Filter by user
     if selected_user != 'all':
         records = records.filter(assigned_to_id=selected_user)
 
     context = {
         'records': records,
+        'users': User.objects.all(),
         'selected_period': selected_period,
         'selected_classification': selected_classification,
         'selected_user': selected_user,
-        'users': users,
+        # Add additional context data here
     }
 
     return render(request, 'reports.html', context)
-

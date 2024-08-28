@@ -4,43 +4,88 @@
 <div class="container mt-4">
     <h1 class="mb-4">Lead Reports</h1>
 
-    <!-- Filter Options -->
-    <div class="mb-3">
-        <form method="get" action="{% url 'reports' %}">
-            <!-- Filter by period -->
-            <div class="mb-3">
-                <label for="period" class="form-label">Filter by period:</label>
-                <select id="period" name="period" class="form-select" onchange="this.form.submit()">
+    <!-- Filter Form -->
+    <form id="filterForm" method="get" action="{% url 'reports' %}">
+        <!-- Hidden inputs to store filter values -->
+        <input type="hidden" id="period" name="period" value="{{ selected_period }}">
+        <input type="hidden" id="classification" name="classification" value="{{ selected_classification }}">
+        <input type="hidden" id="user" name="user" value="{{ selected_user }}">
+
+        <!-- Filter Options Display -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="periodSelect" class="form-label">Period:</label>
+                <select id="periodSelect" class="form-select" onchange="updateFilter('period', this.value)">
                     <option value="last_3_days" {% if selected_period == 'last_3_days' %}selected{% endif %}>Last 3 Days</option>
                     <option value="last_week" {% if selected_period == 'last_week' %}selected{% endif %}>Last Week</option>
                     <option value="last_month" {% if selected_period == 'last_month' %}selected{% endif %}>Last Month</option>
                     <option value="all" {% if selected_period == 'all' %}selected{% endif %}>All Time</option>
                 </select>
             </div>
-
-            <!-- Filter by lead status -->
-            <div class="mb-3">
-                <label for="status" class="form-label">Filter by lead status:</label>
-                <select id="status" name="status" class="form-select" onchange="this.form.submit()">
+            <div class="col-md-4">
+                <label for="classificationSelect" class="form-label">Lead Status:</label>
+                <select id="classificationSelect" class="form-select" onchange="updateFilter('classification', this.value)">
                     <option value="all" {% if selected_classification == 'all' %}selected{% endif %}>All</option>
-                    <option value="dead" {% if selected_classification  == 'dead' %}selected{% endif %}>Dead Leads</option>
-                    <option value="in_progress" {% if selected_classification  == 'in_progress' %}selected{% endif %}>In Progress</option>
-                    <option value="over_due" {% if selected_classification  == 'over_due' %}selected{% endif %}>Over Dues</option>
-                    <!-- Add more status options as needed -->
+                    <option value="dead" {% if selected_classification == 'dead' %}selected{% endif %}>Dead Leads</option>
+                    <option value="in_progress" {% if selected_classification == 'in_progress' %}selected{% endif %}>In Progress</option>
+                    <option value="over_due" {% if selected_classification == 'over_due' %}selected{% endif %}>Over Dues</option>
                 </select>
             </div>
-
-            <!-- Filter by assigned user -->
-            <div class="mb-3">
-                <label for="user" class="form-label">Filter by assigned user:</label>
-                <select id="user" name="user" class="form-select" onchange="this.form.submit()">
+            <div class="col-md-4">
+                <label for="userSelect" class="form-label">Assigned User:</label>
+                <select id="userSelect" class="form-select" onchange="updateFilter('user', this.value)">
                     <option value="all" {% if selected_user == 'all' %}selected{% endif %}>All Users</option>
                     {% for user in users %}
                         <option value="{{ user.id }}" {% if selected_user == user.id|stringformat:"s" %}selected{% endif %}>{{ user.username }}</option>
                     {% endfor %}
                 </select>
             </div>
-        </form>
+        </div>
+    </form>
+
+    <!-- Two Column Layout for Open and Result -->
+    <div class="row">
+        <!-- Open Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card interactive-card">
+                <div class="card-header bg-danger text-white">
+                    Open
+                </div>
+                <div class="card-body">
+                    <div class="card mb-3" onclick="applyFilter('classification', 'over_due')">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Overdues</h5>
+                            <p class="card-text display-4">{{ overdues_count }}</p>
+                        </div>
+                    </div>
+                    <div class="card mb-3" onclick="applyFilter('classification', 'all')">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Leads</h5>
+                            <p class="card-text display-4">{{ leads_count }}</p>
+                        </div>
+                    </div>
+                    <!-- More cards for Tickets, Contacts, etc. -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card interactive-card">
+                <div class="card-header bg-success text-white">
+                    Result
+                </div>
+                <div class="card-body">
+                    <div class="card mb-3" onclick="applyFilter('classification', 'converted')">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Converted Leads</h5>
+                            <p class="card-text display-4">{{ converted_count }}</p>
+                        </div>
+                    </div>
+                    <!-- More cards for other results -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Report Table -->
@@ -54,20 +99,13 @@
                     <th>Created At</th>
                     <th>Assigned To</th>
                     <th>Status</th>
-                    <!-- Add more columns as needed -->
                 </tr>
             </thead>
             <tbody>
                 {% for record in records %}
                     <tr>
-                        <td>
-                            <!-- Link to the record detail page -->
-                            <a href="{% url 'record' record.id %}">{{ record.id }}</a>
-                        </td>
-                        <td>
-                            <!-- Link to the record detail page -->
-                            <a href="{% url 'record' record.id %}">{{ record.client_name }}</a>
-                        </td>
+                        <td><a href="{% url 'record' record.id %}">{{ record.id }}</a></td>
+                        <td><a href="{% url 'record' record.id %}">{{ record.client_name }}</a></td>
                         <td>{{ record.company }}</td>
                         <td>{{ record.created_at|date:"F d, Y H:i" }}</td>
                         <td>
@@ -77,8 +115,7 @@
                                 N/A
                             {% endif %}
                         </td>
-                    <td>{{ record.get_classification_display }}</td>
-                        <!-- Add more columns as needed -->
+                        <td>{{ record.get_classification_display }}</td>
                     </tr>
                 {% empty %}
                     <tr>
@@ -89,4 +126,47 @@
         </table>
     </div>
 </div>
+
+<style>
+    .card-header {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .card-body .card-title {
+        font-size: 1rem;
+    }
+
+    .card-body .card-text {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .interactive-card {
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .interactive-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .bg-light-red {
+        background-color: #f8d7da;
+    }
+</style>
+
+<script>
+    function applyFilter(filterType, filterValue) {
+        document.getElementById(filterType).value = filterValue;
+        document.getElementById('filterForm').submit();
+    }
+
+    function updateFilter(filterType, filterValue) {
+        document.getElementById(filterType).value = filterValue;
+        document.getElementById('filterForm').submit();
+    }
+</script>
+
 {% endblock %}

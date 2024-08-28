@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 from .views import MeetingRecordListView, update_meeting_record, delete_meeting_record, import_records_from_excel, \
-    settings_view, update_user_info, report_view
+    settings_view, update_user_info, reports
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -40,6 +40,12 @@ urlpatterns = [
     path('update-info/', update_user_info, name='update_user_info'),
     path('master-database/', views.master_database, name='master_database'),
     path('delete-account/', views.delete_account, name='delete_account'),  # Add this line
-    path('reports/', report_view, name='reports'),
+    path('reports/', reports, name='reports'),
+    path('customers/', views.customers, name='customers'),
+    path('move-to-customers/<int:record_id>/', views.move_to_customers, name='move_to_customers'),
+    path('customers/update/<int:pk>/', views.update_customer, name='update_customer'),
+    path('customers/delete/<int:pk>/', views.delete_customer, name='delete_customer'),
+    path('customers/<int:customer_id>/', views.customer_detail, name='customer_detail'),
+
     # path('dashboard/', views.dashboard, name='dashboard'),
 ]

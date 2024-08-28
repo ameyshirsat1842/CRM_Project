@@ -1,163 +1,214 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% if user.is_authenticated %}
-        <!-- Main Content -->
-        <div class="container main-content">
-            <h1>{{ user.first_name }}'s Dashboard</h1>
-            <br>
-            <!-- Meetings Today -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Meetings Today</h5>
-                            <ul class="list-group list-group-flush" id="meetingsToday">
-                                {% for meeting in meetings_today %}
-                                    <li class="list-group-item">
-                                        {{ meeting.client_name }} from {{ meeting.company }} on {{ meeting.follow_up_date|date:"F d, Y" }}
-                                        <a href="https://us05web.zoom.us/s/83827104906#success" target="_blank" class="btn btn-primary btn-sm">Zoom Meeting</a>
-                                    </li>
-                                {% empty %}
-                                    <li class="list-group-item">No meetings scheduled for today.</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+{% if user.is_authenticated %}
+    <!-- Main Content -->
+    <div class="container main-content">
+        <h1>{{ user.first_name }}'s Dashboard</h1>
+        <br>
 
-            <!-- Upcoming Meetings -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Upcoming Meetings</h5>
-                            <ul class="list-group list-group-flush" id="upcomingMeetings">
-                                {% for meeting in upcoming_meetings %}
-                                    <li class="list-group-item">
-                                        {{ meeting.client_name }} from {{ meeting.company }} on {{ meeting.follow_up_date|date:"F d, Y" }}
-                                        <a href="https://outlook.live.com/calendar/0/view/month" target="_blank" class="btn btn-primary btn-sm float-right">
-                                            Open in Outlook
-                                        </a>
-                                    </li>
-                                {% empty %}
-                                    <li class="list-group-item">No upcoming meetings.</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Key Metrics -->
-            <div class="row mb-4">
-                <div class="col-6 col-md-3 mb-3 mb-md-0">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">My Total Leads</h5>
-                                                        <p class="card-text" id="totalLeads">{{ total_leads }}</p>
-
-                            <canvas id="leadsChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3 mb-3 mb-md-0">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">My Total Clients</h5>
-                                                        <p class="card-text" id="totalClients">{{ total_clients }}</p>
-                            <canvas id="clientsChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3 mb-3 mb-md-0">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">My Open Tickets</h5>
-                                                        <p class="card-text" id="openTickets">{{ open_tickets }}</p>
-                            <canvas id="ticketsChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3 mb-3 mb-md-0">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">My Over Dues</h5>
-                                                        <p class="card-text" id="closedDeals">{{ closed_deals }}</p>
-                            <canvas id="dealsChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activities -->
-            <div class="row mb-4">
-                <div class="col-12 col-md-6 mb-3 mb-md-0">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Recent Leads Added (My Leads)</h5>
-                            <ul class="list-group list-group-flush" id="recentLeads">
-                                {% for lead in recent_leads %}
-                                    <li class="list-group-item">{{ lead.client_name }} - {{ lead.created_at|date:"F d, Y H:i" }}</li>
-                                {% empty %}
-                                    <li class="list-group-item">No recent leads.</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 mb-3 mb-md-0">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Recent Tickets (My Tickets)</h5>
-                            <ul class="list-group list-group-flush" id="recentTickets">
-                                {% for ticket in recent_tickets %}
-                                    <li class="list-group-item">{{ ticket.title }} - {{ ticket.created_at|date:"F d, Y H:i" }}</li>
-                                {% empty %}
-                                    <li class="list-group-item">No recent tickets.</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+        <!-- Meetings Today -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-calendar-day"></i> Meetings Today
+                            <span class="badge bg-secondary float-end">{{ meetings_today|length }}</span>
+                        </h5>
+                        <ul class="list-group list-group-flush" id="meetingsToday">
+                            {% for meeting in meetings_today %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ meeting.client_name }}</strong> from <em>{{ meeting.company }}</em>
+                                        <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y" }}</span>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm" onclick="openModal('{{ meeting.client_name }}', 'https://us05web.zoom.us/s/83827104906#success')">Join Zoom</button>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item">No meetings scheduled for today.</li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-    {% else %}
-        <!-- Display login form if the user is not authenticated -->
-        <div class="col-md-6 offset-md-3">
-            <br>
-            <h2>Login</h2>
-            <br>
-            <form method="POST" action="{% url 'login' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
+
+        <!-- Upcoming Meetings -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-calendar-alt"></i> Upcoming Meetings
+                            <span class="badge bg-secondary float-end">{{ upcoming_meetings|length }}</span>
+                        </h5>
+                        <ul class="list-group list-group-flush" id="upcomingMeetings">
+                            {% for meeting in upcoming_meetings %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ meeting.client_name }}</strong> from <em>{{ meeting.company }}</em>
+                                        <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y" }}</span>
+                                    </div>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="openModal('{{ meeting.client_name }}', 'https://outlook.live.com/calendar/0/view/month')">Open in Outlook</button>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item">No upcoming meetings.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
-                <br>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <br>
-                <button type="submit" class="btn btn-primary">Login</button>
-                <br><br/>
-                <p>
-                <a href="{% url 'password_reset' %}">Forgot your password?</a>
-                </p>
-            </form>
+            </div>
         </div>
-    {% endif %}
+
+        <!-- Key Metrics -->
+        <div class="row mb-4">
+            <div class="col-6 col-md-3 mb-3 mb-md-0">
+                <div class="card shadow-sm interactive-card" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of leads assigned to you">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="fas fa-user-plus"></i> My Total Leads</h5>
+                        <p class="card-text display-4" id="totalLeads">{{ total_leads }}</p>
+                        <canvas id="leadsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3 mb-md-0">
+                <div class="card shadow-sm interactive-card" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of clients managed by you">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="fas fa-users"></i> My Total Clients</h5>
+                        <p class="card-text display-4" id="totalClients">{{ total_clients }}</p>
+                        <canvas id="clientsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3 mb-md-0">
+                <div class="card shadow-sm interactive-card" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of open tickets assigned to you">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="fas fa-ticket-alt"></i> My Open Tickets</h5>
+                        <p class="card-text display-4" id="openTickets">{{ open_tickets }}</p>
+                        <canvas id="ticketsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3 mb-md-0">
+                <div class="card shadow-sm interactive-card" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of overdue tasks or activities">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="fas fa-exclamation-circle"></i> My Over Dues</h5>
+                        <p class="card-text display-4" id="closedDeals">{{ closed_deals }}</p>
+                        <canvas id="dealsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="row mb-4">
+            <div class="col-12 col-md-6 mb-3 mb-md-0">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-user-plus"></i> Recent Leads Added (My Leads)
+                            <span class="badge bg-secondary float-end">{{ recent_leads|length }}</span>
+                        </h5>
+                        <ul class="list-group list-group-flush" id="recentLeads">
+                            {% for lead in recent_leads %}
+                                <li class="list-group-item">
+                                    <strong>{{ lead.client_name }}</strong>
+                                    <span class="text-muted">- {{ lead.created_at|date:"F d, Y H:i" }}</span>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item">No recent leads.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 mb-3 mb-md-0">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-ticket-alt"></i> Recent Tickets (My Tickets)
+                            <span class="badge bg-secondary float-end">{{ recent_tickets|length }}</span>
+                        </h5>
+                        <ul class="list-group list-group-flush" id="recentTickets">
+                            {% for ticket in recent_tickets %}
+                                <li class="list-group-item">
+                                    <strong>{{ ticket.title }}</strong>
+                                    <span class="text-muted">- {{ ticket.created_at|date:"F d, Y H:i" }}</span>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item">No recent tickets.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meeting Modal -->
+    <div class="modal fade" id="meetingModal" tabindex="-1" aria-labelledby="meetingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="meetingModalLabel">Meeting Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="meetingDetails"></p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" id="meetingLink" class="btn btn-primary" target="_blank">Join Meeting</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <!-- Display login form if the user is not authenticated -->
+    <div class="col-md-6 offset-md-3">
+        <br>
+        <h2>Login</h2>
+        <br>
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Login</button>
+            <br><br/>
+            <p><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
+        </form>
+    </div>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}
-<!-- Chart.js -->
+<!-- Include FontAwesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- JavaScript for animations and charts -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Function to open modal with meeting details
+        function openModal(clientName, link) {
+            document.getElementById('meetingDetails').innerText = 'Meeting with ' + clientName;
+            document.getElementById('meetingLink').href = link;
+            var myModal = new bootstrap.Modal(document.getElementById('meetingModal'));
+            myModal.show();
+        }
+
         // Function to check if an element is in the viewport
         function isInViewport(element) {
             const rect = element.getBoundingClientRect();
@@ -196,7 +247,7 @@
             data: {
                 labels: ['Leads'],
                 datasets: [{
-                    data: [{{ total_leads }}, 100 - {{ total_leads }}], // Example data
+                    data: [{{ total_leads }}, 100 - {{ total_leads }}],
                     backgroundColor: ['#4caf50', '#ccc'],
                     hoverBackgroundColor: ['#66bb6a', '#ddd']
                 }]
@@ -212,7 +263,7 @@
             data: {
                 labels: ['Clients'],
                 datasets: [{
-                    data: [{{ total_clients }}, 100 - {{ total_clients }}], // Example data
+                    data: [{{ total_clients }}, 100 - {{ total_clients }}],
                     backgroundColor: ['#2196f3', '#ccc'],
                     hoverBackgroundColor: ['#42a5f5', '#ddd']
                 }]
@@ -228,7 +279,7 @@
             data: {
                 labels: ['Open Tickets'],
                 datasets: [{
-                    data: [{{ open_tickets }}, 100 - {{ open_tickets }}], // Example data
+                    data: [{{ open_tickets }}, 100 - {{ open_tickets }}],
                     backgroundColor: ['#ff9800', '#ccc'],
                     hoverBackgroundColor: ['#ffb74d', '#ddd']
                 }]
@@ -244,7 +295,7 @@
             data: {
                 labels: ['Over Dues'],
                 datasets: [{
-                    data: [{{ closed_deals }}, 100 - {{ closed_deals }}], // Example data
+                    data: [{{ closed_deals }}, 100 - {{ closed_deals }}],
                     backgroundColor: ['#f44336', '#ccc'],
                     hoverBackgroundColor: ['#e57373', '#ddd']
                 }]
@@ -254,10 +305,17 @@
                 maintainAspectRatio: false
             }
         });
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
     });
 </script>
 
-<!-- CSS for animations -->
+<!-- CSS for animations and better UI -->
 <style>
     @keyframes fadeIn {
         from {
@@ -272,13 +330,46 @@
 
     .card, .list-group-item {
         animation: fadeIn 0.5s ease-in-out;
-        opacity: 0; /* Initially hidden */
-        transform: translateY(10px); /* Initial position for animation */
+        opacity: 0;
+        transform: translateY(10px);
     }
 
     .card.visible, .list-group-item.visible {
-        opacity: 1; /* Visible when in the viewport */
-        transform: translateY(0); /* Final position after animation */
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .interactive-card:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .card-title {
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 2rem;
+        color: #333;
+    }
+
+    .badge {
+        font-size: 1rem;
+    }
+
+    .modal-header, .modal-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-primary, .btn-outline-primary {
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .btn-primary:hover, .btn-outline-primary:hover {
+        background-color: #0056b3;
+        color: #fff;
     }
 </style>
 {% endblock %}

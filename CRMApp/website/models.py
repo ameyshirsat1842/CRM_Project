@@ -54,6 +54,50 @@ class Record(models.Model):
         ]
 
 
+class Customer(models.Model):
+    # Basic customer information
+    objects = None
+    company = models.CharField(max_length=255, blank=True, null=True)
+    client_name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    email = models.EmailField(unique=True)
+
+    # Address information
+    address = models.TextField(blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+
+    # Additional customer details
+    dept_name = models.CharField(max_length=255, blank=True, null=True)
+    lead_source = models.CharField(max_length=255, blank=True, null=True)
+    remarks = models.TextField(blank=True, null=True)
+    comments = models.TextField(blank=True, null=True)
+
+    # Tracking the assignment and history of the customer
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True,
+                                    related_name='assigned_customers')
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True,
+                                   related_name='created_customers')
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True,
+                                         related_name='modified_customers')
+    last_modified_at = models.DateTimeField(auto_now=True)
+
+    classification = models.CharField(
+        max_length=50,
+        choices=[
+            ('active', 'Active'),
+            ('inactive', 'Inactive'),
+            ('prospect', 'Prospect'),
+            ('lead', 'Lead'),
+            ('customer', 'Customer'),
+        ],
+        default='prospect'
+    )
+
+    def __str__(self):
+        return f"{self.client_name} ({self.company})"
+
+
 class NotificationManager(models.Manager):
     def unread_for_user(self, user):
         return self.filter(user=user, is_read=False)
