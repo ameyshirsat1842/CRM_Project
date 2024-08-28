@@ -10,7 +10,7 @@
         <!-- Meetings Today -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow-sm">
+                <div class="card shadow-sm card-highlight animate__animated animate__fadeIn">
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="fas fa-calendar-day"></i> Meetings Today
@@ -37,7 +37,7 @@
         <!-- Upcoming Meetings -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow-sm">
+                <div class="card shadow-sm card-highlight animate__animated animate__fadeIn">
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="fas fa-calendar-alt"></i> Upcoming Meetings
@@ -64,7 +64,7 @@
         <!-- Key Metrics -->
         <div class="row mb-4">
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-sm interactive-card" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of leads assigned to you">
+                <div class="card shadow-sm interactive-card card-gradient-leads animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of leads assigned to you">
                     <div class="card-body text-center">
                         <h5 class="card-title"><i class="fas fa-user-plus"></i> My Total Leads</h5>
                         <p class="card-text display-4" id="totalLeads">{{ total_leads }}</p>
@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-sm interactive-card" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of clients managed by you">
+                <div class="card shadow-sm interactive-card card-gradient-clients animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of clients managed by you">
                     <div class="card-body text-center">
                         <h5 class="card-title"><i class="fas fa-users"></i> My Total Clients</h5>
                         <p class="card-text display-4" id="totalClients">{{ total_clients }}</p>
@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-sm interactive-card" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of open tickets assigned to you">
+                <div class="card shadow-sm interactive-card card-gradient-tickets animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of open tickets assigned to you">
                     <div class="card-body text-center">
                         <h5 class="card-title"><i class="fas fa-ticket-alt"></i> My Open Tickets</h5>
                         <p class="card-text display-4" id="openTickets">{{ open_tickets }}</p>
@@ -91,7 +91,7 @@
                 </div>
             </div>
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-sm interactive-card" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of overdue tasks or activities">
+                <div class="card shadow-sm interactive-card card-gradient-overdues animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of overdue tasks or activities">
                     <div class="card-body text-center">
                         <h5 class="card-title"><i class="fas fa-exclamation-circle"></i> My Over Dues</h5>
                         <p class="card-text display-4" id="closedDeals">{{ closed_deals }}</p>
@@ -104,7 +104,7 @@
         <!-- Recent Activities -->
         <div class="row mb-4">
             <div class="col-12 col-md-6 mb-3 mb-md-0">
-                <div class="card shadow-sm">
+                <div class="card shadow-sm card-highlight animate__animated animate__fadeIn">
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="fas fa-user-plus"></i> Recent Leads Added (My Leads)
@@ -124,7 +124,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 mb-3 mb-md-0">
-                <div class="card shadow-sm">
+                <div class="card shadow-sm card-highlight animate__animated animate__fadeIn">
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="fas fa-ticket-alt"></i> Recent Tickets (My Tickets)
@@ -197,6 +197,9 @@
 
 <!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Include Animate.css for animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
 <!-- JavaScript for animations and charts -->
 <script>
@@ -370,6 +373,26 @@
     .btn-primary:hover, .btn-outline-primary:hover {
         background-color: #0056b3;
         color: #fff;
+    }
+
+    .card-highlight {
+        background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+    }
+
+    .card-gradient-leads {
+        background: linear-gradient(145deg, #e8f5e9, #c8e6c9);
+    }
+
+    .card-gradient-clients {
+        background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+    }
+
+    .card-gradient-tickets {
+        background: linear-gradient(145deg, #fff3e0, #ffe0b2);
+    }
+
+    .card-gradient-overdues {
+        background: linear-gradient(145deg, #ffebee, #ffcdd2);
     }
 </style>
 {% endblock %}
