@@ -18,7 +18,7 @@ from django.utils import timezone
 from django.views.generic import ListView
 from openpyxl.workbook import Workbook
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, \
-    UserUpdateForm, ProfileUpdateForm, CustomerForm
+    UserUpdateForm, ProfileUpdateForm, CustomerUpdateForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment, Customer
 from .utils import send_otp_to_email, verify_otp
 
@@ -138,50 +138,6 @@ def update_user_info(request):
         'user_form': user_form,
         'profile_form': profile_form,
     })
-
-
-def leads_view(request):
-    if request.user.is_authenticated:
-        search_query = request.GET.get('search', '')
-        classification = request.GET.get('classification', '')
-        filter_option = request.GET.get('filter', '')
-
-        # Apply search query
-        records = Record.objects.all().order_by('-created_at')
-        if search_query:
-            records = records.filter(
-                Q(company__icontains=search_query) |
-                Q(client_name__icontains=search_query) |
-                Q(dept_name__icontains=search_query) |
-                Q(phone__icontains=search_query) |
-                Q(email__icontains=search_query) |
-                Q(city__icontains=search_query) |
-                Q(assigned_to__username__icontains=search_query) |
-                Q(comments__icontains=search_query) |
-                Q(remarks__icontains=search_query)
-            )
-
-        # Apply classification filter
-        if classification and classification != 'all':
-            records = records.filter(classification=classification)
-
-        # Apply 'assigned_to_me' filter
-        if filter_option == 'assigned_to_me':
-            records = records.filter(assigned_to=request.user)
-
-        paginator = Paginator(records, 10)  # Show 10 leads per page
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-
-        context = {
-            'page_obj': page_obj,
-            'search_query': search_query,
-            'classification': classification,
-            'filter_option': filter_option,
-        }
-        return render(request, 'leads.html', context)
-    else:
-        return redirect('login')
 
 
 def customer_record(request, pk):
@@ -447,6 +403,50 @@ def potential_leads(request):
     return render(request, 'potential_leads.html', {'leads': leads})
 
 
+def leads_view(request):
+    if request.user.is_authenticated:
+        search_query = request.GET.get('search', '')
+        classification = request.GET.get('classification', '')
+        filter_option = request.GET.get('filter', '')
+
+        # Apply search query
+        records = Record.objects.all().order_by('-created_at')
+        if search_query:
+            records = records.filter(
+                Q(company__icontains=search_query) |
+                Q(client_name__icontains=search_query) |
+                Q(dept_name__icontains=search_query) |
+                Q(phone__icontains=search_query) |
+                Q(email__icontains=search_query) |
+                Q(city__icontains=search_query) |
+                Q(assigned_to__username__icontains=search_query) |
+                Q(comments__icontains=search_query) |
+                Q(remarks__icontains=search_query)
+            )
+
+        # Apply classification filter
+        if classification and classification != 'all':
+            records = records.filter(classification=classification)
+
+        # Apply 'assigned_to_me' filter
+        if filter_option == 'assigned_to_me':
+            records = records.filter(assigned_to=request.user)
+
+        paginator = Paginator(records, 10)  # Show 10 leads per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'page_obj': page_obj,
+            'search_query': search_query,
+            'classification': classification,
+            'filter_option': filter_option,
+        }
+        return render(request, 'leads.html', context)
+    else:
+        return redirect('login')
+
+
 def move_to_main_leads(request, lead_id):
     lead = PotentialLead.objects.get(id=lead_id)
     main_lead = Record(
@@ -465,23 +465,28 @@ def move_to_main_leads(request, lead_id):
 
 def customers(request):
     search_query = request.GET.get('search', '')
-    status = request.GET.get('status', '')
+    classification = request.GET.get('classification', '')
     filter_option = request.GET.get('filter', '')
 
+    # Base queryset for filtering customers created by the logged-in user
     customers_list = Customer.objects.filter(created_by=request.user)
 
+    # Apply search filter if provided
     if search_query:
         customers_list = customers_list.filter(client_name__icontains=search_query)
 
-    if status:
-        customers_list = customers_list.filter(status=status)
+    # Apply status filter if provided
+    if classification:
+        customers_list = customers_list.filter(classification=classification)
 
+    # Filter customers assigned to the current user if the filter_option is set to 'assigned_to_me'
     if filter_option == 'assigned_to_me':
         customers_list = customers_list.filter(assigned_to=request.user)
 
     # Add ordering to the queryset
     customers_list = customers_list.order_by('client_name')
 
+    # Paginate the results
     paginator = Paginator(customers_list, 10)  # Show 10 customers per page.
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -491,12 +496,23 @@ def customers(request):
 
 def move_to_customers(request, record_id):
     try:
+        # Retrieve the record
         record = get_object_or_404(Record, id=record_id)
 
-        # Check if a Customer with the same email already exists
+        # Check if a Customer with the same email already exists to avoid duplicates
         if Customer.objects.filter(email=record.email).exists():
             messages.error(request, f"A customer with email {record.email} already exists.")
             return redirect('customers')
+
+        # Map Record classification to Customer classification
+        if record.classification == 'assigned':
+            customer_classification = 'active'
+        elif record.classification == 'in_progress':
+            customer_classification = 'active'
+        elif record.classification == 'dead':
+            customer_classification = 'inactive'
+        else:
+            customer_classification = 'prospect'  # Default or fallback classification
 
         # Create a new Customer instance from the Record
         customer = Customer(
@@ -511,14 +527,19 @@ def move_to_customers(request, record_id):
             lead_source=record.lead_source,
             remarks=record.remarks,
             comments=record.comments,
-            created_by=record.created_by,
+            created_by=request.user,
             created_at=record.created_at,
             last_modified_by=record.last_modified_by,
-            classification='active'
+            classification=customer_classification,  # Use the mapped classification
+            bank_details='',  # Default value or blank if not yet provided
+            gst_number=''  # Default value or blank if not yet provided
         )
 
-        # Save the new customer to the database
+        # Save the new Customer to the database
         customer.save()
+
+        # Optionally delete the record or perform other actions
+        record.delete()
 
         messages.success(request, "Record moved to customers successfully!")
         return redirect('customers')
@@ -545,13 +566,13 @@ def update_customer(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
 
     if request.method == 'POST':
-        form = CustomerForm(request.POST, instance=customer)
+        form = CustomerUpdateForm(request.POST, instance=customer)
         if form.is_valid():
             form.save()
             messages.success(request, "Customer updated successfully!")
             return redirect('customers')
     else:
-        form = CustomerForm(instance=customer)
+        form = CustomerUpdateForm(instance=customer)
 
     return render(request, 'update_customer.html', {'form': form, 'customer': customer})
 

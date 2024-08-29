@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Customer Details</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            {{ customer.client_name }} ({{ customer.company }})
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Contact Information</h5>
+            <p class="card-text"><strong>Phone:</strong> {{ customer.phone }}</p>
+            <p class="card-text"><strong>Email:</strong> {{ customer.email }}</p>
+            <p class="card-text"><strong>Address:</strong> {{ customer.address }}</p>
+            <p class="card-text"><strong>City:</strong> {{ customer.city }}</p>
+
+            <h5 class="card-title mt-4">Additional Details</h5>
+            <p class="card-text"><strong>Department:</strong> {{ customer.dept_name }}</p>
+            <p class="card-text"><strong>Lead Source:</strong> {{ customer.lead_source }}</p>
+            <p class="card-text"><strong>Remarks:</strong> {{ customer.remarks }}</p>
+            <p class="card-text"><strong>Comments:</strong> {{ customer.comments }}</p>
+            <p class="card-text"><strong>Status:</strong> {{ customer.get_classification_display }}</p>
+            <p class="card-text"><strong>Assigned To:</strong> {% if customer.assigned_to %}{{ customer.assigned_to.username }}{% else %}N/A{% endif %}</p>
+            <p class="card-text"><strong>Created By:</strong> {% if customer.created_by %}{{ customer.created_by.username }}{% else %}N/A{% endif %}</p>
+            <p class="card-text"><strong>Created At:</strong> {{ customer.created_at|date:"F d, Y H:i" }}</p>
+            <p class="card-text"><strong>Last Modified By:</strong> {% if customer.last_modified_by %}{{ customer.last_modified_by.username }}{% else %}N/A{% endif %}</p>
+            <p class="card-text"><strong>Last Modified At:</strong> {{ customer.last_modified_at|date:"F d, Y H:i" }}</p>
+
+            <!-- New fields for Bank Details and GST Number -->
+            <h5 class="card-title mt-4">Financial Details</h5>
+            <p class="card-text"><strong>Bank Details:</strong> {{ customer.bank_details }}</p>
+            <p class="card-text"><strong>GST Number:</strong> {{ customer.gst_number }}</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'update_customer' customer.id %}" class="btn btn-warning btn-sm">Update Customer</a>
+            <a href="{% url 'customers' %}" class="btn btn-secondary btn-sm">Back to Customers</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

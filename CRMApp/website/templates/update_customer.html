@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Update Customer Details</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Updating: {{ customer.client_name }} ({{ customer.company }})
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'update_customer' customer.id %}">
+                {% csrf_token %}
+
+                <!-- Company Information -->
+                <div class="mb-3">
+                    <label for="id_company" class="form-label">Company</label>
+                    {{ form.company }}
+                </div>
+
+                <!-- Client Information -->
+                <div class="mb-3">
+                    <label for="id_client_name" class="form-label">Client Name</label>
+                    {{ form.client_name }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_phone" class="form-label">Phone</label>
+                    {{ form.phone }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">Email</label>
+                    {{ form.email }}
+                </div>
+
+                <!-- Address Information -->
+                <div class="mb-3">
+                    <label for="id_address" class="form-label">Address</label>
+                    {{ form.address }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_city" class="form-label">City</label>
+                    {{ form.city }}
+                </div>
+
+                <!-- Additional Customer Details -->
+                <div class="mb-3">
+                    <label for="id_dept_name" class="form-label">Department</label>
+                    {{ form.dept_name }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_lead_source" class="form-label">Lead Source</label>
+                    {{ form.lead_source }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_remarks" class="form-label">Remarks</label>
+                    {{ form.remarks }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_comments" class="form-label">Comments</label>
+                    {{ form.comments }}
+                </div>
+
+                <!-- Additional Details -->
+                <div class="mb-3">
+                    <label for="id_bank_details" class="form-label">Bank Details</label>
+                    {{ form.bank_details }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_gst_number" class="form-label">GST Number</label>
+                    {{ form.gst_number }}
+                </div>
+
+                <!-- Assigned to and Status -->
+                <div class="mb-3">
+                    <label for="id_assigned_to" class="form-label">Assigned To</label>
+                    {{ form.assigned_to }}
+                </div>
+
+
+                <!-- Form Actions -->
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{% url 'customer_detail' customer.id %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

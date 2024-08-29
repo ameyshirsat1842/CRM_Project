@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 
 class Record(models.Model):
     DoesNotExist = None
-    objects = None
     created_at = models.DateTimeField(auto_now_add=True)
     company = models.CharField(max_length=50)
     client_name = models.CharField(max_length=50)
@@ -17,7 +16,8 @@ class Record(models.Model):
     address = models.CharField(max_length=200)
     assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_leads', null=True,
                                     blank=True)
-    last_modified_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='modified_records', null=True, blank=True)
+    last_modified_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='modified_records', null=True,
+                                         blank=True)
     follow_up_date = models.DateField(null=True, blank=True)
     comments = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
@@ -25,6 +25,7 @@ class Record(models.Model):
     attachments = models.FileField(upload_to='attachments/', null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_records', null=True)
     social_media_details = models.TextField(null=True, blank=True)
+
     CLASSIFICATION_CHOICES = (
         ('assigned', 'Assigned'),
         ('unassigned', 'Unassigned'),
@@ -32,6 +33,7 @@ class Record(models.Model):
         ('in_progress', 'In Progress'),
     )
     classification = models.CharField(max_length=20, choices=CLASSIFICATION_CHOICES, default='unassigned')
+
     LEAD_SOURCE_CHOICES = [
         ('BNI Connect', 'BNI Connect'),
         ('LinkedIn', 'LinkedIn'),
@@ -43,6 +45,8 @@ class Record(models.Model):
         ('Other Source', 'Other Source'),
     ]
     lead_source = models.CharField(max_length=50, choices=LEAD_SOURCE_CHOICES, blank=True, null=True)
+
+    objects = models.Manager()  # Default manager
 
     def __str__(self):
         return f"{self.company} - {self.client_name}"
@@ -56,7 +60,6 @@ class Record(models.Model):
 
 class Customer(models.Model):
     # Basic customer information
-    objects = None
     company = models.CharField(max_length=255, blank=True, null=True)
     client_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=15, blank=True, null=True)
@@ -93,6 +96,10 @@ class Customer(models.Model):
         ],
         default='prospect'
     )
+    # New fields for additional details
+    bank_details = models.CharField(max_length=255, blank=True, null=True)
+    gst_number = models.CharField(max_length=20, blank=True, null=True)
+    objects = models.Manager()  # Default manager
 
     def __str__(self):
         return f"{self.client_name} ({self.company})"

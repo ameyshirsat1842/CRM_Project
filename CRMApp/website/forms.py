@@ -344,3 +344,20 @@ class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
         fields = ['company', 'client_name', 'phone', 'email', 'city', 'comments']
+
+
+class CustomerUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = [
+            'company', 'client_name', 'phone', 'email', 'address', 'city',
+            'dept_name', 'lead_source', 'remarks', 'comments', 'assigned_to',
+            'classification', 'bank_details', 'gst_number'  # Added new fields
+        ]
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3}),
+            'remarks': forms.Textarea(attrs={'rows': 3}),
+            'comments': forms.Textarea(attrs={'rows': 3}),
+            'bank_details': forms.TextInput(attrs={'placeholder': 'Bank Details'}),
+            'gst_number': forms.TextInput(attrs={'placeholder': 'GST Number'}),
+        }

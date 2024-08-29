@@ -61,6 +61,52 @@
                 </div>
             </div>
 
+            <!-- Table for Customer Records -->
+            <h5>Customer Records</h5>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Company</th>
+                                        <th>Joined Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for customer in customers %}
+                                        <tr>
+                                            <td>{{ customer.id }}</td>
+                                            <td>{{ customer.name }}</td>
+                                            <td>{{ customer.email }}</td>
+                                            <td>{{ customer.phone }}</td>
+                                            <td>{{ customer.company }}</td>
+                                            <td>{{ customer.joined_date|date:"F d, Y" }}</td>
+                                            <td>
+                                                <!-- View Details Button -->
+                                                <a href="{% url 'customer_record' customer.id %}" class="btn btn-sm btn-info">View</a>
+                                                <!-- Edit Button -->
+                                                <a href="{% url 'update_customer_record' customer.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="7">No customer records available.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Table for Users -->
             <h5>Users</h5>
             <div class="row mb-4">
@@ -90,7 +136,7 @@
                                         </tr>
                                     {% empty %}
                                         <tr>
-                                            <td colspan="7">No users available.</td>
+                                            <td colspan="6">No users available.</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -100,9 +146,11 @@
                 </div>
             </div>
         </div>
-<div class="text-center mt-4">
-        <a href="javascript:history.back()" class="btn btn-primary mb-2">Back</a>
-</div>
+
+        <!-- Back Button -->
+        <div class="text-center mt-4">
+            <a href="javascript:history.back()" class="btn btn-primary mb-2">Back</a>
+        </div>
     {% else %}
         <!-- Redirect to login page if the user is not authenticated -->
         <div class="alert alert-danger" role="alert">

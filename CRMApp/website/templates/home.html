@@ -4,21 +4,21 @@
 {% if user.is_authenticated %}
     <!-- Main Content -->
     <div class="container main-content">
-        <h1>{{ user.first_name }}'s Dashboard</h1>
+        <h1 class="dashboard-heading">{{ user.first_name }}'s Dashboard</h1>
         <br>
 
         <!-- Meetings Today -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow-sm card-highlight animate__animated animate__fadeIn">
+                <div class="card shadow-sm card-highlight border-primary animate__animated animate__fadeIn" style="background-color: #e0f7fa;">
                     <div class="card-body">
-                        <h5 class="card-title">
+                        <h5 class="card-title dashboard-title">
                             <i class="fas fa-calendar-day"></i> Meetings Today
                             <span class="badge bg-secondary float-end">{{ meetings_today|length }}</span>
                         </h5>
                         <ul class="list-group list-group-flush" id="meetingsToday">
                             {% for meeting in meetings_today %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <li class="list-group-item d-flex justify-content-between align-items-center dashboard-text">
                                     <div>
                                         <strong>{{ meeting.client_name }}</strong> from <em>{{ meeting.company }}</em>
                                         <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y" }}</span>
@@ -26,7 +26,7 @@
                                     <button class="btn btn-primary btn-sm" onclick="openModal('{{ meeting.client_name }}', 'https://us05web.zoom.us/s/83827104906#success')">Join Zoom</button>
                                 </li>
                             {% empty %}
-                                <li class="list-group-item">No meetings scheduled for today.</li>
+                                <li class="list-group-item dashboard-text">No meetings scheduled for today.</li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -37,15 +37,15 @@
         <!-- Upcoming Meetings -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow-sm card-highlight animate__animated animate__fadeIn">
+                <div class="card shadow-sm card-highlight border-info animate__animated animate__fadeIn" style="background-color: #e0f2f1;">
                     <div class="card-body">
-                        <h5 class="card-title">
+                        <h5 class="card-title dashboard-title">
                             <i class="fas fa-calendar-alt"></i> Upcoming Meetings
                             <span class="badge bg-secondary float-end">{{ upcoming_meetings|length }}</span>
                         </h5>
                         <ul class="list-group list-group-flush" id="upcomingMeetings">
                             {% for meeting in upcoming_meetings %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <li class="list-group-item d-flex justify-content-between align-items-center dashboard-text">
                                     <div>
                                         <strong>{{ meeting.client_name }}</strong> from <em>{{ meeting.company }}</em>
                                         <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y" }}</span>
@@ -53,7 +53,7 @@
                                     <button class="btn btn-outline-primary btn-sm" onclick="openModal('{{ meeting.client_name }}', 'https://outlook.live.com/calendar/0/view/month')">Open in Outlook</button>
                                 </li>
                             {% empty %}
-                                <li class="list-group-item">No upcoming meetings.</li>
+                                <li class="list-group-item dashboard-text">No upcoming meetings.</li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -64,37 +64,37 @@
         <!-- Key Metrics -->
         <div class="row mb-4">
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-sm interactive-card card-gradient-leads animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of leads assigned to you">
+                <div class="card shadow-lg interactive-card card-gradient-leads border-success animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of leads assigned to you" style="background-color: #f1f8e9;">
                     <div class="card-body text-center">
-                        <h5 class="card-title"><i class="fas fa-user-plus"></i> My Total Leads</h5>
-                        <p class="card-text display-4" id="totalLeads">{{ total_leads }}</p>
+                        <h5 class="card-title dashboard-title"><i class="fas fa-user-plus"></i> My Total Leads</h5>
+                        <p class="card-text display-4 dashboard-metric" id="totalLeads">{{ total_leads }}</p>
                         <canvas id="leadsChart"></canvas>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-sm interactive-card card-gradient-clients animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of clients managed by you">
+                <div class="card shadow-lg interactive-card card-gradient-clients border-info animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of clients managed by you" style="background-color: #e3f2fd;">
                     <div class="card-body text-center">
-                        <h5 class="card-title"><i class="fas fa-users"></i> My Total Clients</h5>
-                        <p class="card-text display-4" id="totalClients">{{ total_clients }}</p>
+                        <h5 class="card-title dashboard-title"><i class="fas fa-users"></i> My Total Clients</h5>
+                        <p class="card-text display-4 dashboard-metric" id="totalClients">{{ total_clients }}</p>
                         <canvas id="clientsChart"></canvas>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-sm interactive-card card-gradient-tickets animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of open tickets assigned to you">
+                <div class="card shadow-lg interactive-card card-gradient-tickets border-warning animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of open tickets assigned to you" style="background-color: #fff8e1;">
                     <div class="card-body text-center">
-                        <h5 class="card-title"><i class="fas fa-ticket-alt"></i> My Open Tickets</h5>
-                        <p class="card-text display-4" id="openTickets">{{ open_tickets }}</p>
+                        <h5 class="card-title dashboard-title"><i class="fas fa-ticket-alt"></i> My Open Tickets</h5>
+                        <p class="card-text display-4 dashboard-metric" id="openTickets">{{ open_tickets }}</p>
                         <canvas id="ticketsChart"></canvas>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-sm interactive-card card-gradient-overdues animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of overdue tasks or activities">
+                <div class="card shadow-lg interactive-card card-gradient-overdues border-danger animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of overdue tasks or activities" style="background-color: #ffebee;">
                     <div class="card-body text-center">
-                        <h5 class="card-title"><i class="fas fa-exclamation-circle"></i> My Over Dues</h5>
-                        <p class="card-text display-4" id="closedDeals">{{ closed_deals }}</p>
+                        <h5 class="card-title dashboard-title"><i class="fas fa-exclamation-circle"></i> My Over Dues</h5>
+                        <p class="card-text display-4 dashboard-metric" id="closedDeals">{{ closed_deals }}</p>
                         <canvas id="dealsChart"></canvas>
                     </div>
                 </div>
@@ -104,40 +104,40 @@
         <!-- Recent Activities -->
         <div class="row mb-4">
             <div class="col-12 col-md-6 mb-3 mb-md-0">
-                <div class="card shadow-sm card-highlight animate__animated animate__fadeIn">
+                <div class="card shadow-lg card-highlight border-info animate__animated animate__fadeIn" style="background-color: #e3f2fd;">
                     <div class="card-body">
-                        <h5 class="card-title">
+                        <h5 class="card-title dashboard-title">
                             <i class="fas fa-user-plus"></i> Recent Leads Added (My Leads)
                             <span class="badge bg-secondary float-end">{{ recent_leads|length }}</span>
                         </h5>
                         <ul class="list-group list-group-flush" id="recentLeads">
                             {% for lead in recent_leads %}
-                                <li class="list-group-item">
+                                <li class="list-group-item dashboard-text">
                                     <strong>{{ lead.client_name }}</strong>
                                     <span class="text-muted">- {{ lead.created_at|date:"F d, Y H:i" }}</span>
                                 </li>
                             {% empty %}
-                                <li class="list-group-item">No recent leads.</li>
+                                <li class="list-group-item dashboard-text">No recent leads.</li>
                             {% endfor %}
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-6 mb-3 mb-md-0">
-                <div class="card shadow-sm card-highlight animate__animated animate__fadeIn">
+                <div class="card shadow-lg card-highlight border-warning animate__animated animate__fadeIn" style="background-color: #fff8e1;">
                     <div class="card-body">
-                        <h5 class="card-title">
+                        <h5 class="card-title dashboard-title">
                             <i class="fas fa-ticket-alt"></i> Recent Tickets (My Tickets)
                             <span class="badge bg-secondary float-end">{{ recent_tickets|length }}</span>
                         </h5>
                         <ul class="list-group list-group-flush" id="recentTickets">
                             {% for ticket in recent_tickets %}
-                                <li class="list-group-item">
+                                <li class="list-group-item dashboard-text">
                                     <strong>{{ ticket.title }}</strong>
                                     <span class="text-muted">- {{ ticket.created_at|date:"F d, Y H:i" }}</span>
                                 </li>
                             {% empty %}
-                                <li class="list-group-item">No recent tickets.</li>
+                                <li class="list-group-item dashboard-text">No recent tickets.</li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -189,6 +189,120 @@
         </form>
     </div>
 {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<!-- CSS for animations and better UI -->
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card, .list-group-item {
+        animation: fadeIn 0.5s ease-in-out;
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    .card.visible, .list-group-item.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .interactive-card:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s ease-in-out;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+    }
+
+    .dashboard-heading {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .dashboard-text {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .dashboard-metric {
+        font-size: 3rem;
+        font-weight: bold;
+    }
+
+    .card-title {
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 2.5rem;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .badge {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .modal-header, .modal-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-primary, .btn-outline-primary {
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .btn-primary:hover, .btn-outline-primary:hover {
+        background-color: #0056b3;
+        color: #fff;
+    }
+
+    /* Light background colors for cards */
+    .card-highlight {
+        background-color: #e0f7fa !important; /* Light cyan background */
+        border: 5px solid #1e88e5; /* Thicker light blue border */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for highlights */
+    }
+
+    .card-gradient-leads {
+        background-color: #f1f8e9 !important; /* Light green background */
+        border: 5px solid #43a047; /* Thicker green border */
+        box-shadow: 0 4px 15px rgba(0, 128, 0, 0.2); /* Green shadow */
+    }
+
+    .card-gradient-clients {
+        background-color: #e3f2fd !important; /* Light blue background */
+        border: 5px solid #1e88e5; /* Thicker blue border */
+        box-shadow: 0 4px 15px rgba(30, 136, 229, 0.2); /* Blue shadow */
+    }
+
+    .card-gradient-tickets {
+        background-color: #fff8e1 !important; /* Light yellow background */
+        border: 5px solid #f57c00; /* Thicker orange border */
+        box-shadow: 0 4px 15px rgba(255, 165, 0, 0.2); /* Orange shadow */
+    }
+
+    .card-gradient-overdues {
+        background-color: #ffebee !important; /* Light red background */
+        border: 5px solid #e53935; /* Thicker red border */
+        box-shadow: 0 4px 15px rgba(229, 57, 53, 0.2); /* Red shadow */
+    }
+</style>
 {% endblock %}
 
 {% block extra_js %}
@@ -317,82 +431,4 @@
 
     });
 </script>
-
-<!-- CSS for animations and better UI -->
-<style>
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .card, .list-group-item {
-        animation: fadeIn 0.5s ease-in-out;
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    .card.visible, .list-group-item.visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .interactive-card:hover {
-        transform: scale(1.05);
-        transition: transform 0.2s ease-in-out;
-    }
-
-    .card-title {
-        font-weight: bold;
-    }
-
-    .card-text {
-        font-size: 2rem;
-        color: #333;
-    }
-
-    .badge {
-        font-size: 1rem;
-    }
-
-    .modal-header, .modal-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .btn-primary, .btn-outline-primary {
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    .btn-primary:hover, .btn-outline-primary:hover {
-        background-color: #0056b3;
-        color: #fff;
-    }
-
-    .card-highlight {
-        background: linear-gradient(145deg, #e3f2fd, #bbdefb);
-    }
-
-    .card-gradient-leads {
-        background: linear-gradient(145deg, #e8f5e9, #c8e6c9);
-    }
-
-    .card-gradient-clients {
-        background: linear-gradient(145deg, #e3f2fd, #bbdefb);
-    }
-
-    .card-gradient-tickets {
-        background: linear-gradient(145deg, #fff3e0, #ffe0b2);
-    }
-
-    .card-gradient-overdues {
-        background: linear-gradient(145deg, #ffebee, #ffcdd2);
-    }
-</style>
 {% endblock %}
