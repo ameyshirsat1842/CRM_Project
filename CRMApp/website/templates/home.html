@@ -10,7 +10,7 @@
         <!-- Meetings Today -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow-sm card-highlight border-primary animate__animated animate__fadeIn" style="background-color: #e0f7fa;">
+                <div class="card shadow-sm card-highlight border-primary animate__animated animate__fadeIn" style="background-color: #b2ebf2;">
                     <div class="card-body">
                         <h5 class="card-title dashboard-title">
                             <i class="fas fa-calendar-day"></i> Meetings Today
@@ -37,7 +37,7 @@
         <!-- Upcoming Meetings -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow-sm card-highlight border-info animate__animated animate__fadeIn" style="background-color: #e0f2f1;">
+                <div class="card shadow-sm card-highlight border-info animate__animated animate__fadeIn" style="background-color: #80cbc4;">
                     <div class="card-body">
                         <h5 class="card-title dashboard-title">
                             <i class="fas fa-calendar-alt"></i> Upcoming Meetings
@@ -64,7 +64,7 @@
         <!-- Key Metrics -->
         <div class="row mb-4">
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-lg interactive-card card-gradient-leads border-success animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of leads assigned to you" style="background-color: #f1f8e9;">
+                <div class="card shadow-lg interactive-card card-gradient-leads border-success animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of leads assigned to you" style="background-color: #aed581;">
                     <div class="card-body text-center">
                         <h5 class="card-title dashboard-title"><i class="fas fa-user-plus"></i> My Total Leads</h5>
                         <p class="card-text display-4 dashboard-metric" id="totalLeads">{{ total_leads }}</p>
@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-lg interactive-card card-gradient-clients border-info animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of clients managed by you" style="background-color: #e3f2fd;">
+                <div class="card shadow-lg interactive-card card-gradient-clients border-info animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of clients managed by you" style="background-color: #64b5f6;">
                     <div class="card-body text-center">
                         <h5 class="card-title dashboard-title"><i class="fas fa-users"></i> My Total Clients</h5>
                         <p class="card-text display-4 dashboard-metric" id="totalClients">{{ total_clients }}</p>
@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-lg interactive-card card-gradient-tickets border-warning animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of open tickets assigned to you" style="background-color: #fff8e1;">
+                <div class="card shadow-lg interactive-card card-gradient-tickets border-warning animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of open tickets assigned to you" style="background-color: #ffd54f;">
                     <div class="card-body text-center">
                         <h5 class="card-title dashboard-title"><i class="fas fa-ticket-alt"></i> My Open Tickets</h5>
                         <p class="card-text display-4 dashboard-metric" id="openTickets">{{ open_tickets }}</p>
@@ -91,7 +91,7 @@
                 </div>
             </div>
             <div class="col-6 col-md-3 mb-3 mb-md-0">
-                <div class="card shadow-lg interactive-card card-gradient-overdues border-danger animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of overdue tasks or activities" style="background-color: #ffebee;">
+                <div class="card shadow-lg interactive-card card-gradient-overdues border-danger animate__animated animate__zoomIn" data-bs-toggle="tooltip" data-bs-placement="top" title="Total number of overdue tasks or activities" style="background-color: #ef9a9a;">
                     <div class="card-body text-center">
                         <h5 class="card-title dashboard-title"><i class="fas fa-exclamation-circle"></i> My Over Dues</h5>
                         <p class="card-text display-4 dashboard-metric" id="closedDeals">{{ closed_deals }}</p>
@@ -104,7 +104,7 @@
         <!-- Recent Activities -->
         <div class="row mb-4">
             <div class="col-12 col-md-6 mb-3 mb-md-0">
-                <div class="card shadow-lg card-highlight border-info animate__animated animate__fadeIn" style="background-color: #e3f2fd;">
+                <div class="card shadow-lg card-highlight border-info animate__animated animate__fadeIn" style="background-color: #64b5f6;">
                     <div class="card-body">
                         <h5 class="card-title dashboard-title">
                             <i class="fas fa-user-plus"></i> Recent Leads Added (My Leads)
@@ -124,7 +124,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 mb-3 mb-md-0">
-                <div class="card shadow-lg card-highlight border-warning animate__animated animate__fadeIn" style="background-color: #fff8e1;">
+                <div class="card shadow-lg card-highlight border-warning animate__animated animate__fadeIn" style="background-color: #ffe082;">
                     <div class="card-body">
                         <h5 class="card-title dashboard-title">
                             <i class="fas fa-ticket-alt"></i> Recent Tickets (My Tickets)
@@ -274,33 +274,33 @@
 
     /* Light background colors for cards */
     .card-highlight {
-        background-color: #e0f7fa !important; /* Light cyan background */
-        border: 5px solid #1e88e5; /* Thicker light blue border */
+        background-color: #b2ebf2 !important; /* Darker cyan background */
+        border: 5px solid #00796b; /* Thicker dark teal border */
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for highlights */
     }
 
     .card-gradient-leads {
-        background-color: #f1f8e9 !important; /* Light green background */
-        border: 5px solid #43a047; /* Thicker green border */
-        box-shadow: 0 4px 15px rgba(0, 128, 0, 0.2); /* Green shadow */
+        background-color: #aed581 !important; /* Darker green background */
+        border: 5px solid #388e3c; /* Thicker dark green border */
+        box-shadow: 0 4px 15px rgba(0, 100, 0, 0.2); /* Dark green shadow */
     }
 
     .card-gradient-clients {
-        background-color: #e3f2fd !important; /* Light blue background */
-        border: 5px solid #1e88e5; /* Thicker blue border */
+        background-color: #64b5f6 !important; /* Darker blue background */
+        border: 5px solid #1e88e5; /* Thicker dark blue border */
         box-shadow: 0 4px 15px rgba(30, 136, 229, 0.2); /* Blue shadow */
     }
 
     .card-gradient-tickets {
-        background-color: #fff8e1 !important; /* Light yellow background */
-        border: 5px solid #f57c00; /* Thicker orange border */
+        background-color: #ffd54f !important; /* Darker yellow background */
+        border: 5px solid #f57c00; /* Thicker dark orange border */
         box-shadow: 0 4px 15px rgba(255, 165, 0, 0.2); /* Orange shadow */
     }
 
     .card-gradient-overdues {
-        background-color: #ffebee !important; /* Light red background */
-        border: 5px solid #e53935; /* Thicker red border */
-        box-shadow: 0 4px 15px rgba(229, 57, 53, 0.2); /* Red shadow */
+        background-color: #ef9a9a !important; /* Darker red background */
+        border: 5px solid #c62828; /* Thicker dark red border */
+        box-shadow: 0 4px 15px rgba(198, 40, 40, 0.2); /* Red shadow */
     }
 </style>
 {% endblock %}
@@ -365,8 +365,8 @@
                 labels: ['Leads'],
                 datasets: [{
                     data: [{{ total_leads }}, 100 - {{ total_leads }}],
-                    backgroundColor: ['#4caf50', '#ccc'],
-                    hoverBackgroundColor: ['#66bb6a', '#ddd']
+                    backgroundColor: ['#388e3c', '#444444'], // Darker green and dark gray
+                    hoverBackgroundColor: ['#2e7d32', '#333333'] // Even darker shades
                 }]
             },
             options: {
@@ -381,8 +381,8 @@
                 labels: ['Clients'],
                 datasets: [{
                     data: [{{ total_clients }}, 100 - {{ total_clients }}],
-                    backgroundColor: ['#2196f3', '#ccc'],
-                    hoverBackgroundColor: ['#42a5f5', '#ddd']
+                    backgroundColor: ['#1976d2', '#444444'], // Darker blue and dark gray
+                    hoverBackgroundColor: ['#1565c0', '#333333'] // Even darker shades
                 }]
             },
             options: {
@@ -397,8 +397,8 @@
                 labels: ['Open Tickets'],
                 datasets: [{
                     data: [{{ open_tickets }}, 100 - {{ open_tickets }}],
-                    backgroundColor: ['#ff9800', '#ccc'],
-                    hoverBackgroundColor: ['#ffb74d', '#ddd']
+                    backgroundColor: ['#f57c00', '#444444'], // Darker orange and dark gray
+                    hoverBackgroundColor: ['#e65100', '#333333'] // Even darker shades
                 }]
             },
             options: {
@@ -413,8 +413,8 @@
                 labels: ['Over Dues'],
                 datasets: [{
                     data: [{{ closed_deals }}, 100 - {{ closed_deals }}],
-                    backgroundColor: ['#f44336', '#ccc'],
-                    hoverBackgroundColor: ['#e57373', '#ddd']
+                    backgroundColor: ['#d32f2f', '#444444'], // Darker red and dark gray
+                    hoverBackgroundColor: ['#c62828', '#333333'] // Even darker shades
                 }]
             },
             options: {
