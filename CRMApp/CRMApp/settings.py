@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'channels',
     'crispy_forms',
     'crispy_bootstrap4',
-    #'unfold',
+    # 'unfold',
     #'jazzmin',
     'django_otp',
     'django_otp.plugins.otp_email',

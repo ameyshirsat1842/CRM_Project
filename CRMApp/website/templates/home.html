@@ -10,7 +10,7 @@
         <!-- Meetings Today -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow-sm gradient-card-blue border-0 animate__animated animate__fadeIn">
+                <div class="card shadow-lg gradient-card-blue border-0 animate__animated animate__fadeIn">
                     <div class="card-body text-center">
                         <h5 class="card-title">Meetings Today</h5>
                         <p class="card-text display-4">{{ meetings_today|length }}</p>
@@ -21,7 +21,7 @@
                                         <strong>{{ meeting.client_name }}</strong> from <em>{{ meeting.company }}</em>
                                         <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y" }}</span>
                                     </div>
-                                    <button class="btn btn-primary btn-sm" onclick="openModal('{{ meeting.client_name }}', 'https://us05web.zoom.us/s/83827104906#success')">Join Zoom</button>
+                                    <a class="btn btn-primary btn-sm" href="https://us05web.zoom.us/s/83827104906#success" target="_blank">Join Zoom</a>
                                 </li>
                             {% empty %}
                                 <li class="list-group-item">No meetings scheduled for today.</li>
@@ -35,7 +35,7 @@
         <!-- Upcoming Meetings -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow-sm gradient-card-purple border-0 animate__animated animate__fadeIn">
+                <div class="card shadow-lg gradient-card-purple border-0 animate__animated animate__fadeIn">
                     <div class="card-body text-center">
                         <h5 class="card-title">Upcoming Meetings</h5>
                         <p class="card-text display-4">{{ upcoming_meetings|length }}</p>
@@ -46,7 +46,7 @@
                                         <strong>{{ meeting.client_name }}</strong> from <em>{{ meeting.company }}</em>
                                         <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y" }}</span>
                                     </div>
-                                    <button class="btn btn-outline-primary btn-sm" onclick="openModal('{{ meeting.client_name }}', 'https://outlook.live.com/calendar/0/view/month')">Open in Outlook</button>
+                                    <a class="btn btn-primary btn-sm" href="https://outlook.live.com/calendar/0/view/month" target="_blank">Open in Outlook</a>
                                 </li>
                             {% empty %}
                                 <li class="list-group-item">No upcoming meetings.</li>
@@ -185,12 +185,14 @@
         background: #4a90e2;
         color: white;
         border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Add shadow */
     }
 
     .gradient-card-purple {
         background: #7e57c2;
         color: white;
         border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Add shadow */
     }
 
     .gradient-card-green {
