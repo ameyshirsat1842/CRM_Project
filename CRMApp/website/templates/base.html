@@ -207,6 +207,10 @@
             <div class="side-panel">
                 <div class="list-group list-group-flush">
                     <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard">Dashboard</a>
+                    {% if user.is_staff %}
+                    <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action">Admin Panel</a>
+                    <a href="{% url 'admin_dashboard' %}" class="list-group-item list-group-item-action active dashboard">Admin Dashboard</a>
+                    {% endif %}
                     <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action">Connections</a>
                     <a href="{% url 'leads' %}" class="list-group-item list-group-item-action">Leads</a>
                     <a href="{% url 'customers' %}" class="list-group-item list-group-item-action">Customers</a>
@@ -216,9 +220,7 @@
                     <a href="{% url 'reports' %}" class="list-group-item list-group-item-action">Reports</a>
                     <a href="{% url 'notifications' %}" class="list-group-item list-group-item-action">Notifications</a>
                     <a href="{% url 'update_user_info' %}" class="list-group-item list-group-item-action">Edit Profile</a>
-                    {% if user.is_staff %}
-                    <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action">Admin Panel</a>
-                    {% endif %}
+
                     <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Logout</a>
                 </div>
                 <!-- Hold Switch -->

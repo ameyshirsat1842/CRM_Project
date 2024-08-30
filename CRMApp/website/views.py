@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator
 from django.db import IntegrityError
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
@@ -878,6 +878,7 @@ def delete_account(request):
 
 
 def reports(request):
+    # Get selected filters from the request
     selected_period = request.GET.get('period', 'all')
     selected_classification = request.GET.get('classification', 'all')
     selected_user = request.GET.get('user', 'all')
@@ -892,24 +893,65 @@ def reports(request):
     else:
         start_date = None  # No date filter for 'all'
 
+    # Query for all records initially
     records = Record.objects.all()
+    customers = Customer.objects.all()
 
+    # Apply time filter if a start date is defined
     if start_date:
         records = records.filter(created_at__gte=start_date)
+        customers = customers.filter(created_at__gte=start_date)
 
+    # Apply classification filter if a specific classification is selected
     if selected_classification != 'all':
         records = records.filter(classification=selected_classification)
+        customers = customers.filter(classification=selected_classification)
 
+    # Apply user filter if a specific user is selected
     if selected_user != 'all':
         records = records.filter(assigned_to_id=selected_user)
 
+    # Calculate counts for different categories
+    overdues_count = Record.objects.filter(assigned_to=request.user, classification='in_progress').count()
+    leads_count = records.count()
+    converted_count = customers.filter(classification='prospect').count()
+
     context = {
         'records': records,
+        'customers': customers,
         'users': User.objects.all(),
         'selected_period': selected_period,
         'selected_classification': selected_classification,
         'selected_user': selected_user,
-        # Add additional context data here
+        'overdues_count': overdues_count,
+        'leads_count': leads_count,
+        'converted_count': converted_count,
     }
 
     return render(request, 'reports.html', context)
+
+
+def admin_dashboard(request):
+
+    # Aggregating data for the dashboard
+    total_leads = Record.objects.count()
+    total_customers = Customer.objects.count()
+    total_users = User.objects.count()
+
+    # For example, calculate leads from the last 30 days
+    recent_leads = Record.objects.filter(created_at__gte=timezone.now() - timedelta(days=30)).count()
+    overdue_leads = Record.objects.filter(follow_up_date__lt=timezone.now(), classification='in_progress').count()
+
+    # Use the correct related field name
+    top_users = User.objects.annotate(num_leads=Count('assigned_leads')).order_by('-num_leads')[:5]
+
+    context = {
+        'total_leads': total_leads,
+        'total_customers': total_customers,
+        'total_users': total_users,
+        'recent_leads': recent_leads,
+        'overdue_leads': overdue_leads,
+        'top_users': top_users,
+    }
+
+    return render(request, 'admin_dashboard.html', context)

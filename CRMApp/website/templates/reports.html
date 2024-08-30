@@ -29,6 +29,7 @@
                     <option value="dead" {% if selected_classification == 'dead' %}selected{% endif %}>Dead Leads</option>
                     <option value="in_progress" {% if selected_classification == 'in_progress' %}selected{% endif %}>In Progress</option>
                     <option value="over_due" {% if selected_classification == 'over_due' %}selected{% endif %}>Over Dues</option>
+                    <option value="converted" {% if selected_classification == 'converted' %}selected{% endif %}>Converted</option>
                 </select>
             </div>
             <div class="col-md-4">
@@ -76,7 +77,7 @@
                     Result
                 </div>
                 <div class="card-body">
-                    <div class="card mb-3" onclick="applyFilter('classification', 'converted')">
+                    <div class="card mb-3" onclick="showConvertedLeads()">
                         <div class="card-body text-center">
                             <h5 class="card-title">Converted Leads</h5>
                             <p class="card-text display-4">{{ converted_count }}</p>
@@ -90,7 +91,7 @@
 
     <!-- Report Table -->
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-striped" id="reportTable">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -101,9 +102,9 @@
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="reportTableBody">
                 {% for record in records %}
-                    <tr>
+                    <tr class="{% if record.classification == 'converted' %}converted-lead{% endif %}">
                         <td><a href="{% url 'record' record.id %}">{{ record.id }}</a></td>
                         <td><a href="{% url 'record' record.id %}">{{ record.client_name }}</a></td>
                         <td>{{ record.company }}</td>
@@ -155,6 +156,11 @@
     .bg-light-red {
         background-color: #f8d7da;
     }
+
+    /* Hide rows initially */
+    .converted-lead {
+        display: none;
+    }
 </style>
 
 <script>
@@ -166,6 +172,22 @@
     function updateFilter(filterType, filterValue) {
         document.getElementById(filterType).value = filterValue;
         document.getElementById('filterForm').submit();
+    }
+
+    function showConvertedLeads() {
+        // Apply filter to only show converted leads
+        applyFilter('classification', 'prospect');
+
+        // Optionally show/hide rows dynamically without reloading
+        const rows = document.querySelectorAll('#reportTable tbody tr');
+        rows.forEach(row => {
+            const statusCell = row.querySelector('td:last-child');
+            if (statusCell && statusCell.textContent.trim() !== 'Converted') {
+                row.style.display = 'none';
+            } else {
+                row.style.display = '';
+            }
+        });
     }
 </script>
 

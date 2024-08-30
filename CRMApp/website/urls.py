@@ -46,6 +46,7 @@ urlpatterns = [
     path('customers/update/<int:pk>/', views.update_customer, name='update_customer'),
     path('customers/delete/<int:pk>/', views.delete_customer, name='delete_customer'),
     path('customers/<int:customer_id>/', views.customer_detail, name='customer_detail'),
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
 
     # path('dashboard/', views.dashboard, name='dashboard'),
 ]
