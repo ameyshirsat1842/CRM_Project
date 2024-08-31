@@ -11,7 +11,7 @@
             <h5>Leads</h5>
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card shadow animate__animated animate__fadeIn">
                         <div class="card-body">
                             <table class="table table-striped">
                                 <thead>
@@ -65,7 +65,7 @@
             <h5>Customer Records</h5>
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card shadow animate__animated animate__fadeIn">
                         <div class="card-body">
                             <table class="table table-striped">
                                 <thead>
@@ -83,16 +83,16 @@
                                     {% for customer in customers %}
                                         <tr>
                                             <td>{{ customer.id }}</td>
-                                            <td>{{ customer.name }}</td>
+                                            <td>{{ customer.client_name }}</td> <!-- Adjusted field name -->
                                             <td>{{ customer.email }}</td>
                                             <td>{{ customer.phone }}</td>
                                             <td>{{ customer.company }}</td>
-                                            <td>{{ customer.joined_date|date:"F d, Y" }}</td>
+                                            <td>{{ customer.created_at|date:"F d, Y" }}</td> <!-- Adjusted field name -->
                                             <td>
                                                 <!-- View Details Button -->
-                                                <a href="{% url 'customer_record' customer.id %}" class="btn btn-sm btn-info">View</a>
+                                                <a href="{% url 'customer_detail' customer.id %}" class="btn btn-sm btn-info">View</a>
                                                 <!-- Edit Button -->
-                                                <a href="{% url 'update_customer_record' customer.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                                <a href="{% url 'update_customer' customer.id %}" class="btn btn-sm btn-warning">Edit</a>
                                             </td>
                                         </tr>
                                     {% empty %}
@@ -111,7 +111,7 @@
             <h5>Users</h5>
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card shadow animate__animated animate__fadeIn">
                         <div class="card-body">
                             <table class="table table-striped">
                                 <thead>
@@ -157,4 +157,25 @@
             Please <a href="{% url 'login' %}">login</a> to view the Master Database.
         </div>
     {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<!-- Add extra CSS for shadows and animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<style>
+    .shadow {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .btn-info, .btn-warning {
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .btn-info:hover, .btn-warning:hover {
+        transform: scale(1.05);
+    }
+</style>
 {% endblock %}

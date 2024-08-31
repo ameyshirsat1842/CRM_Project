@@ -858,10 +858,12 @@ def master_database(request):
     # Fetch all leads and users
     leads = Record.objects.all()
     users = User.objects.all()
+    customers = Customer.objects.all()
 
     context = {
         'leads': leads,
         'users': users,
+        'customers': customers
     }
 
     return render(request, 'master_database.html', context)

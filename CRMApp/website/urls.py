@@ -42,6 +42,7 @@ urlpatterns = [
     path('delete-account/', views.delete_account, name='delete_account'),  # Add this line
     path('reports/', reports, name='reports'),
     path('customers/', views.customers, name='customers'),
+    path('customer-detail/<int:customer_id>/', views.customer_detail, name='customer_detail'),
     path('move-to-customers/<int:record_id>/', views.move_to_customers, name='move_to_customers'),
     path('customers/update/<int:pk>/', views.update_customer, name='update_customer'),
     path('customers/delete/<int:pk>/', views.delete_customer, name='delete_customer'),

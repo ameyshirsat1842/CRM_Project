@@ -8,13 +8,13 @@
 
             <!-- Buttons for Filtering Options -->
             <div>
-                <a href="{% url 'customers' %}" class="btn btn-secondary mb-2 {% if not request.GET.status and not request.GET.filter %}active highlighted{% endif %}">
+                <a href="{% url 'customers' %}" class="btn btn-secondary mb-2 {% if not request.GET.classification and not request.GET.filter %}active highlighted{% endif %}">
                     All
                 </a>
-                <a href="{% url 'customers' %}?status=active" class="btn btn-success mb-2 {% if request.GET.status == 'active' %}active highlighted{% endif %}">
+                <a href="{% url 'customers' %}?classification=active" class="btn btn-success mb-2 {% if request.GET.classification == 'active' %}active highlighted{% endif %}">
                     Active
                 </a>
-                <a href="{% url 'customers' %}?status=inactive" class="btn btn-danger mb-2 {% if request.GET.status == 'inactive' %}active highlighted{% endif %}">
+                <a href="{% url 'customers' %}?classification=inactive" class="btn btn-danger mb-2 {% if request.GET.classification == 'inactive' %}active highlighted{% endif %}">
                     Inactive
                 </a>
                 <a href="{% url 'customers' %}?filter=assigned_to_me" class="btn btn-primary mb-2 {% if request.GET.filter == 'assigned_to_me' %}active highlighted{% endif %}">
