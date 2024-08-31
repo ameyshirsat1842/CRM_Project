@@ -469,7 +469,7 @@ def customers(request):
     filter_option = request.GET.get('filter', '')
 
     # Base queryset for filtering customers created by the logged-in user
-    customers_list = Customer.objects.filter(created_by=request.user)
+    customers_list = Customer.objects.all()
 
     # Apply search filter if provided
     if search_query:
@@ -527,7 +527,7 @@ def move_to_customers(request, record_id):
             lead_source=record.lead_source,
             remarks=record.remarks,
             comments=record.comments,
-            created_by=request.user,
+            created_by=record.created_by,
             created_at=record.created_at,
             last_modified_by=record.last_modified_by,
             classification=customer_classification,  # Use the mapped classification

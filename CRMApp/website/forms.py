@@ -352,7 +352,7 @@ class CustomerUpdateForm(forms.ModelForm):
         fields = [
             'company', 'client_name', 'phone', 'email', 'address', 'city',
             'dept_name', 'lead_source', 'remarks', 'comments', 'assigned_to',
-            'classification', 'bank_details', 'gst_number'  # Added new fields
+            'classification', 'bank_details', 'gst_number'
         ]
         widgets = {
             'address': forms.Textarea(attrs={'rows': 3}),
