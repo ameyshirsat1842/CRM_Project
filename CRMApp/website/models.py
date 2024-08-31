@@ -90,11 +90,11 @@ class Customer(models.Model):
         choices=[
             ('active', 'Active'),
             ('inactive', 'Inactive'),
-            ('prospect', 'Prospect'),
+            ('converted', 'Converted'),
             ('lead', 'Lead'),
             ('customer', 'Customer'),
         ],
-        default='prospect'
+        default='Converted'
     )
     # New fields for additional details
     bank_details = models.CharField(max_length=255, blank=True, null=True)

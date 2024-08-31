@@ -914,9 +914,9 @@ def reports(request):
         records = records.filter(assigned_to_id=selected_user)
 
     # Calculate counts for different categories
-    overdues_count = Record.objects.filter(assigned_to=request.user, classification='in_progress').count()
-    leads_count = records.count()
-    converted_count = customers.filter(classification='prospect').count()
+    overdues_count = records.filter(follow_up_date__lt=timezone.now(), classification='in_progress').count()
+    leads_count = records.count()  # Total leads count
+    converted_count = customers.filter(classification='converted').count()  # Correct classification filter
 
     context = {
         'records': records,
