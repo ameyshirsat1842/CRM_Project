@@ -944,6 +944,16 @@ def admin_dashboard(request):
     recent_leads = Record.objects.filter(created_at__gte=timezone.now() - timedelta(days=30)).count()
     overdue_leads = Record.objects.filter(follow_up_date__lt=timezone.now(), classification='in_progress').count()
 
+    # New: User-wise leads
+    users = User.objects.all()
+    user_leads = []
+    for user in users:
+        leads = Record.objects.filter(assigned_to=user)
+        user_leads.append({
+            'user': user,
+            'num_leads': leads.count(),
+            'leads': leads
+        })
     # Use the correct related field name
     top_users = User.objects.annotate(num_leads=Count('assigned_leads')).order_by('-num_leads')[:5]
 
@@ -954,6 +964,8 @@ def admin_dashboard(request):
         'recent_leads': recent_leads,
         'overdue_leads': overdue_leads,
         'top_users': top_users,
+        'user_leads': user_leads,  # Added user-wise leads
     }
 
     return render(request, 'admin_dashboard.html', context)
+

@@ -152,7 +152,7 @@ OTP_EMAIL_BODY_TEMPLATE = 'Your OTP is: %(token)s'
 CELERY_BEAT_SCHEDULE = {
     'send-follow-up-alerts-daily': {
         'task': 'website.tasks.send_follow_up_alerts',
-        'schedule': crontab(hour=0, minute=0),  # Adjust the timing as needed
+        'schedule': crontab(hour='8,12,3'),  # Runs at 8:15 AM, 12:15 PM, and 6:15 PM
     },
 }
 

@@ -6,34 +6,34 @@
 
     <div class="row">
         <div class="col-md-3">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header">Total Leads</div>
+            <div class="card bg-light text-dark mb-4 shadow-lg card-hover">
+                <div class="card-header text-primary">Total Leads</div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ total_leads }}</h5>
+                    <h5 class="card-title display-4">{{ total_leads }}</h5>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-header">Total Customers</div>
+            <div class="card bg-light text-dark mb-4 shadow-lg card-hover">
+                <div class="card-header text-success">Total Customers</div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ total_customers }}</h5>
+                    <h5 class="card-title display-4">{{ total_customers }}</h5>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-info mb-3">
-                <div class="card-header">Total Users</div>
+            <div class="card bg-light text-dark mb-4 shadow-lg card-hover">
+                <div class="card-header text-info">Total Users</div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ total_users }}</h5>
+                    <h5 class="card-title display-4">{{ total_users }}</h5>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-warning mb-3">
-                <div class="card-header">Recent Leads (Last 30 days)</div>
+            <div class="card bg-light text-dark mb-4 shadow-lg card-hover">
+                <div class="card-header text-warning">Recent Leads (Last 30 days)</div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ recent_leads }}</h5>
+                    <h5 class="card-title display-4">{{ recent_leads }}</h5>
                 </div>
             </div>
         </div>
@@ -41,28 +41,100 @@
 
     <div class="row">
         <div class="col-md-6">
-            <div class="card mb-3">
+            <div class="card bg-light text-dark mb-4 shadow-lg card-hover">
                 <div class="card-header bg-danger text-white">Overdue Leads</div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ overdue_leads }}</h5>
+                    <h5 class="card-title display-4">{{ overdue_leads }}</h5>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-header bg-secondary text-white">Top Users by Leads Assigned</div>
+    </div>
+
+    <!-- User-wise Leads Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-light text-dark mb-4 shadow-lg">
+                <div class="card-header bg-dark text-white">User-wise Leads</div>
                 <div class="card-body">
-                    <ul class="list-group">
-                        {% for user in top_users %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ user.username }}
-                            <span class="badge bg-primary rounded-pill">{{ user.num_leads }}</span>
-                        </li>
-                        {% endfor %}
-                    </ul>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Number of Leads</th>
+                                <th>Leads Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in user_leads %}
+                            <tr>
+                                <td>{{ entry.user.username }}</td>
+                                <td>{{ entry.num_leads }}</td>
+                                <td>
+                                    <!-- Expand/Collapse to show leads -->
+                                    <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#leads-{{ entry.user.id }}" aria-expanded="false" aria-controls="leads-{{ entry.user.id }}">
+                                        View Leads
+                                    </button>
+                                    <div class="collapse" id="leads-{{ entry.user.id }}">
+                                        <ul class="list-group mt-2">
+                                            {% for lead in entry.leads %}
+                                            <li class="list-group-item">
+                                                <strong>{{ lead.client_name }}</strong> - {{ lead.company }} ({{ lead.created_at|date:"F d, Y" }})
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+{% block extra_css %}
+<style>
+    .card-hover {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        border-radius: 10px;
+    }
+
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Increased shadow depth on hover */
+    }
+
+    .card-title {
+        font-size: 2rem; /* Increase the font size for card titles */
+        margin-bottom: 0;
+        color: #343a40; /* Darker text for card titles */
+    }
+
+    .card-header {
+        font-weight: bold;
+    }
+
+    .list-group-item {
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .badge {
+        font-size: 1rem; /* Slightly larger badges for better readability */
+    }
+
+    .shadow-sm {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    }
+
+    .shadow-lg {
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Enhanced shadow for more depth */
+    }
+</style>
+{% endblock %}
 {% endblock %}

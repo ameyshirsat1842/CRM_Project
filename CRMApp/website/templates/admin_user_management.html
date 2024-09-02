@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">User Management</h1>
+
+    <!-- User Table -->
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Admin</th>
+                    <th>Staff</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.is_superuser %}
+                            Yes
+                        {% else %}
+                            No
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.is_staff %}
+                            Yes
+                        {% else %}
+                            No
+                        {% endif %}
+                    </td>
+                    <td>
+                        <!-- Toggle Admin Status -->
+                        <form action="{% url 'toggle_admin_status' user.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            {% if user.is_superuser %}
+                                <button type="submit" class="btn btn-warning btn-sm">Revoke Admin</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-success btn-sm">Make Admin</button>
+                            {% endif %}
+                        </form>
+
+                        <!-- Toggle Staff Status -->
+                        <form action="{% url 'toggle_staff_status' user.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            {% if user.is_staff %}
+                                <button type="submit" class="btn btn-warning btn-sm">Revoke Staff</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-success btn-sm">Make Staff</button>
+                            {% endif %}
+                        </form>
+
+                        <!-- Delete User -->
+                        <form action="{% url 'delete_user' user.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
