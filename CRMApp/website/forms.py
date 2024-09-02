@@ -306,13 +306,13 @@ class AddMeetingRecordForm(forms.ModelForm):
     speaker = forms.ModelChoiceField(
         queryset=User.objects.all(),
         required=True,
-        widget=forms.Select(attrs={"class": "form-control"}),
+        widget=forms.Select(attrs={"class": "form-control"}),  # Corrected to use Select widget
         label="Speaker"
     )
     attendees = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={"class": "form-control"}),
+        widget=forms.CheckboxSelectMultiple(),  # Removed 'class' attribute as it's not needed
         label="Attendees"
     )
     meeting_location = forms.CharField(

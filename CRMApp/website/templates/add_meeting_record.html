@@ -2,111 +2,118 @@
 
 {% block content %}
 <div class="container mt-4">
-    <br>
     <h1>Add Meeting Record for {{ record.client_name }}</h1>
-    <br/>
-    <form method="POST">
+    <form method="POST" class="mt-4">
         {% csrf_token %}
 
+        <!-- Meeting Partner Field -->
         <div class="form-group row">
             <label for="id_meeting_partner" class="col-sm-3 col-form-label">Company:</label>
             <div class="col-sm-9">
                 {{ form.meeting_partner }}
                 {% if form.meeting_partner.errors %}
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback d-block">
                         {{ form.meeting_partner.errors|striptags }}
                     </div>
                 {% endif %}
             </div>
         </div>
 
+        <!-- Products Discussed by Partner Field -->
         <div class="form-group row">
             <label for="id_products_discussed_partner" class="col-sm-3 col-form-label">Products Discussed by Partner:</label>
             <div class="col-sm-9">
                 {{ form.products_discussed_partner }}
                 {% if form.products_discussed_partner.errors %}
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback d-block">
                         {{ form.products_discussed_partner.errors|striptags }}
                     </div>
                 {% endif %}
             </div>
         </div>
 
+        <!-- Products Discussed by Company Field -->
         <div class="form-group row">
             <label for="id_products_discussed_company" class="col-sm-3 col-form-label">Products Discussed by Company:</label>
             <div class="col-sm-9">
                 {{ form.products_discussed_company }}
                 {% if form.products_discussed_company.errors %}
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback d-block">
                         {{ form.products_discussed_company.errors|striptags }}
                     </div>
                 {% endif %}
             </div>
         </div>
 
+        <!-- Conclusion Field -->
         <div class="form-group row">
             <label for="id_conclusion" class="col-sm-3 col-form-label">Conclusion:</label>
             <div class="col-sm-9">
                 {{ form.conclusion }}
                 {% if form.conclusion.errors %}
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback d-block">
                         {{ form.conclusion.errors|striptags }}
                     </div>
                 {% endif %}
             </div>
         </div>
 
+        <!-- Follow-Up Date Field -->
         <div class="form-group row">
             <label for="id_follow_up_date" class="col-sm-3 col-form-label">Follow-Up Date:</label>
             <div class="col-sm-9">
                 {{ form.follow_up_date }}
                 {% if form.follow_up_date.errors %}
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback d-block">
                         {{ form.follow_up_date.errors|striptags }}
                     </div>
                 {% endif %}
             </div>
         </div>
 
+        <!-- Speaker Field -->
         <div class="form-group row">
             <label for="id_speaker" class="col-sm-3 col-form-label">Speaker:</label>
             <div class="col-sm-9">
                 {{ form.speaker }}
                 {% if form.speaker.errors %}
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback d-block">
                         {{ form.speaker.errors|striptags }}
                     </div>
                 {% endif %}
             </div>
         </div>
 
+        <!-- Attendees Field with Checkboxes -->
         <div class="form-group row">
             <label for="id_attendees" class="col-sm-3 col-form-label">Attendees:</label>
             <div class="col-sm-9">
                 {{ form.attendees }}
                 {% if form.attendees.errors %}
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback d-block">
                         {{ form.attendees.errors|striptags }}
                     </div>
                 {% endif %}
             </div>
         </div>
-        <br>
+
+        <!-- Meeting Location Field -->
         <div class="form-group row">
             <label for="id_meeting_location" class="col-sm-3 col-form-label">Meeting Location:</label>
             <div class="col-sm-9">
                 {{ form.meeting_location }}
                 {% if form.meeting_location.errors %}
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback d-block">
                         {{ form.meeting_location.errors|striptags }}
                     </div>
                 {% endif %}
             </div>
         </div>
-        <br>
-        <div class="form-group row">
+
+        <!-- Buttons -->
+        <div class="form-group row mt-3">
             <div class="col-sm-9 offset-sm-3">
-                <button class="btn btn-primary" onclick="window.history.back()">Back</button>
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
                 <button type="submit" class="btn btn-primary">Add Record</button>
             </div>
         </div>
