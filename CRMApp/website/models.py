@@ -1,31 +1,55 @@
 from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Record(models.Model):
+    # Fields
     DoesNotExist = None
     created_at = models.DateTimeField(auto_now_add=True)
-    company = models.CharField(max_length=50)
-    client_name = models.CharField(max_length=50)
-    dept_name = models.CharField(max_length=50)
-    phone = models.CharField(max_length=10,
-                             validators=[RegexValidator(r'^\d{10}$', message="Phone number must be 10 digits.")])
+    company = models.CharField(max_length=50, null=True, blank=True)
+    client_name = models.CharField(max_length=50, null=True, blank=True)
+    dept_name = models.CharField(max_length=50, null=True, blank=True)
+    phone = models.CharField(
+        max_length=10,
+        validators=[RegexValidator(r'^\d{10}$', message="Phone number must be 10 digits.")]
+    )
     email = models.EmailField(max_length=100)
-    city = models.CharField(max_length=50)
-    address = models.CharField(max_length=200)
-    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_leads', null=True,
-                                    blank=True)
-    last_modified_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='modified_records', null=True,
-                                         blank=True)
+    city = models.CharField(max_length=50, null=True, blank=True)
+    address = models.CharField(max_length=200, null=True, blank=True)
+    assigned_to = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='assigned_leads',
+        null=True,
+        blank=True
+    )
+    last_modified_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='modified_records',
+        null=True,
+        blank=True
+    )
     follow_up_date = models.DateField(null=True, blank=True)
-    comments = models.CharField(max_length=200)
-    remarks = models.CharField(max_length=200)
+    comments = models.CharField(max_length=200, null=True, blank=True)
+    remarks = models.CharField(max_length=200, null=True, blank=True)
     visible_to = models.ManyToManyField(User, related_name='visible_tickets', blank=True)
-    attachments = models.FileField(upload_to='attachments/', null=True, blank=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_records', null=True)
+    attachments = models.FileField(
+        upload_to='attachments/',
+        null=True,
+        blank=True
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='created_records',
+        null=True
+    )
     social_media_details = models.TextField(null=True, blank=True)
 
+    # Classification Choices
     CLASSIFICATION_CHOICES = (
         ('assigned', 'Assigned'),
         ('unassigned', 'Unassigned'),
@@ -34,6 +58,7 @@ class Record(models.Model):
     )
     classification = models.CharField(max_length=20, choices=CLASSIFICATION_CHOICES, default='unassigned')
 
+    # Lead Source Choices
     LEAD_SOURCE_CHOICES = [
         ('BNI Connect', 'BNI Connect'),
         ('LinkedIn', 'LinkedIn'),
@@ -44,18 +69,42 @@ class Record(models.Model):
         ('Social Media', 'Social Media'),
         ('Other Source', 'Other Source'),
     ]
-    lead_source = models.CharField(max_length=50, choices=LEAD_SOURCE_CHOICES, blank=True, null=True)
+    lead_source = models.CharField(
+        max_length=50,
+        choices=LEAD_SOURCE_CHOICES,
+        blank=True,
+        null=True,
+        default='Other Source'
+    )
 
     objects = models.Manager()  # Default manager
 
+    # String representation
     def __str__(self):
-        return f"{self.company} - {self.client_name}"
+        return f"Record({self.company}, {self.client_name}, {self.phone})"
 
+    # Meta options
     class Meta:
+        verbose_name = 'Record'
+        verbose_name_plural = 'Records'
         indexes = [
             models.Index(fields=['assigned_to']),
             models.Index(fields=['created_at']),
         ]
+
+    # Custom methods and properties
+    @property
+    def full_address(self):
+        """Returns the full address including city."""
+        return f"{self.address}, {self.city}"
+
+    def get_follow_up_status(self):
+        """Returns the follow-up status based on the follow-up date."""
+        if self.follow_up_date:
+            if self.follow_up_date < timezone.now().date():
+                return "Overdue"
+            return "Upcoming"
+        return "No follow-up scheduled"
 
 
 class Customer(models.Model):
@@ -217,4 +266,3 @@ class Comment(models.Model):
     text = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    

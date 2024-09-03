@@ -192,6 +192,7 @@ def add_record(request):
             # Create and save the record
             record = form.save(commit=False)
             record.created_by = request.user
+            record.last_modified_by = request.user
             record.save()
 
             # Handle visibility settings
@@ -611,37 +612,6 @@ def send_notification_to_user(user, message):
     )
 
 
-# def dashboard(request):
-#     # Get data for key metrics
-#     total_leads = Record.objects.count()
-#     total_clients = Record.objects.values('client_name').distinct().count()
-#     open_tickets = Ticket.objects.filter(status='Open').count()
-#     closed_deals = Record.objects.filter(classification='in_progress').count()
-#
-#     # Get recent activities
-#     recent_leads = Record.objects.order_by('-created_at')[:5]
-#     recent_tickets = Ticket.objects.order_by('-created_at')[:5]
-#
-#     # Get upcoming meetings based on follow-up dates
-#     upcoming_meetings = Record.objects.filter(follow_up_date__gte=timezone.now()).order_by('follow_up_date')[:5]
-#
-#     # Notifications for the logged-in user
-#     notifications = Notification.objects.unread_for_user(request.user)
-#
-#     context = {
-#         'total_leads': total_leads,
-#         'total_clients': total_clients,
-#         'open_tickets': open_tickets,
-#         'closed_deals': closed_deals,
-#         'recent_leads': recent_leads,
-#         'recent_tickets': recent_tickets,
-#         'upcoming_meetings': upcoming_meetings,
-#         'notifications': notifications,
-#     }
-#
-#     return render(request, 'home.html', context)
-
-
 def export_record_to_excel(request, record_id):
     try:
         # Fetch the record by ID
@@ -653,10 +623,7 @@ def export_record_to_excel(request, record_id):
         else:
             created_at = record.created_at
 
-        if record.follow_up_date:
-            follow_up_date = record.follow_up_date
-        else:
-            follow_up_date = None
+        follow_up_date = record.follow_up_date if record.follow_up_date else None
 
         # Convert the record to a DataFrame
         data = {
@@ -668,12 +635,12 @@ def export_record_to_excel(request, record_id):
             'Email': [record.email],
             'City': [record.city],
             'Address': [record.address],
-            'Follow-Up Date': [follow_up_date],
+            'Follow-Up': [follow_up_date],
             'Comments': [record.comments],
             'Remarks': [record.remarks],
             'Attachments': [record.attachments.name if record.attachments else 'No attachments'],
             'Assigned To': [record.assigned_to.username if record.assigned_to else 'N/A'],
-            'Created By': [record.created_by.username],
+            'Created By': [record.created_by.username if record.created_by else 'N/A'],
             'Social Media Details': [record.social_media_details],
             'Classification': [record.classification],
             'Lead Source': [record.lead_source],
@@ -686,12 +653,10 @@ def export_record_to_excel(request, record_id):
         with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
             df.to_excel(writer, index=False)
 
-        # Set the buffer position to the beginning
         buffer.seek(0)
 
         # Create the HttpResponse object
-        response = HttpResponse(buffer,
-                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response = HttpResponse(buffer, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = f'attachment; filename=record_{record_id}.xlsx'
 
         return response
@@ -756,8 +721,6 @@ def import_records_from_excel(request):
                         attachments=None,  # Handle file attachments separately if needed
                         assigned_to=User.objects.get(username=row.get('Assigned To')) if pd.notna(
                             row.get('Assigned To')) else None,
-                        created_by=User.objects.get(username=row.get('Created By')) if pd.notna(
-                            row.get('Created By')) else None,
                         social_media_details=row.get('Social Media Details'),
                         classification=row.get('Status'),
                         lead_source=row.get('Lead Source'),
@@ -784,13 +747,14 @@ def import_records_from_excel(request):
     return render(request, 'import_leads.html')
 
 
+    return render(request, 'import_leads.html')
+
+
 def export_leads(request):
-    # Extract query parameters for filtering
     search_query = request.GET.get('search', '')
     classification_filter = request.GET.get('classification', '')
     assigned_filter = request.GET.get('filter', '')
 
-    # Build the queryset with search and filters applied
     queryset = Record.objects.all()
 
     if search_query:
@@ -814,12 +778,10 @@ def export_leads(request):
     if assigned_filter == 'assigned_to_me':
         queryset = queryset.filter(assigned_to=request.user)
 
-    # Create the Excel workbook and worksheet
     workbook = Workbook()
     worksheet = workbook.active
     worksheet.title = 'Leads'
 
-    # Define the headers
     headers = [
         'ID', 'Company', 'Client Name', 'Department', 'Phone', 'Email',
         'City', 'Address', 'Comments', 'Remarks', 'Social Media Details',
@@ -827,7 +789,6 @@ def export_leads(request):
     ]
     worksheet.append(headers)
 
-    # Write data rows
     for record in queryset:
         worksheet.append([
             record.id, record.company, record.client_name, record.dept_name,
@@ -839,12 +800,10 @@ def export_leads(request):
             record.follow_up_date.strftime('%Y-%m-%d') if record.follow_up_date else ''
         ])
 
-    # Save workbook to a BytesIO stream
     stream = BytesIO()
     workbook.save(stream)
     stream.seek(0)
 
-    # Create HTTP response
     response = HttpResponse(stream, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=leads.xlsx'
     return response
