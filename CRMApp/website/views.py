@@ -514,7 +514,7 @@ def move_to_customers(request, record_id):
         elif record.classification == 'dead':
             customer_classification = 'inactive'
         else:
-            customer_classification = 'prospect'  # Default or fallback classification
+            customer_classification = 'Converted'  # Default or fallback classification
 
         # Create a new Customer instance from the Record
         customer = Customer(
