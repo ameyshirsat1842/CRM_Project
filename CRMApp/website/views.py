@@ -185,7 +185,8 @@ def add_record(request):
             email = form.cleaned_data.get("email")
 
             # Check if a record with the same phone number and email exists
-            if Record.objects.filter(phone=phone, email=email).exists():
+            existing_record = Record.objects.filter(phone=phone, email=email).first()
+            if existing_record:
                 messages.error(request, "A record with this phone number and email already exists.")
                 return render(request, 'add_record.html', {'form': form, 'users': User.objects.all()})
 
@@ -207,7 +208,7 @@ def add_record(request):
             messages.success(request, "Record added successfully!")
             return redirect('leads')
         else:
-            print(form.errors)
+            print(f"Form errors: {form.errors}")
             messages.error(request, "There was an error with the form. Please check the details and try again.")
     else:
         form = AddRecordForm(user=request.user)
@@ -642,7 +643,7 @@ def export_record_to_excel(request, record_id):
             'Assigned To': [record.assigned_to.username if record.assigned_to else 'N/A'],
             'Created By': [record.created_by.username if record.created_by else 'N/A'],
             'Social Media Details': [record.social_media_details],
-            'Classification': [record.classification],
+            'Status': [record.classification],
             'Lead Source': [record.lead_source],
             'Created At': [created_at],
         }
@@ -696,14 +697,8 @@ def import_records_from_excel(request):
             # Iterate over the rows in the DataFrame and create Record objects
             for index, row in df.iterrows():
                 try:
-                    created_at = row.get('Created')
-                    follow_up_date = row.get('Follow-Up')
-
-                    # Ensure proper conversion for dates
-                    if pd.notna(created_at):
-                        created_at = pd.to_datetime(created_at)
-                    if pd.notna(follow_up_date):
-                        follow_up_date = pd.to_datetime(follow_up_date)
+                    created_at = pd.to_datetime(row.get('Created'), errors='coerce')
+                    follow_up_date = pd.to_datetime(row.get('Follow-Up'), errors='coerce')
 
                     # Create or update the Record object
                     record = Record(
@@ -743,9 +738,6 @@ def import_records_from_excel(request):
             print("Error processing file:", str(e))
             messages.error(request, 'Error processing file. Please ensure the file is in the correct format.')
             return redirect('import_leads')
-
-    return render(request, 'import_leads.html')
-
 
     return render(request, 'import_leads.html')
 
