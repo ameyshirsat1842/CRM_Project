@@ -20,6 +20,7 @@
                     <option value="last_week" {% if selected_period == 'last_week' %}selected{% endif %}>Last Week</option>
                     <option value="last_month" {% if selected_period == 'last_month' %}selected{% endif %}>Last Month</option>
                     <option value="all" {% if selected_period == 'all' %}selected{% endif %}>All Time</option>
+                    <option value="custom" {% if selected_period == 'custom' %}selected{% endif %}>Custom</option>
                 </select>
             </div>
             <div class="col-md-4">
@@ -39,6 +40,18 @@
                         <option value="{{ user.id }}" {% if selected_user == user.id|stringformat:"s" %}selected{% endif %}>{{ user.username }}</option>
                     {% endfor %}
                 </select>
+            </div>
+        </div>
+
+        <!-- Custom Date Range Inputs (Only show when 'custom' period is selected) -->
+        <div class="row mb-3" id="customDateRange" style="{% if selected_period != 'custom' %}display: none;{% endif %}">
+            <div class="col-md-6">
+                <label for="startDate" class="form-label">Start Date:</label>
+                <input type="date" id="startDate" name="start_date" class="form-control" value="{{ custom_start_date }}">
+            </div>
+            <div class="col-md-6">
+                <label for="endDate" class="form-label">End Date:</label>
+                <input type="date" id="endDate" name="end_date" class="form-control" value="{{ custom_end_date }}">
             </div>
         </div>
     </form>
@@ -186,7 +199,6 @@
         font-size: 2rem;
         font-weight: bold;
     }
-
     .interactive-card {
         cursor: pointer;
         transition: transform 0.2s, box-shadow 0.2s;

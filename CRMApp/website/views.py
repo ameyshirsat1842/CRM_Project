@@ -835,16 +835,26 @@ def reports(request):
     selected_period = request.GET.get('period', 'all')
     selected_classification = request.GET.get('classification', 'all')
     selected_user = request.GET.get('user', 'all')
+    custom_start_date = request.GET.get('start_date', '')
+    custom_end_date = request.GET.get('end_date', '')
 
     # Define the time filter based on selected_period
-    if selected_period == 'last_3_days':
+    if selected_period == 'custom':
+        # Custom period selected
+        start_date = timezone.datetime.strptime(custom_start_date, '%Y-%m-%d').date() if custom_start_date else None
+        end_date = timezone.datetime.strptime(custom_end_date, '%Y-%m-%d').date() if custom_end_date else None
+    elif selected_period == 'last_3_days':
         start_date = timezone.now() - timedelta(days=3)
+        end_date = None
     elif selected_period == 'last_week':
         start_date = timezone.now() - timedelta(weeks=1)
+        end_date = None
     elif selected_period == 'last_month':
         start_date = timezone.now() - timedelta(days=30)
+        end_date = None
     else:
-        start_date = None  # No date filter for 'all'
+        start_date = None
+        end_date = None  # No date filter for 'all'
 
     # Query for all records initially
     records = Record.objects.all()
@@ -854,6 +864,9 @@ def reports(request):
     if start_date:
         records = records.filter(created_at__gte=start_date)
         customers = customers.filter(created_at__gte=start_date)
+    if end_date:
+        records = records.filter(created_at__lte=end_date)
+        customers = customers.filter(created_at__lte=end_date)
 
     # Apply classification filter if a specific classification is selected
     if selected_classification != 'all':
@@ -876,6 +889,8 @@ def reports(request):
         'selected_period': selected_period,
         'selected_classification': selected_classification,
         'selected_user': selected_user,
+        'custom_start_date': custom_start_date,
+        'custom_end_date': custom_end_date,
         'overdues_count': overdues_count,
         'leads_count': leads_count,
         'converted_count': converted_count,
