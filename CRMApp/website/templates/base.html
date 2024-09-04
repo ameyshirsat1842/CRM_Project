@@ -7,201 +7,201 @@
     <link rel="icon" href="/media/img/logo/favicon.ico" type="image/x-icon">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
-:root {
-    --side-panel-bg-color: #F0F8FF; /* Light blue color for the side panel */
-}
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />    <style>
+        :root {
+            --side-panel-bg-color: #F0F8FF; /* Light blue color for the side panel */
+        }
 
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-    background-color: #E0FFFF; /* Pale Turquoise */
-    background-image: linear-gradient(to bottom, #E0FFFF, #87CEFA); /* Gradient from Pale Turquoise to Light Sky Blue */
-}
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #E0FFFF; /* Pale Turquoise */
+            background-image: linear-gradient(to bottom, #E0FFFF, #87CEFA); /* Gradient from Pale Turquoise to Light Sky Blue */
+        }
 
-.container-fluid {
-    flex: 1;
-    display: flex;
-}
+        .container-fluid {
+            flex: 1;
+            display: flex;
+        }
 
-.row {
-    flex: 1;
-    display: flex;
-    flex-wrap: nowrap;
-}
+        .row {
+            flex: 1;
+            display: flex;
+            flex-wrap: nowrap;
+        }
 
-.custom-alert {
-    position: fixed;
-    top: 70px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1050;
-    width: auto;
-    max-width: 300px;
-    font-size: 0.8rem;
-    padding: 0.5rem 1.5rem;
-    animation: fadeIn 0.5s ease-out, fadeOut 0.5s ease-in 4s;
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for better visibility */
-}
+        .custom-alert {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1050;
+            width: auto;
+            max-width: 300px;
+            font-size: 0.8rem;
+            padding: 0.5rem 1.5rem;
+            animation: fadeIn 0.5s ease-out, fadeOut 0.5s ease-in 4s;
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for better visibility */
+        }
 
-.alert.alert-primary {
-    background-color: #d1ecf1; /* Light blue background for primary alerts */
-    border-color: #bee5eb; /* Light blue border */
-    color: #0c5460; /* Dark blue text */
-}
+        .alert.alert-primary {
+            background-color: #d1ecf1; /* Light blue background for primary alerts */
+            border-color: #bee5eb; /* Light blue border */
+            color: #0c5460; /* Dark blue text */
+        }
 
-.custom-alert .bi {
-    width: 1em;
-    height: 1em;
-}
+        .custom-alert .bi {
+            width: 1em;
+            height: 1em;
+        }
 
-.footer {
-    background-color: #FFFFFF;
-    background-image: url('/media/img/footer-img.png');
-    background-size: cover;
-    background-position: center top;
-    padding: 50px 0;
-    text-align: center;
-    animation: slideInUp 1s;
-    color: #003366;
-    min-height: 200px;
-}
+        .footer {
+            background-color: #FFFFFF;
+            background-image: url('/media/img/footer-img.png');
+            background-size: cover;
+            background-position: center top;
+            padding: 50px 0;
+            text-align: center;
+            animation: slideInUp 1s;
+            color: #003366;
+            min-height: 200px;
+        }
 
-.footer p {
-    margin-bottom: 0;
-    color: #003366;
-}
+        .footer p {
+            margin-bottom: 0;
+            color: #003366;
+        }
 
-.footer h3, .footer a {
-    color: #003366;
-}
+        .footer h3, .footer a {
+            color: #003366;
+        }
 
-.footer a {
-    text-decoration: none;
-}
+        .footer a {
+            text-decoration: none;
+        }
 
-.side-panel-container {
-    position: relative;
-}
+        .side-panel-container {
+            position: relative;
+        }
 
-.side-panel {
-    position: absolute;
-    top: 0;
-    left: -250px;
-    width: 250px;
-    height: 100%;
-    border-right: 1px solid #ddd;
-    background-color: var(--side-panel-bg-color);
-    transition: left 0.3s ease;
-    z-index: 1050;
-}
+        .side-panel {
+            position: absolute;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            border-right: 1px solid #ddd;
+            background-color: var(--side-panel-bg-color);
+            transition: left 0.3s ease;
+            z-index: 1050;
+        }
 
-.side-panel-container:hover .side-panel:not(.hold) {
-    left: 0;
-}
+        .side-panel-container:hover .side-panel:not(.hold) {
+            left: 0;
+        }
 
-.side-panel.hold {
-    left: 0 !important;
-}
+        .side-panel.hold {
+            left: 0 !important;
+        }
 
-.side-panel .list-group-item {
-    color: #000000;
-    transition: background-color 0.3s, color 0.3s;
-}
+        .side-panel .list-group-item {
+            color: #000000;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-.side-panel .list-group-item:hover {
-    background-color: #1d2b4a;
-    color: #ffffff;
-}
+        .side-panel .list-group-item:hover {
+            background-color: #1d2b4a;
+            color: #ffffff;
+        }
 
-.side-panel .list-group-item.dashboard {
-    color: #ffffff;
-}
+        .side-panel .list-group-item.dashboard {
+            color: #ffffff;
+        }
 
-.main-content {
-    flex: 1;
-    animation: fadeIn 1s;
-}
+        .main-content {
+            flex: 1;
+            animation: fadeIn 1s;
+        }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
 
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
-}
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
 
-@keyframes slideInUp {
-    from {
-        transform: translateY(100%);
-    }
-    to {
-        transform: translateY(0);
-    }
-}
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
 
-.button-group {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
 
-.button-group .btn {
-    margin: 0 10px;
-}
+        .button-group .btn {
+            margin: 0 10px;
+        }
 
-@media (max-width: 768px) {
-    .container-fluid {
-        flex-direction: column;
-    }
+        @media (max-width: 768px) {
+            .container-fluid {
+                flex-direction: column;
+            }
 
-    .side-panel {
-        width: 100%;
-        height: auto;
-        position: static;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-        left: 0;
-        background-color: #f8f9fa;
-    }
+            .side-panel {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                left: 0;
+                background-color: #f8f9fa;
+            }
 
-    .side-panel-container:hover .side-panel {
-        left: 0;
-    }
+            .side-panel-container:hover .side-panel {
+                left: 0;
+            }
 
-    .main-content {
-        flex: none;
-        width: 100%;
-        padding: 0 15px;
-    }
+            .main-content {
+                flex: none;
+                width: 100%;
+                padding: 0 15px;
+            }
 
-    .footer {
-        text-align: center;
-        padding: 20px 0;
-    }
+            .footer {
+                text-align: center;
+                padding: 20px 0;
+            }
 
-    .footer .row {
-        flex-direction: column;
-    }
+            .footer .row {
+                flex-direction: column;
+            }
 
-    .footer .col-md-4 {
-        margin-bottom: 20px;
-    }
-}
-
+            .footer .col-md-4 {
+                margin-bottom: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -217,22 +217,21 @@ body {
         <div class="col-md-2 side-panel-container">
             <div class="side-panel">
                 <div class="list-group list-group-flush">
-                    <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard">Dashboard</a>
+                    <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard"><i class="fas fa-home"></i> Dashboard</a>
                     {% if user.is_staff %}
-                    <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action">Admin Panel</a>
-                    <a href="{% url 'admin_dashboard' %}" class="list-group-item list-group-item-action active dashboard">Admin Dashboard</a>
+                    <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action"><i class="fas fa-user-shield"></i> Admin Panel</a>
+                    <a href="{% url 'admin_dashboard' %}" class="list-group-item list-group-item-action active dashboard"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a>
                     {% endif %}
-                    <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action">Connections</a>
-                    <a href="{% url 'leads' %}" class="list-group-item list-group-item-action">Leads</a>
-                    <a href="{% url 'customers' %}" class="list-group-item list-group-item-action">Customers</a>
-                    <a href="{% url 'meeting_records' %}" class="list-group-item list-group-item-action">Meetings</a>
-                    <a href="{% url 'tickets' %}" class="list-group-item list-group-item-action">Tickets</a>
-                    <a href="{% url 'master_database' %}" class="list-group-item list-group-item-action">Master Database</a>
-                    <a href="{% url 'reports' %}" class="list-group-item list-group-item-action">Reports</a>
-                    <a href="{% url 'notifications' %}" class="list-group-item list-group-item-action">Notifications</a>
-                    <a href="{% url 'update_user_info' %}" class="list-group-item list-group-item-action">Edit Profile</a>
-
-                    <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Logout</a>
+                    <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action"><i class="fas fa-users"></i> Connections</a>
+                    <a href="{% url 'leads' %}" class="list-group-item list-group-item-action"><i class="fas fa-address-card"></i> Leads</a>
+                    <a href="{% url 'customers' %}" class="list-group-item list-group-item-action"><i class="fas fa-user-friends"></i> Customers</a>
+                    <a href="{% url 'meeting_records' %}" class="list-group-item list-group-item-action"><i class="fas fa-calendar-alt"></i> Meetings</a>
+                    <a href="{% url 'tickets' %}" class="list-group-item list-group-item-action"><i class="fas fa-ticket-alt"></i> Tickets</a>
+                    <a href="{% url 'master_database' %}" class="list-group-item list-group-item-action"><i class="fas fa-database"></i> Master Database</a>
+                    <a href="{% url 'reports' %}" class="list-group-item list-group-item-action"><i class="fas fa-chart-line"></i> Reports</a>
+                    <a href="{% url 'notifications' %}" class="list-group-item list-group-item-action"><i class="fas fa-bell"></i> Notifications</a>
+                    <a href="{% url 'update_user_info' %}" class="list-group-item list-group-item-action"><i class="fas fa-user-edit"></i> Edit Profile</a>
+                    <a href="{% url 'logout' %}" class="list-group-item list-group-item-action"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
                 <!-- Hold Switch -->
                 <div class="form-check mt-3 ms-3">
@@ -248,18 +247,18 @@ body {
             <div class="container">
                 <!-- Display alerts -->
                 {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-primary custom-alert alert-dismissible fade show d-flex align-items-center shadow-sm rounded" role="alert">
-            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
-                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-            </svg>
-            <div class="flex-grow-1">
-                {{ message }}
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
+                {% for message in messages %}
+                <div class="alert alert-primary custom-alert alert-dismissible fade show d-flex align-items-center shadow-sm rounded" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <div class="flex-grow-1">
+                        {{ message }}
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
                 <!-- Main content block -->
                 {% block content %}
                 {% endblock %}
@@ -274,26 +273,26 @@ body {
         <div class="row">
             <div class="col-md-4">
                 <img src="https://tecstaq.com/wp-content/uploads/2023/06/Tecstaq-new-logo-transeparent.png" alt="Company Logo" width="150">
-                <p style="font-size: 1.1rem; color: black;">Mon-Sat: 8am-10pm</p>
+                <p style="font-size: 1.1rem; color: black;"><i class="fas fa-clock"></i> Mon-Sat: 8am-10pm</p>
                 <p style="color: black;"><i class="fas fa-phone"></i> 8104512303</p>
                 <p style="color: black;"><i class="fas fa-map-marker-alt"></i> 113 Shiv Sagar, Mumbai, India</p>
             </div>
             <div class="col-md-4">
                 <h3 style="font-size: 1.2rem; color: black;">Company</h3>
                 <ul class="list-unstyled" style="font-size: 1.1rem;">
-                    <li><a href="https://tecstaq.com/about-tecstaq-services/" style="color: black;">About Us</a></li>
-                    <li><a href="https://support.tecstaq.com/" style="color: black;">Support</a></li>
-                    <li><a href="https://tecstaq.com/contact/" style="color: black;">Contact Us</a></li>
-                    <li><a href="https://tecstaq.com/" style="color: black;">Home</a></li>
+                    <li><a href="https://tecstaq.com/about-tecstaq-services/" style="color: black;"><i class="fas fa-info-circle"></i> About Us</a></li>
+                    <li><a href="https://support.tecstaq.com/" style="color: black;"><i class="fas fa-headset"></i> Support</a></li>
+                    <li><a href="https://tecstaq.com/contact/" style="color: black;"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                    <li><a href="https://tecstaq.com/" style="color: black;"><i class="fas fa-home"></i> Home</a></li>
                 </ul>
             </div>
             <div class="col-md-4">
                 <h3 style="font-size: 1.2rem; color: black;">Our Services</h3>
                 <ul class="list-unstyled" style="font-size: 1.1rem;">
-                    <li><a href="https://tecstaq.com/aws/" style="color: black;" target="_blank">AWS</a></li>
-                    <li><a href="https://tecstaq.com/acronis/" style="color: black;" target="_blank">Acronis</a></li>
-                    <li><a href="https://tecstaq.com/microsoft-azure/" style="color: black;" target="_blank">Azure</a></li>
-                    <li><a href="https://tecstaq.com/office-365/" style="color: black;" target="_blank">Office 365</a></li>
+                    <li><a href="https://tecstaq.com/aws/" style="color: black;" target="_blank"><i class="fab fa-aws"></i> AWS</a></li>
+                    <li><a href="https://tecstaq.com/acronis/" style="color: black;" target="_blank"><i class="fas fa-shield-alt"></i> Acronis</a></li>
+                    <li><a href="https://tecstaq.com/microsoft-azure/" style="color: black;" target="_blank"><i class="fab fa-microsoft"></i> Azure</a></li>
+                    <li><a href="https://tecstaq.com/office-365/" style="color: black;" target="_blank"><i class="fas fa-cloud"></i> Office 365</a></li>
                 </ul>
             </div>
         </div>
