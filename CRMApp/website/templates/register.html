@@ -1,93 +1,112 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="col-md-6 offset-md-3">
-    <div class="card mt-5">
-        <div class="card-body">
-            <h3 class="card-title text-center">Register</h3>
-            <hr>
+<div class="col-md-6 offset-md-2 col-lg-4 offset-lg-4"> <!-- Centered on different screen sizes -->
+    <div class="card mt-5 shadow-sm"> <!-- Added shadow for a subtle 3D effect -->
+        <div class="card-body p-4"> <!-- Added padding for better spacing -->
+            <h3 class="card-title text-center mb-4">Register</h3>
+
             <!-- Display messages if any -->
             {% if messages %}
-                {% for message in messages %}
-                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert"> <!-- Changed to always use alert-success -->
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+    {% endif %}
 
             <form method="POST" action="" id="registerForm">
                 {% csrf_token %}
                 <div class="mb-3">
                     {{ form.username.label_tag }}
-                    {{ form.username }}
+                    <div class="input-group"> <!-- Added input group for icon -->
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        {{ form.username }} <!-- Directly rendering form field -->
+                    </div>
                     {% if form.username.errors %}
                         {% for error in form.username.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="text-danger small">{{ error }}</div> <!-- Small text for error messages -->
                         {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     {{ form.first_name.label_tag }}
-                    {{ form.first_name }}
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        {{ form.first_name }}
+                    </div>
                     {% if form.first_name.errors %}
                         {% for error in form.first_name.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="text-danger small">{{ error }}</div>
                         {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     {{ form.last_name.label_tag }}
-                    {{ form.last_name }}
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        {{ form.last_name }}
+                    </div>
                     {% if form.last_name.errors %}
                         {% for error in form.last_name.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="text-danger small">{{ error }}</div>
                         {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     {{ form.email.label_tag }}
-                    {{ form.email }}
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        {{ form.email }}
+                    </div>
                     {% if form.email.errors %}
                         {% for error in form.email.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="text-danger small">{{ error }}</div>
                         {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     {{ form.phone_number.label_tag }}
-                    {{ form.phone_number }}
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                        {{ form.phone_number }}
+                    </div>
                     {% if form.phone_number.errors %}
                         {% for error in form.phone_number.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="text-danger small">{{ error }}</div>
                         {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     {{ form.password1.label_tag }}
-                    {{ form.password1 }}
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        {{ form.password1 }}
+                    </div>
                     {% if form.password1.errors %}
                         {% for error in form.password1.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="text-danger small">{{ error }}</div>
                         {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     {{ form.password2.label_tag }}
-                    {{ form.password2 }}
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        {{ form.password2 }}
+                    </div>
                     {% if form.password2.errors %}
                         {% for error in form.password2.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="text-danger small">{{ error }}</div>
                         {% endfor %}
                     {% endif %}
                 </div>
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button type="submit" class="btn btn-primary btn-block">Register</button> <!-- Full-width button -->
                 </div>
             </form>
         </div>
     </div>
 </div>
 {% endblock %}
-
-
