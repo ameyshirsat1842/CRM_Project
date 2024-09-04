@@ -219,7 +219,8 @@
                 <div class="list-group list-group-flush">
                     <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard"><i class="fas fa-home"></i> Dashboard</a>
                     {% if user.is_staff %}
-                    <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action"><i class="fas fa-user-shield"></i> Admin Panel</a>
+                    <a href="{% url 'manage_users' %}" class="list-group-item list-group-item-action"><i class="fas fa-user-shield"></i> Admin Panel</a>
+                    <a href="{% url 'register' %}" class="list-group-item list-group-item-action"><i class="fas fa-user-plus"></i> Register</a>
                     <a href="{% url 'admin_dashboard' %}" class="list-group-item list-group-item-action active dashboard"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a>
                     {% endif %}
                     <a href="{% url 'potential_leads' %}" class="list-group-item list-group-item-action"><i class="fas fa-users"></i> Connections</a>

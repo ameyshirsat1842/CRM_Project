@@ -935,3 +935,57 @@ def admin_dashboard(request):
 
     return render(request, 'admin_dashboard.html', context)
 
+
+def manage_users(request):
+    users = User.objects.all()  # Get all users
+
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')  # Get user ID from POST data
+        action = request.POST.get('action')  # Get action from POST data
+
+        # Handle delete action
+        if action == 'delete':
+            user_to_delete = get_object_or_404(User, id=user_id)
+            if user_to_delete.is_staff:
+                messages.error(request, "Cannot delete staff users!")
+            else:
+                user_to_delete.delete()
+                messages.success(request, "User deleted successfully.")
+            return redirect('manage_users')
+
+        # Handle deactivate action
+        elif action == 'deactivate':
+            user_to_deactivate = get_object_or_404(User, id=user_id)
+            user_to_deactivate.is_active = False
+            user_to_deactivate.save()
+            messages.success(request, "User deactivated successfully.")
+            return redirect('manage_users')
+
+        # Handle activate action
+        elif action == 'activate':
+            user_to_activate = get_object_or_404(User, id=user_id)
+            user_to_activate.is_active = True
+            user_to_activate.save()
+            messages.success(request, "User activated successfully.")
+            return redirect('manage_users')
+
+        # Handle promote to staff action
+        elif action == 'make_staff':
+            user_to_promote = get_object_or_404(User, id=user_id)
+            user_to_promote.is_staff = True
+            user_to_promote.save()
+            messages.success(request, "User granted staff status successfully.")
+            return redirect('manage_users')
+
+        # Handle demote from staff action
+        elif action == 'remove_staff':
+            user_to_demote = get_object_or_404(User, id=user_id)
+            user_to_demote.is_staff = False
+            user_to_demote.save()
+            messages.success(request, "Staff status removed successfully.")
+            return redirect('manage_users')
+
+    context = {
+        'users': users
+    }
+    return render(request, 'manage_users.html', context)
