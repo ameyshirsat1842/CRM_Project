@@ -55,14 +55,14 @@
                             <form method="post" style="display: inline;">
                                 {% csrf_token %}
                                 <input type="hidden" name="user_id" value="{{ user.id }}">
-                                <button type="submit" name="action" value="make_staff" class="btn btn-primary btn-sm">Make Staff</button>
+                                <button type="submit" name="action" value="make_staff" class="btn btn-primary btn-sm">Give Admin Access</button>
                             </form>
                             {% else %}
                             <!-- Remove Staff Button -->
                             <form method="post" style="display: inline;">
                                 {% csrf_token %}
                                 <input type="hidden" name="user_id" value="{{ user.id }}">
-                                <button type="submit" name="action" value="remove_staff" class="btn btn-secondary btn-sm">Remove Staff</button>
+                                <button type="submit" name="action" value="remove_staff" class="btn btn-secondary btn-sm">Remove Admin Access</button>
                             </form>
                             {% endif %}
                         </td>
