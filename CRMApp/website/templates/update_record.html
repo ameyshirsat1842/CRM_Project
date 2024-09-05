@@ -140,6 +140,21 @@
                         </div>
                     </div>
                     <br>
+                      <div class="form-group row">
+                        <label for="classification" class="col-sm-3 col-form-label">Status:</label>
+                        <div class="col-sm-9">
+                            {{ form.classification }}
+                            {% if form.classification.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.classification.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+                <br>
+                    <br>
+
                     <div class="form-group row">
                         <label for="comments" class="col-sm-3 col-form-label">{{ form.comments.label }}</label>
                         <div class="col-sm-8" id="comments-container">
@@ -221,19 +236,6 @@
                         </div>
                     </div>
                     <br>
-                    <div class="form-group row">
-                        <label for="classification" class="col-sm-3 col-form-label">Status:</label>
-                        <div class="col-sm-9">
-                            {{ form.classification }}
-                            {% if form.classification.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.classification.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </fieldset>
-                <br>
 
                 <!-- Form Buttons -->
                 <div class="form-group row">

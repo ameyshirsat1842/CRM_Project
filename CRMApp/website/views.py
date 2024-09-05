@@ -20,7 +20,7 @@ from openpyxl.workbook import Workbook
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, \
     UserUpdateForm, ProfileUpdateForm, CustomerUpdateForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment, Customer
-from .utils import send_otp_to_email, verify_otp
+from .utils import verify_otp
 
 
 def home(request):
@@ -31,7 +31,7 @@ def home(request):
         total_leads = Record.objects.filter(assigned_to=request.user).count()
         total_clients = Record.objects.filter(assigned_to=request.user).values('client_name').distinct().count()
         open_tickets = Ticket.objects.filter(created_by=request.user, status='Open').count()
-        closed_deals = Record.objects.filter(assigned_to=request.user, classification='in_progress').count()
+        closed_deals = Record.objects.filter(assigned_to=request.user, classification='dead').count()
 
         # Get recent activities specific to the logged-in user
         recent_leads = Record.objects.filter(assigned_to=request.user).order_by('-created_at')[:5]
@@ -40,6 +40,11 @@ def home(request):
         # Get upcoming meetings based on follow-up dates specific to the logged-in user
         upcoming_meetings = Record.objects.filter(assigned_to=request.user, follow_up_date__gte=timezone.now()).order_by('follow_up_date')[:5]
         meetings_today = Record.objects.filter(assigned_to=request.user, follow_up_date=today)
+
+        # Get overdue leads: leads with follow-up dates in the past
+        overdues = Record.objects.filter(
+            assigned_to=request.user,
+            follow_up_date__lt=today)
 
         # Notifications for the logged-in user
         notifications = Notification.objects.unread_for_user(request.user)
@@ -54,6 +59,8 @@ def home(request):
             'upcoming_meetings': upcoming_meetings,
             'meetings_today': meetings_today,
             'notifications': notifications,
+            'overdues': overdues,  # Include overdues in the context
+
         }
 
         return render(request, 'home.html', context)
@@ -90,7 +97,6 @@ def register_user(request):
             user = form.save(commit=False)
             user.is_active = False  # Deactivate the account until email verification
             user.save()
-            send_otp_to_email(user)  # Send OTP to the user's email
 
             messages.success(request, "Registration successful! Please check your email for the OTP.")
             return redirect('otp_verify', user_id=user.id)  # Redirect to OTP verification page
@@ -869,7 +875,9 @@ def reports(request):
         customers = customers.filter(created_at__lte=end_date)
 
     # Apply classification filter if a specific classification is selected
-    if selected_classification != 'all':
+    if selected_classification == 'over_due':
+        records = records.filter(follow_up_date__lt=timezone.now(), classification='in_progress')
+    elif selected_classification != 'all':
         records = records.filter(classification=selected_classification)
         customers = customers.filter(classification=selected_classification)
 
@@ -880,7 +888,7 @@ def reports(request):
     # Calculate counts for different categories
     overdues_count = records.filter(follow_up_date__lt=timezone.now(), classification='in_progress').count()
     leads_count = records.count()  # Total leads count
-    converted_count = customers.filter(classification='converted').count()  # Correct classification filter
+    converted_count = customers.filter(classification='active').count()
 
     context = {
         'records': records,
@@ -895,7 +903,6 @@ def reports(request):
         'leads_count': leads_count,
         'converted_count': converted_count,
     }
-
     return render(request, 'reports.html', context)
 
 

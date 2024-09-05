@@ -201,6 +201,7 @@ class Ticket(models.Model):
 
 
 class MeetingRecord(models.Model):
+    DoesNotExist = None
     objects = None
     record = models.ForeignKey(Record, on_delete=models.CASCADE, default=1)
     meeting_partner = models.CharField(max_length=255)
