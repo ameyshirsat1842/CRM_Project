@@ -14,12 +14,19 @@ class SignUpForm(UserCreationForm):
     last_name = forms.CharField(label="", max_length=100,
                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}))
     phone_number = forms.CharField(label="", max_length=15,
-                                   widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}),
+                                   widget=forms.TextInput(
+                                       attrs={'class': 'form-control', 'placeholder': 'Phone Number'}),
                                    required=False)
+    department = forms.CharField(
+        label="",
+        max_length=100,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Department'})
+    )
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'phone_number', 'password1', 'password2')
+        fields = (
+            'username', 'first_name', 'last_name', 'email', 'phone_number', 'department', 'password1', 'password2')
 
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
@@ -51,7 +58,9 @@ class SignUpForm(UserCreationForm):
         user = super(SignUpForm, self).save(commit=False)
         if commit:
             user.save()
-            Profile.objects.create(user=user, phone_number=self.cleaned_data['phone_number'])
+            Profile.objects.create(
+                user=user, phone_number=self.cleaned_data['phone_number'], department=self.cleaned_data['department'])
+
         return user
 
 
@@ -138,7 +147,8 @@ class AddRecordForm(forms.ModelForm):
     )
     social_media_details = forms.CharField(
         required=False,
-        widget=forms.Textarea(attrs={'rows': 3, 'cols': 40, 'placeholder': 'Social Media Details', 'class': 'form-control'}),
+        widget=forms.Textarea(
+            attrs={'rows': 3, 'cols': 40, 'placeholder': 'Social Media Details', 'class': 'form-control'}),
         label='Social Media Details'
     )
     classification = forms.ChoiceField(
@@ -157,7 +167,8 @@ class AddRecordForm(forms.ModelForm):
     class Meta:
         model = Record
         fields = ['company', 'client_name', 'dept_name', 'phone', 'email', 'city', 'address', 'classification',
-                  'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details', 'lead_source']
+                  'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details',
+                  'lead_source']
         widgets = {
             'created_by': forms.HiddenInput(),
             'social_media_details': forms.Textarea(attrs={'rows': 3, 'cols': 40}),
@@ -338,7 +349,8 @@ class PotentialLeadForm(forms.ModelForm):
             'client_name': forms.TextInput(attrs={"placeholder": "Client Name", "class": "form-control"}),
             'phone': forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"}),
             'email': forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
-            'comments': forms.Textarea(attrs={"placeholder": "Comments", "class": "form-control", 'rows': 3, 'cols': 40}),
+            'comments': forms.Textarea(
+                attrs={"placeholder": "Comments", "class": "form-control", 'rows': 3, 'cols': 40}),
         }
 
 

@@ -255,6 +255,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     phone_number = models.CharField(max_length=15, blank=True)
     otp = models.CharField(max_length=6, blank=True, null=True)
+    department = models.CharField(max_length=100, blank=True, null=True)  # Add the department field
 
     def __str__(self):
         return f'{self.user.username} Profile'

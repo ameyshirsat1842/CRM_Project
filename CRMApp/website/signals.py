@@ -15,7 +15,9 @@ def notify_user_assignment(sender, instance, **kwargs):
         if old_record.assigned_to != instance.assigned_to:
             new_assignee = instance.assigned_to
             if new_assignee:
-                message = f"You have been assigned a new lead: {instance.client_name} from {instance.company} by {instance.last_modified_by.username}"
+                department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
+                                                                                     'profile') else 'Unknown'
+                message = f"You have been assigned a new lead: {instance.client_name} from {instance.company} by {instance.last_modified_by.username} from the {department} department"
                 send_notification_to_user(new_assignee, message)
                 Notification.objects.create(user=new_assignee, message=message)
 
@@ -24,14 +26,18 @@ def notify_user_assignment(sender, instance, **kwargs):
             if instance.follow_up_date:
                 assignee = instance.assigned_to
                 if assignee:
-                    message = f"Meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d')} for lead: {instance.company} by {instance.last_modified_by.username}"
+                    department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
+                                                                                         'profile') else 'Unknown'
+                    message = f"Meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d')} for lead: {instance.company} by {instance.last_modified_by.username} from the {department} department"
                     send_notification_to_user(assignee, message)
                     Notification.objects.create(user=assignee, message=message)
     else:
         # Handle new lead creation and assignment
         if instance.assigned_to:
             new_assignee = instance.assigned_to
-            message = f"You have been assigned a new lead: {instance.client_name} from {instance.company} by {instance.last_modified_by.username}"
+            department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
+                                                                                 'profile') else 'Unknown'
+            message = f"You have been assigned a new lead: {instance.client_name} from {instance.company} by {instance.last_modified_by.username} from the {department} department"
             send_notification_to_user(new_assignee, message)
             Notification.objects.create(user=new_assignee, message=message)
 
@@ -44,7 +50,9 @@ def notify_meeting_follow_up(sender, instance, **kwargs):
             if instance.follow_up_date:
                 speaker = instance.speaker
                 if speaker:
-                    message = f"You have a follow-up meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d')} with {instance.meeting_partner}"
+                    department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
+                                                                                         'profile') else 'Unknown'
+                    message = f"You have a follow-up meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d')} with {instance.meeting_partner} by {instance.last_modified_by.username} from the {department} department"
                     send_notification_to_user(speaker, message)
                     Notification.objects.create(user=speaker, message=message)
 

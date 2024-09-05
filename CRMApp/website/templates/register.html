@@ -78,6 +78,20 @@
                         {% endfor %}
                     {% endif %}
                 </div>
+                 <!-- New Department Field -->
+                <div class="mb-3">
+                    {{ form.department.label_tag }}
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-building"></i></span>
+                        {{ form.department }}
+                    </div>
+                    {% if form.department.errors %}
+                        {% for error in form.department.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
                 <div class="mb-3">
                     {{ form.password1.label_tag }}
                     <div class="input-group">
