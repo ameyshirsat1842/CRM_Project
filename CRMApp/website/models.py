@@ -32,7 +32,7 @@ class Record(models.Model):
         null=True,
         blank=True
     )
-    follow_up_date = models.DateField(null=True, blank=True)
+    follow_up_date = models.DateTimeField(null=True, blank=True)
     comments = models.CharField(max_length=200, null=True, blank=True)
     remarks = models.CharField(max_length=200, null=True, blank=True)
     visible_to = models.ManyToManyField(User, related_name='visible_tickets', blank=True)
@@ -95,11 +95,9 @@ class Record(models.Model):
     # Custom methods and properties
     @property
     def full_address(self):
-        """Returns the full address including city."""
         return f"{self.address}, {self.city}"
 
     def get_follow_up_status(self):
-        """Returns the follow-up status based on the follow-up date."""
         if self.follow_up_date:
             if self.follow_up_date < timezone.now().date():
                 return "Overdue"
@@ -208,7 +206,7 @@ class MeetingRecord(models.Model):
     products_discussed_partner = models.TextField()
     products_discussed_company = models.TextField()
     conclusion = models.TextField()
-    follow_up_date = models.DateField(null=True, blank=True)
+    follow_up_date = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     speaker = models.ForeignKey(User, related_name='speaker', on_delete=models.CASCADE, null=True)

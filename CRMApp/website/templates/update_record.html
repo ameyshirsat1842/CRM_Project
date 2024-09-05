@@ -128,17 +128,18 @@
                         </div>
                     </div>
                     <br>
-                    <div class="form-group row">
-                        <label for="follow_up_date" class="col-sm-3 col-form-label">{{ form.follow_up_date.label }}</label>
-                        <div class="col-sm-9">
-                            {{ form.follow_up_date }}
-                            {% if form.follow_up_date.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.follow_up_date.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
+<div class="form-group row">
+    <label for="id_follow_up_date" class="col-sm-3 col-form-label">{{ form.follow_up_date.label }}</label>
+    <div class="col-sm-9">
+        {{ form.follow_up_date }}
+        {% if form.follow_up_date.errors %}
+            <div class="invalid-feedback d-block">
+                {{ form.follow_up_date.errors }}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
                     <br>
                       <div class="form-group row">
                         <label for="classification" class="col-sm-3 col-form-label">Status:</label>

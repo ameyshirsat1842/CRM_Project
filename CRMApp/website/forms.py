@@ -130,10 +130,10 @@ class AddRecordForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
-    follow_up_date = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date', "class": "form-control"}),
+    follow_up_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local', "class": "form-control"}),
         required=False,
-        label='Follow-Up Date'
+        label='Follow-Up Date & Time'
     )
     comments = forms.CharField(
         required=True,
@@ -207,10 +207,10 @@ class UpdateRecordForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": "form-control"}),
         required=False
     )
-    follow_up_date = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date', "class": "form-control"}),
+    follow_up_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local', "class": "form-control"}),
         required=False,
-        label='Follow-Up Date'
+        label='Follow-Up Date & Time'
     )
     lead_source = forms.ChoiceField(
         choices=Record.LEAD_SOURCE_CHOICES,
@@ -311,8 +311,8 @@ class AddMeetingRecordForm(forms.ModelForm):
         widget=forms.Textarea(attrs={"placeholder": "Conclusion", "class": "form-control"}),
         label="Conclusion"
     )
-    follow_up_date = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date', "class": "form-control"}),
+    follow_up_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'type': 'date', "class": "form-control"}),
         required=False,
         label='Follow-Up Date'
     )

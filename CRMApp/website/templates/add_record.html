@@ -119,9 +119,12 @@
                         </div>
                     </div>
                     <br>
-                    <div class="form-group row ">
-                        <label for="follow_up_date" class="col-sm-3 col-form-label">Follow-Up Date:</label>
-                        <input type="date" class="form-control" id="follow_up_date" name="follow_up_date">
+                    <div class="form-group row">
+                        <label for="follow_up_date" class="col-sm-3 col-form-label">Follow-Up Date & Time:</label>
+                    <div class="col-sm-9">
+                    <input type="datetime-local" class="form-control" id="follow_up_date" name="follow_up_date">
+                    <div class="invalid-feedback">Please provide a follow-up date and time.</div>
+                    </div>
                     </div>
                     <br>
                     <div class="form-group row">
