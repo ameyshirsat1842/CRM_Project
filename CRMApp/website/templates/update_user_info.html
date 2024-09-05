@@ -10,16 +10,5 @@
         {{ profile_form|crispy }}
         <button type="submit" class="btn btn-primary mt-3">Update</button>
     </form>
-
-    <!-- Delete Account Section -->
-<!--    <hr>-->
-<!--    <div class="mt-4">-->
-<!--        <h2>Delete Your Account</h2>-->
-<!--        <p class="text-danger">Warning: This action is irreversible and will permanently delete all your data.</p>-->
-<!--        <form method="POST" action="{% url 'delete_account' %}" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">-->
-<!--            {% csrf_token %}-->
-<!--            <button type="submit" class="btn btn-danger mt-3">Delete My Account</button>-->
-<!--        </form>-->
-<!--    </div>-->
 </div>
 {% endblock %}
