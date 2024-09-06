@@ -21,6 +21,7 @@ from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, A
     UserUpdateForm, ProfileUpdateForm, CustomerUpdateForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment, Customer
 from .utils import verify_otp
+from django.views.decorators.http import require_GET
 
 
 def home(request):
@@ -275,6 +276,17 @@ def update_record(request, pk):
     return render(request, 'update_record.html', {'form': form, 'record': record, 'users': users})
 
 
+def send_notification_to_user(user, message):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        user.username,
+        {
+            'type': 'send_notification',
+            'notification': message
+        }
+    )
+
+
 def notifications_view(request):
     if request.user.is_authenticated:
         notifications = Notification.objects.unread_for_user(request.user)
@@ -296,13 +308,12 @@ def notification_detail(request, pk):
     return render(request, 'notification_detail.html', {'notification': notification})
 
 
+@require_GET
 def mark_notification_as_read(request, notification_id):
-    if request.method == 'GET':
-        notification = get_object_or_404(Notification, id=notification_id, user=request.user)
-        notification.is_read = True
-        notification.save()
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notification.is_read = True
+    notification.save()
+    return JsonResponse({'status': 'success'})
 
 
 def tickets(request):
@@ -648,17 +659,6 @@ def assign_lead(request, pk):
 
         messages.success(request, "Lead assigned successfully!")
         return redirect('leads')
-
-
-def send_notification_to_user(user, message):
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        user.username,
-        {
-            'type': 'send_notification',
-            'notification': message
-        }
-    )
 
 
 def export_record_to_excel(request, record_id):
