@@ -25,7 +25,9 @@ from .utils import verify_otp
 
 def home(request):
     if request.user.is_authenticated:
-        today = timezone.now().date()  # Correctly define the 'today' variable
+        now = timezone.now()  # Get the current time
+        today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)  # Start of today
+        today_end = now.replace(hour=23, minute=59, second=59, microsecond=999999)  # End of today
 
         # Get data specific to the logged-in user
         total_leads = Record.objects.filter(assigned_to=request.user).count()
@@ -37,14 +39,24 @@ def home(request):
         recent_leads = Record.objects.filter(assigned_to=request.user).order_by('-created_at')[:5]
         recent_tickets = Ticket.objects.filter(created_by=request.user).order_by('-created_at')[:5]
 
-        # Get upcoming meetings based on follow-up dates specific to the logged-in user
-        upcoming_meetings = Record.objects.filter(assigned_to=request.user, follow_up_date__gte=timezone.now()).order_by('follow_up_date')[:5]
-        meetings_today = Record.objects.filter(assigned_to=request.user, follow_up_date=today)
+        # Get upcoming meetings (from tomorrow onwards)
+        upcoming_meetings = Record.objects.filter(
+            assigned_to=request.user, follow_up_date__gt=today_end
+        ).order_by('follow_up_date')[:5]
 
-        # Get overdue leads: leads with follow-up dates in the past
+        # Meetings today
+        meetings_today = Record.objects.filter(
+            assigned_to=request.user,
+            follow_up_date__gte=today_start,
+            follow_up_date__lte=today_end
+        ).order_by('follow_up_date')[:5]
+
+        # Get overdue leads: leads with follow-up dates in the past (before today)
         overdues = Record.objects.filter(
             assigned_to=request.user,
-            follow_up_date__lt=today)
+            follow_up_date__lt=now,
+            classification='in_progress'  # Assuming in-progress leads can be overdue
+        )
 
         # Notifications for the logged-in user
         notifications = Notification.objects.unread_for_user(request.user)
@@ -59,8 +71,7 @@ def home(request):
             'upcoming_meetings': upcoming_meetings,
             'meetings_today': meetings_today,
             'notifications': notifications,
-            'overdues': overdues,  # Include overdues in the context
-
+            'overdues': overdues,
         }
 
         return render(request, 'home.html', context)
@@ -200,6 +211,13 @@ def add_record(request):
             record = form.save(commit=False)
             record.created_by = request.user
             record.last_modified_by = request.user
+
+            # Convert follow_up_date to timezone-aware datetime if it's naive
+            follow_up_date = form.cleaned_data['follow_up_date']
+            if follow_up_date and timezone.is_naive(follow_up_date):
+                follow_up_date = timezone.make_aware(follow_up_date, timezone.get_current_timezone())
+                record.follow_up_date = follow_up_date
+
             record.save()
 
             # Handle visibility settings
@@ -232,13 +250,19 @@ def update_record(request, pk):
         if form.is_valid():
             updated_record = form.save(commit=False)
             updated_record.last_modified_by = request.user
+
+            # Convert follow_up_date to timezone-aware datetime if it's naive
+            follow_up_date = form.cleaned_data['follow_up_date']
+            if follow_up_date and timezone.is_naive(follow_up_date):
+                follow_up_date = timezone.make_aware(follow_up_date, timezone.get_current_timezone())
+                updated_record.follow_up_date = follow_up_date
+
             updated_record.save()
 
             # Process additional comments from the dynamically added comment fields
             additional_comments = request.POST.getlist('additional_comments[]')
             for comment in additional_comments:
                 if comment.strip():  # Only save non-empty comments
-                    # Assuming there is a Comment model linked to the Record model
                     Comment.objects.create(record=record, text=comment, user=request.user)
 
             messages.success(request, "Record updated successfully!")
@@ -328,6 +352,7 @@ def update_ticket(request, pk):
         return redirect('login')
 
 
+
 def add_meeting_record(request, pk):
     record = get_object_or_404(Record, pk=pk)
     if request.method == 'POST':
@@ -336,12 +361,42 @@ def add_meeting_record(request, pk):
             meeting_record = form.save(commit=False)
             meeting_record.record = record
             meeting_record.created_by = request.user
+
+            # Convert follow_up_date to timezone-aware datetime if it's naive
+            follow_up_date = form.cleaned_data.get('follow_up_date')
+            if follow_up_date and timezone.is_naive(follow_up_date):
+                follow_up_date = timezone.make_aware(follow_up_date, timezone.get_current_timezone())
+                meeting_record.follow_up_date = follow_up_date
+
             meeting_record.save()
             messages.success(request, "Meeting record added successfully!")
             return redirect('record', pk=record.pk)
     else:
         form = AddMeetingRecordForm()
+
     return render(request, 'add_meeting_record.html', {'form': form, 'record': record})
+
+
+def update_meeting_record(request, pk):
+    record = get_object_or_404(MeetingRecord, pk=pk)
+    if request.method == 'POST':
+        form = AddMeetingRecordForm(request.POST, instance=record)
+        if form.is_valid():
+            meeting_record = form.save(commit=False)
+
+            # Convert follow_up_date to timezone-aware datetime if it's naive
+            follow_up_date = form.cleaned_data.get('follow_up_date')
+            if follow_up_date and timezone.is_naive(follow_up_date):
+                follow_up_date = timezone.make_aware(follow_up_date, timezone.get_current_timezone())
+                meeting_record.follow_up_date = follow_up_date
+
+            meeting_record.save()
+            messages.success(request, "Meeting record updated successfully!")
+            return redirect('meeting_records')
+    else:
+        form = AddMeetingRecordForm(instance=record)
+
+    return render(request, 'update_meeting_record.html', {'form': form})
 
 
 def meeting_records(request, pk):
@@ -368,19 +423,6 @@ class MeetingRecordListView(ListView):
                 Q(follow_up_date__icontains=query)
             )
         return queryset
-
-
-def update_meeting_record(request, pk):
-    record = get_object_or_404(MeetingRecord, pk=pk)
-    if request.method == 'POST':
-        form = AddMeetingRecordForm(request.POST, instance=record)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Meeting record updated successfully!")
-            return redirect('meeting_records')
-    else:
-        form = AddMeetingRecordForm(instance=record)
-    return render(request, 'update_meeting_record.html', {'form': form})
 
 
 def delete_meeting_record(request, pk):

@@ -131,7 +131,8 @@
 <div class="form-group row">
     <label for="id_follow_up_date" class="col-sm-3 col-form-label">{{ form.follow_up_date.label }}</label>
     <div class="col-sm-9">
-        {{ form.follow_up_date }}
+         <!-- Replace the default widget with a text input for Flatpickr -->
+        <input type="text" id="id_follow_up_date" name="{{ form.follow_up_date.name }}" class="form-control" required>
         {% if form.follow_up_date.errors %}
             <div class="invalid-feedback d-block">
                 {{ form.follow_up_date.errors }}
@@ -282,6 +283,15 @@
 
             // Append the new comment field to the container
             commentsContainer.appendChild(newCommentField);
+        });
+    });
+       document.addEventListener('DOMContentLoaded', function () {
+        flatpickr("#id_follow_up_date", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: false, // Set to false for 12-hour clock
+            altInput: true,
+            altFormat: "F j, Y h:i K", // User-friendly format with AM/PM
         });
     });
 </script>

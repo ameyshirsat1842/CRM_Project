@@ -18,7 +18,7 @@
                             {% for meeting in meetings_today %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
-        <strong>{{ meeting.client_name }}</strong> from <em>{{ meeting.company }}</em>
+        <strong>{{ meeting.client_name }}</strong> from <strong>{{ meeting.company }}</strong>
         <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y, h:i A" }}</span>
                                     </div>
                                     <a class="btn btn-primary btn-sm" href="https://us05web.zoom.us/s/83827104906#success" target="_blank">Join Zoom</a>
@@ -43,7 +43,7 @@
                             {% for meeting in upcoming_meetings %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
-                                        <strong>{{ meeting.client_name }}</strong> from <em>{{ meeting.company }}</em>
+                                        <strong>{{ meeting.client_name }}</strong> from <strong>{{ meeting.company }}</strong>
                                         <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y, h:i A" }}</span>
                                     </div>
                                     <a class="btn btn-primary btn-sm" href="https://outlook.live.com/calendar/0/view/month" target="_blank">Open in Outlook</a>
@@ -67,7 +67,7 @@
                             {% for overdue in overdues %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
-                                        <strong>{{ overdue.client_name }}</strong> from <em>{{ overdue.company }}</em>
+                                        <strong>{{ overdue.client_name }}</strong> from <strong>{{ overdue.company }}</strong>
                                         <span class="text-muted">- Follow-up was on {{ overdue.follow_up_date|date:"F d, Y, h:i A" }}</span>
                                     </div>
                                 </li>
@@ -126,7 +126,7 @@
                             {% for lead in recent_leads %}
                                 <li class="list-group-item">
                                     <strong>{{ lead.client_name }}</strong>
-                                    <span class="text-muted">- {{ lead.created_at|date:"F d, Y H:i" }}</span>
+                                    <span class="text-muted">- {{ lead.created_at|date:"F d, Y, h:i A" }}</span>
                                 </li>
                             {% empty %}
                                 <li class="list-group-item">No recent leads.</li>
