@@ -157,27 +157,43 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const notificationSocket = new WebSocket(
-        'ws://' + window.location.host + '/ws/notifications/'
-    );
+    function connectWebSocket() {
+        const notificationSocket = new WebSocket(
+            (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/notifications/'
+        );
 
-    notificationSocket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        const notificationsList = document.getElementById('notificationList');
-        const newNotification = document.createElement('li');
-        newNotification.className = 'list-group-item bg-light-red text-dark d-flex justify-content-between align-items-center';
-        newNotification.innerHTML = `
-            <div>
-                <p class="mb-0">${data.message}</p>
-                <small class="text-muted">- Just now</small>
-            </div>
-        `;
-        notificationsList.insertBefore(newNotification, notificationsList.firstChild);
-    };
+        notificationSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const notificationsList = document.getElementById('notificationList');
+            const newNotification = document.createElement('li');
+            newNotification.className = 'list-group-item bg-light-red text-dark d-flex justify-content-between align-items-center';
+            newNotification.innerHTML = `
+                <div>
+                    <p class="mb-0">${data.message}</p>
+                    <small class="text-muted">- Just now</small>
+                </div>
+            `;
+            notificationsList.insertBefore(newNotification, notificationsList.firstChild);
+        };
 
-    notificationSocket.onclose = function(e) {
-        console.error('Notification socket closed unexpectedly');
-    };
+        notificationSocket.onclose = function(e) {
+            console.error('Notification socket closed unexpectedly, retrying in 3 seconds...', e);
+            setTimeout(function() {
+                connectWebSocket();  // Reconnect after 3 seconds
+            }, 3000);
+        };
+
+        notificationSocket.onerror = function(e) {
+            console.error('WebSocket encountered an error:', e);
+        };
+    }
+
+    connectWebSocket();  // Initial WebSocket connection
+
+    // Fetch CSRF token from DOM
+    function getCSRFToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]').value;
+    }
 
     document.querySelectorAll('.mark-as-read').forEach(function(button) {
         button.addEventListener('click', function(e) {
@@ -188,17 +204,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': '{{ csrf_token }}'
+                    'X-CSRFToken': getCSRFToken()
                 }
             }).then(response => {
                 if (response.ok) {
                     this.closest('.list-group-item').classList.replace('bg-light-red', 'bg-light');
                     this.classList.add('d-none');
                 }
+            }).catch(err => {
+                console.error('Error marking notification as read:', err);
             });
         });
     });
 });
 </script>
+
 </body>
 </html>

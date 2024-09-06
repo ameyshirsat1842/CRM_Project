@@ -102,6 +102,7 @@ def logout_user(request):
 
 
 def register_user(request):
+
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -350,7 +351,6 @@ def update_ticket(request, pk):
     else:
         messages.error(request, "You must be logged in to update a ticket.")
         return redirect('login')
-
 
 
 def add_meeting_record(request, pk):
