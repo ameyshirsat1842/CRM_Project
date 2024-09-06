@@ -24,7 +24,7 @@
             <p class="card-text"><strong>Assigned To:</strong> {% if customer.assigned_to %}{{ customer.assigned_to.username }}{% else %}N/A{% endif %}</p>
             <p class="card-text"><strong>Created By:</strong> {% if customer.created_by %}{{ customer.created_by.username }}{% else %}N/A{% endif %}</p>
             <p class="card-text"><strong>Created At:</strong> {{ customer.created_at|date:"F d, Y H:i" }}</p>
-<!--            <p class="card-text"><strong>Last Modified By:</strong> {% if customer.last_modified_by %}{{ customer.last_modified_by.username }}{% else %}N/A{% endif %}</p>-->
+        <!--<p class="card-text"><strong>Last Modified By:</strong> {% if customer.last_modified_by %}{{ customer.last_modified_by.username }}{% else %}N/A{% endif %}</p>-->
             <p class="card-text"><strong>Last Modified At:</strong> {{ customer.last_modified_at|date:"F d, Y H:i" }}</p>
 
             <!-- New fields for Bank Details and GST Number -->
