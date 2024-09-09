@@ -26,7 +26,7 @@ def notify_user_assignment(sender, instance, **kwargs):
                 assignee = instance.assigned_to
                 if assignee:
                     department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by, 'profile') else 'Unknown'
-                    message = f"Meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d %I:%M %p')} for lead: {instance.company} by {instance.last_modified_by.username} from {department} department"
+                    message = f"Meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d %I:%M %p')} for lead:{instance.client_name} from {instance.company} by {instance.last_modified_by.username} from {department} department"
                     send_notification_to_user(assignee, message)
                     Notification.objects.create(user=assignee, message=message)
         else:

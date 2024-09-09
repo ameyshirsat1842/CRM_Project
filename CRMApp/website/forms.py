@@ -136,12 +136,12 @@ class AddRecordForm(forms.ModelForm):
         label='Follow-Up Date & Time'
     )
     comments = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={"placeholder": "Comments", "class": "form-control"}),
         label="Comments"
     )
     remarks = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={"placeholder": "Remarks", "class": "form-control"}),
         label="Remarks"
     )
@@ -159,7 +159,7 @@ class AddRecordForm(forms.ModelForm):
     )
     lead_source = forms.ChoiceField(
         choices=Record.LEAD_SOURCE_CHOICES,
-        required=True,
+        required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
         label="Lead Source"
     )
@@ -214,7 +214,7 @@ class UpdateRecordForm(forms.ModelForm):
     )
     lead_source = forms.ChoiceField(
         choices=Record.LEAD_SOURCE_CHOICES,
-        required=True,
+        required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
         label="Lead Source"
     )
@@ -227,19 +227,26 @@ class UpdateRecordForm(forms.ModelForm):
             'social_media_details', 'classification', 'lead_source'
         ]
         widgets = {
-            'visible_to': forms.CheckboxSelectMultiple,
+            'visible_to': forms.CheckboxSelectMultiple(),
             'created_by': forms.HiddenInput(),
             'classification': forms.Select(choices=[
                 ('assigned', 'Assigned'),
                 ('unassigned', 'Unassigned'),
                 ('dead', 'Dead'),
                 ('in_progress', 'In Progress'),
-            ])
+            ], attrs={"class": "form-control"})
         }
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+
+        # Check if form instance is tied to an existing record
+        # if self.instance and self.instance.pk:
+        #     # Convert the existing follow_up_date to a string format that works with datetime-local input
+        #     if self.instance.follow_up_date:
+        #         self.fields['follow_up_date'].initial = self.instance.follow_up_date.strftime('%Y-%m-%dT%H:%M')
+
         if self.user:
             self.fields['created_by'].initial = self.user.username
             self.fields['created_by'].widget = forms.HiddenInput()
