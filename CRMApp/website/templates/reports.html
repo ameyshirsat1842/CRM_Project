@@ -59,18 +59,12 @@
     <!-- Key Metrics Display -->
     <div class="row">
         <!-- Open Section -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-4 mb-4">
             <div class="card interactive-card shadow">
                 <div class="card-header bg-danger text-white">
                     Open
                 </div>
                 <div class="card-body">
-                    <div class="card mb-3" onclick="applyFilter('classification', 'over_due')">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Overdues</h5>
-                            <p class="card-text display-4">{{ overdues_count }}</p>
-                        </div>
-                    </div>
                     <div class="card mb-3" onclick="applyFilter('classification', 'all')">
                         <div class="card-body text-center">
                             <h5 class="card-title">Leads</h5>
@@ -81,8 +75,25 @@
             </div>
         </div>
 
+        <!-- Overdue Section (New) -->
+        <div class="col-lg-4 mb-4">
+            <div class="card interactive-card shadow">
+                <div class="card-header bg-warning text-white">
+                    Overdue
+                </div>
+                <div class="card-body">
+                    <div class="card mb-3" onclick="applyFilter('classification', 'over_due')">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Overdues</h5>
+                            <p class="card-text display-4">{{ overdues_count }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Result Section -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-4 mb-4">
             <div class="card interactive-card shadow">
                 <div class="card-header bg-success text-white">
                     Result
@@ -131,11 +142,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if selected_classification == 'over_due' %}
-                                        Overdue
-                                    {% else %}
-                                        {{ record.get_classification_display }}
-                                    {% endif %}
+                                    {{ record.get_classification_display }}
                                 </td>
                             </tr>
                         {% empty %}
@@ -190,6 +197,7 @@
         </div>
     </div>
 </div>
+
 <style>
     .card-header {
         font-size: 1.2rem;
@@ -265,4 +273,3 @@
 </script>
 
 {% endblock %}
-

@@ -6,7 +6,7 @@
     <br>
     <div class="card mb-4">
         <div class="card-header">
-            {{ customer.client_name }} ({{ customer.company }})
+           <h2 class="font-weight-bold"> {{ customer.client_name }} ({{ customer.company }})</h2>
         </div>
         <div class="card-body">
             <h5 class="card-title">Contact Information</h5>
@@ -38,4 +38,57 @@
         </div>
     </div>
 </div>
+<style>
+    .card {
+        border: 1px solid #dee2e6;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #071229;
+        color: white;
+    }
+
+    .card-body h5 {
+        line-height: 1.6;
+    }
+
+    .table {
+        border-collapse: separate;
+        border-spacing: 0 15px;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .table th {
+        background-color: #071229;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .table td {
+        background-color: #f8f9fa;
+        text-align: center;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #e9ecef;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #dee2e6;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: scale(1.1);
+    }
+</style>
 {% endblock %}
+
