@@ -20,7 +20,7 @@
 
     <style>
         :root {
-            --side-panel-bg-color: #F0F8FF; /* Light blue color for the side panel */
+            --side-panel-bg-color: #E0FFFF; /* Light blue color for the side panel */
         }
 
         body {
@@ -228,7 +228,7 @@
         <div class="col-md-2 side-panel-container">
             <div class="side-panel">
                 <div class="list-group list-group-flush">
-                    <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard"><i class="fas fa-home"></i> My Dashboard</a>
+                    <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard"><i class="fas fa-home"></i> Dashboard</a>
                     {% if user.is_staff %}
                     <a href="{% url 'manage_users' %}" class="list-group-item list-group-item-action"><i class="fas fa-user-shield"></i> Admin Panel</a>
                     <a href="{% url 'register' %}" class="list-group-item list-group-item-action"><i class="fas fa-user-plus"></i> Register</a>

@@ -193,7 +193,7 @@ def delete_record(request, pk):
         messages.success(request, "Record deleted successfully.")
         return redirect('leads')  # Redirect to leads page after successful deletion
 
-    return render(request, 'delete_record.html', {'record': record})  # Render the confirmation page if it's a GET request
+    return render(request, 'delete_record.html', {'record': record})
 
 
 def add_record(request):
@@ -680,7 +680,7 @@ def export_record_to_excel(request, record_id):
         data = {
             'ID': [record.id],
             'Company': [record.company],
-            'Client Name': [record.client_name],
+            'Client': [record.client_name],
             'Department': [record.dept_name],
             'Phone': [record.phone],
             'Email': [record.email],
@@ -734,7 +734,7 @@ def import_records_from_excel(request):
 
             # Update the expected columns list according to the actual columns
             expected_columns = [
-                'ID', 'Company', 'Client Name', 'Department', 'Phone', 'Email',
+                'ID', 'Company', 'Client', 'Department', 'Phone', 'Email',
                 'City', 'Address', 'Follow-Up', 'Comments', 'Remarks',
                 'Social Media Details', 'Lead Source', 'Assigned To', 'Status',
                 'Created', 'Follow-Up'
@@ -754,7 +754,7 @@ def import_records_from_excel(request):
                     record = Record(
                         created_at=created_at,
                         company=row.get('Company'),
-                        client_name=row.get('Client Name'),
+                        client_name=row.get('Client'),
                         dept_name=row.get('Department'),
                         phone=row.get('Phone'),
                         email=row.get('Email'),
@@ -825,7 +825,7 @@ def export_leads(request):
     worksheet.title = 'Leads'
 
     headers = [
-        'ID', 'Company', 'Client Name', 'Department', 'Phone', 'Email',
+        'ID', 'Company', 'Client', 'Department', 'Phone', 'Email',
         'City', 'Address', 'Comments', 'Remarks', 'Social Media Details',
         'Lead Source', 'Assigned To', 'Status', 'Created', 'Follow-Up'
     ]

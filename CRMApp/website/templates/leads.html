@@ -42,8 +42,8 @@
             <thead>
                 <tr>
                     <th scope="col">ID</th>
+                    <th scope="col">Client</th>
                     <th scope="col">Company</th>
-                    <th scope="col">Client Name</th>
                     <th scope="col">Role</th>
                     <th scope="col">Phone</th>
                     <th scope="col">Email</th>
@@ -60,8 +60,8 @@
                 {% for record in page_obj %}
                 <tr>
                     <th scope="row"><a href="{% url 'record' record.id %}">{{ record.id }}</a></th>
+                    <td><a href="{% url 'record' record.id %}">{{ record.client_name }}</a></td>
                     <td>{{ record.company }}</td>
-                    <td>{{ record.client_name }}</td>
                     <td>{{ record.dept_name }}</td>
                     <td>{{ record.phone }}</td>
                     <td>{{ record.email }}</td>
@@ -73,7 +73,7 @@
                     <td>{{ record.lead_source }}</td>
                     <td>
                         <a href="{% url 'update_record' record.id %}" class="btn btn-warning btn-sm">Update</a>
-
+                        <br>
                         <a href="{% url 'move_to_customers' record.id %}" class="btn btn-info btn-sm">Convert</a>
                     </td>
                 </tr>
