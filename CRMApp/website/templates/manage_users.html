@@ -27,7 +27,7 @@
                         <td>{{ user.email }}</td>
                         <td>{{ user.is_staff }}</td>
                         <td>{{ user.is_active }}</td>
-                        <td>{{ user.last_login|date:"Y-m-d H:i:s" }}</td>
+                        <td>{{ user.last_login|date:"F d, Y, h:i A" }}</td>
                         <td>
                             <!-- Delete Button -->
                             <form method="post" style="display: inline;">
