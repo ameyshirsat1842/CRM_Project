@@ -18,201 +18,215 @@
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-    <style>
+     <style>
         :root {
-            --side-panel-bg-color: #E0FFFF; /* Light blue color for the side panel */
-        }
+    --side-panel-bg-color: #E0FFFF; /* Light blue color for the side panel */
+}
 
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-            background-attachment: fixed;
-            background-color: #E0FFFF; /* Pale Turquoise */
-            background-image: linear-gradient(to bottom, #E0FFFF, #87CEFA); /* Gradient from Pale Turquoise to Light Sky Blue */
-        }
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    background-attachment: fixed;
+    background-color: #E0FFFF; /* Pale Turquoise */
+    background-image: linear-gradient(to bottom, #E0FFFF, #87CEFA); /* Gradient from Pale Turquoise to Light Sky Blue */
+}
 
-        .container-fluid {
-            flex: 1;
-            display: flex;
-        }
+.container-fluid {
+    flex: 1;
+    display: flex;
+}
 
-        .row {
-            flex: 1;
-            display: flex;
-            flex-wrap: nowrap;
-        }
+.row {
+    flex: 1;
+    display: flex;
+    flex-wrap: nowrap;
+}
 
-        .custom-alert {
-            position: fixed;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1050;
-            width: auto;
-            max-width: 300px;
-            font-size: 0.8rem;
-            padding: 0.5rem 1.5rem;
-            animation: fadeIn 0.5s ease-out, fadeOut 0.5s ease-in 4s;
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for better visibility */
-        }
+.custom-alert {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    width: auto;
+    max-width: 300px;
+    font-size: 0.8rem;
+    padding: 0.5rem 1.5rem;
+    animation: fadeIn 0.5s ease-out, fadeOut 0.5s ease-in 4s;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for better visibility */
+}
 
-        .alert.alert-primary {
-            background-color: #d1ecf1; /* Light blue background for primary alerts */
-            border-color: #bee5eb; /* Light blue border */
-            color: #0c5460; /* Dark blue text */
-        }
+.alert.alert-primary {
+    background-color: #d1ecf1; /* Light blue background for primary alerts */
+    border-color: #bee5eb; /* Light blue border */
+    color: #0c5460; /* Dark blue text */
+}
 
-        .custom-alert .bi {
-            width: 1em;
-            height: 1em;
-        }
+.custom-alert .bi {
+    width: 1em;
+    height: 1em;
+}
 
-        .footer {
-            background-color: #FFFFFF;
-            background-image: url('/media/img/footer-img.png');
-            background-size: cover;
-            background-position: center top;
-            padding: 50px 0;
-            text-align: center;
-            animation: slideInUp 1s;
-            color: #003366;
-            min-height: 200px;
-        }
+.footer {
+    background-color: #FFFFFF;
+    background-image: url('/media/img/footer-img.png');
+    background-size: cover;
+    background-position: center top;
+    padding: 50px 0;
+    text-align: center;
+    animation: slideInUp 1s;
+    color: #003366;
+    min-height: 200px;
+}
 
-        .footer p {
-            margin-bottom: 0;
-            color: #003366;
-        }
+.footer p {
+    margin-bottom: 0;
+    color: #003366;
+}
 
-        .footer h3, .footer a {
-            color: #003366;
-        }
+.footer h3, .footer a {
+    color: #003366;
+}
 
-        .footer a {
-            text-decoration: none;
-        }
+.footer a {
+    text-decoration: none;
+}
 
-        .side-panel-container {
-            position: relative;
-        }
+.side-panel-container {
+    position: relative;
+}
 
-        .side-panel {
-            position: absolute;
-            top: 0;
-            left: -250px;
-            width: 250px;
-            height: 100%;
-            border-right: 1px solid #ddd;
-            background-color: var(--side-panel-bg-color);
-            transition: left 0.3s ease;
-            z-index: 1050;
-        }
+.side-panel {
+    position: absolute;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    border-right: 1px solid #ddd;
+    background-color: var(--side-panel-bg-color);
+    transition: left 0.3s ease;
+    z-index: 1050;
+}
 
-        .side-panel-container:hover .side-panel:not(.hold) {
-            left: 0;
-        }
+.side-panel-container:hover .side-panel:not(.hold) {
+    left: 0;
+}
 
-        .side-panel.hold {
-            left: 0 !important;
-        }
+.side-panel.hold {
+    left: 0 !important;
+}
 
-        .side-panel .list-group-item {
-            color: #000000;
-            transition: background-color 0.3s, color 0.3s;
-        }
+.side-panel .list-group-item {
+    color: #000000;
+    transition: background-color 0.3s, color 0.3s;
+}
 
-        .side-panel .list-group-item:hover {
-            background-color: #1d2b4a;
-            color: #ffffff;
-        }
+.side-panel .list-group-item:hover {
+    background-color: #1d2b4a;
+    color: #ffffff;
+}
 
-        .side-panel .list-group-item.dashboard {
-            color: #ffffff;
-        }
+/* Ensure Dashboard and Admin Dashboard stay with the previous blue */
+.side-panel .list-group-item.dashboard,
+.side-panel .list-group-item.admin-dashboard {
+    background-color: #007bff; /* Bootstrap primary blue */
+    color: #ffffff;
+}
 
-        .main-content {
-            flex: 1;
-            animation: fadeIn 1s;
-        }
+.side-panel .list-group-item.dashboard:hover,
+.side-panel .list-group-item.admin-dashboard:hover {
+    background-color: #0056b3; /* Darker shade of blue for hover */
+    color: #ffffff;
+}
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
+.side-panel .list-group-item.active {
+    background-color: #1d2b4a; /* Dark blue for active */
+    color: #ffffff;
+}
 
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-            }
-        }
+.main-content {
+    flex: 1;
+    animation: fadeIn 1s;
+}
 
-        @keyframes slideInUp {
-            from {
-                transform: translateY(100%);
-            }
-            to {
-                transform: translateY(0);
-            }
-        }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
 
-        .button-group {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
 
-        .button-group .btn {
-            margin: 0 10px;
-        }
+@keyframes slideInUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
 
-        @media (max-width: 768px) {
-            .container-fluid {
-                flex-direction: column;
-            }
+.button-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
 
-            .side-panel {
-                width: 100%;
-                height: auto;
-                position: static;
-                border-right: none;
-                border-bottom: 1px solid #ddd;
-                left: 0;
-                background-color: #f8f9fa;
-            }
+.button-group .btn {
+    margin: 0 10px;
+}
 
-            .side-panel-container:hover .side-panel {
-                left: 0;
-            }
+@media (max-width: 768px) {
+    .container-fluid {
+        flex-direction: column;
+    }
 
-            .main-content {
-                flex: none;
-                width: 100%;
-                padding: 0 15px;
-            }
+    .side-panel {
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        left: 0;
+        background-color: #f8f9fa;
+    }
 
-            .footer {
-                text-align: center;
-                padding: 20px 0;
-            }
+    .side-panel-container:hover .side-panel {
+        left: 0;
+    }
 
-            .footer .row {
-                flex-direction: column;
-            }
+    .main-content {
+        flex: none;
+        width: 100%;
+        padding: 0 15px;
+    }
 
-            .footer .col-md-4 {
-                margin-bottom: 20px;
-            }
-        }
+    .footer {
+        text-align: center;
+        padding: 20px 0;
+    }
+
+    .footer .row {
+        flex-direction: column;
+    }
+
+    .footer .col-md-4 {
+        margin-bottom: 20px;
+    }
+}
     </style>
 </head>
 <body>
@@ -322,7 +336,8 @@
 
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
-<script>
+
+    <script>
     // Check the hold state on page load
     document.addEventListener('DOMContentLoaded', function () {
         const holdSwitch = document.getElementById('holdSwitch');
@@ -349,6 +364,42 @@
         });
     });
 
-</script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const listItems = document.querySelectorAll('.side-panel .list-group-item');
+        const defaultActiveLink = '{% url "home" %}'; // Dashboard link URL
+
+        // Check localStorage to see if an active link is already saved
+        const activeLink = localStorage.getItem('activeLink');
+        if (activeLink) {
+            // Remove 'active' class from all items
+            listItems.forEach(item => item.classList.remove('active'));
+            // Add 'active' class to the saved item
+            const savedItem = document.querySelector(`[href="${activeLink}"]`);
+            if (savedItem) {
+                savedItem.classList.add('active');
+            } else {
+                // If the saved link is not found, activate the dashboard
+                document.querySelector(`[href="${defaultActiveLink}"]`).classList.add('active');
+            }
+        } else {
+            // No active link in localStorage, set the dashboard as active
+            document.querySelector(`[href="${defaultActiveLink}"]`).classList.add('active');
+        }
+
+        // Add click event listeners to all side panel items
+        listItems.forEach(item => {
+            item.addEventListener('click', function () {
+                // Remove 'active' class from all items
+                listItems.forEach(el => el.classList.remove('active'));
+
+                // Add 'active' class to the clicked item
+                this.classList.add('active');
+
+                // Save the active link in localStorage
+                localStorage.setItem('activeLink', this.getAttribute('href'));
+            });
+        });
+    });
+    </script>
 </body>
 </html>
