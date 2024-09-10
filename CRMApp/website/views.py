@@ -545,7 +545,7 @@ def customers(request):
         customers_list = customers_list.filter(assigned_to=request.user)
 
     # Add ordering to the queryset
-    customers_list = customers_list.order_by('client_name')
+    customers_list = customers_list.order_by('-created_at')
 
     # Paginate the results
     paginator = Paginator(customers_list, 10)  # Show 10 customers per page.
