@@ -376,9 +376,9 @@ class CustomerUpdateForm(forms.ModelForm):
             'classification', 'bank_details', 'gst_number'
         ]
         widgets = {
-            'address': forms.Textarea(attrs={'rows': 3}),
-            'remarks': forms.Textarea(attrs={'rows': 3}),
-            'comments': forms.Textarea(attrs={'rows': 3}),
+            'address': forms.TextInput(attrs={'rows': 3}),
+            'remarks': forms.TextInput(attrs={'rows': 3}),
+            'comments': forms.TextInput(attrs={'rows': 3}),
             'bank_details': forms.TextInput(attrs={'placeholder': 'Bank Details'}),
             'gst_number': forms.TextInput(attrs={'placeholder': 'GST Number'}),
         }
