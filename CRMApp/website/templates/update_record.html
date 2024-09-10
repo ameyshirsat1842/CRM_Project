@@ -154,11 +154,10 @@
                 </fieldset>
                 <br>
                     <br>
-
                     <div class="form-group row">
                         <label for="comments" class="col-sm-3 col-form-label">{{ form.comments.label }}</label>
                         <div class="col-sm-8" id="comments-container">
-                            {{ form.comments }}
+<!--                            {{ form.comments }}-->
                             {% if form.comments.errors %}
                                 <div class="invalid-feedback d-block">
                                     {{ form.comments.errors }}
@@ -168,7 +167,7 @@
                         <!-- Add Comment Button -->
                         <div class="col-sm-8">
                             <button type="button" class="btn btn-success btn-circle" id="add-comment-btn">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-plus">Add Comment</i>
                             </button>
                         </div>
                     </div>

@@ -360,7 +360,6 @@ class PotentialLeadForm(forms.ModelForm):
                 attrs={"placeholder": "Comments", "class": "form-control", 'rows': 3, 'cols': 40}),
         }
 
-
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer

@@ -228,7 +228,7 @@
         <div class="col-md-2 side-panel-container">
             <div class="side-panel">
                 <div class="list-group list-group-flush">
-                    <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="{% url 'home' %}" class="list-group-item list-group-item-action active dashboard"><i class="fas fa-home"></i> My Dashboard</a>
                     {% if user.is_staff %}
                     <a href="{% url 'manage_users' %}" class="list-group-item list-group-item-action"><i class="fas fa-user-shield"></i> Admin Panel</a>
                     <a href="{% url 'register' %}" class="list-group-item list-group-item-action"><i class="fas fa-user-plus"></i> Register</a>
@@ -309,7 +309,7 @@
             </div>
         </div>
     </div>
-    <p style="text-align: center; color: black; margin-top: 20px;">© 2024 Tecstaq Solutions Pvt. Ltd. All Rights Reserved. Made by Amey Shirsat.</p>
+    <p style="text-align: center; color: black; margin-top: 20px;">© 2024 Tecstaq Technology Solution Pvt. Ltd. All Rights Reserved. Made by Amey Shirsat.</p>
 </footer>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
@@ -348,6 +348,7 @@
             }
         });
     });
+
 </script>
 </body>
 </html>
