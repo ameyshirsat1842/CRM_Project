@@ -380,6 +380,7 @@ def add_meeting_record(request, pk):
                 meeting_record.follow_up_date = follow_up_date
 
             meeting_record.save()
+            form.save_m2m()  # This saves the ManyToManyField relationships, including attendees
             messages.success(request, "Meeting record added successfully!")
             return redirect('record', pk=record.pk)
     else:
@@ -402,6 +403,7 @@ def update_meeting_record(request, pk):
                 meeting_record.follow_up_date = follow_up_date
 
             meeting_record.save()
+            form.save_m2m()  # This saves the ManyToManyField relationships, including attendees
             messages.success(request, "Meeting record updated successfully!")
             return redirect('meeting_records')
     else:

@@ -57,16 +57,19 @@
                 {% endif %}
             </div>
         </div>
-
-        <!-- Follow-Up Date Field -->
-       <div class="form-group row">
-    <label for="id_follow_up_date" class="col-sm-3 col-form-label">Follow-Up Date & Time:</label>
+<br>
+<div class="form-group row">
+    <label for="follow_up_date" class="col-sm-3 col-form-label">{{ form.follow_up_date.label }}</label>
     <div class="col-sm-9">
-        <input type="text" class="form-control" id="follow_up_date" name="follow_up_date" required>
-        <div class="invalid-feedback">Please provide a follow-up date and time.</div>
+        {{ form.follow_up_date }}
+        {% if form.follow_up_date.errors %}
+            <div class="invalid-feedback d-block">
+                {{ form.follow_up_date.errors }}
+            </div>
+        {% endif %}
     </div>
 </div>
-
+        <br>
         <!-- Speaker Field -->
         <div class="form-group row">
             <label for="id_speaker" class="col-sm-3 col-form-label">Speaker:</label>
@@ -79,7 +82,7 @@
                 {% endif %}
             </div>
         </div>
-
+    <br>
         <!-- Attendees Field with Checkboxes -->
         <div class="form-group row">
             <label for="id_attendees" class="col-sm-3 col-form-label">Attendees:</label>
@@ -92,7 +95,7 @@
                 {% endif %}
             </div>
         </div>
-
+    <br>
         <!-- Meeting Location Field -->
         <div class="form-group row">
             <label for="id_meeting_location" class="col-sm-3 col-form-label">Meeting Location:</label>
@@ -105,7 +108,7 @@
                 {% endif %}
             </div>
         </div>
-
+    <br>
         <!-- Buttons -->
         <div class="form-group row mt-3">
             <div class="col-sm-9 offset-sm-3">

@@ -45,11 +45,11 @@
                         {% endfor %}
                     </td>
                     <td>{{ record.meeting_location }}</td>
-                    <td>{{ record.follow_up_date|date:"F d, Y" }}</td>
-                    <td>{{ record.created_at|date:"F d, Y H:i:s" }}</td>
+                    <td>{{ record.follow_up_date|date:"F d, Y, h:i A" }}</td>
+                    <td>{{ record.created_at|date:"F d, Y, h:i A" }}</td>
                     <td>
-                        <a href="https://us05web.zoom.us/s/83827104906#success" class="btn btn-primary btn-sm">Zoom Meeting</a>
-                        <br><br/>
+                        <a href="https://us05web.zoom.us/s/83827104906#success" class="btn btn-primary btn-sm">Zoom</a>
+                        <br>
                         <a href="{% url 'update_meeting_record' record.pk %}" class="btn btn-warning btn-sm">Update</a>
                         <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ record.pk }})">Delete</button>
                     </td>

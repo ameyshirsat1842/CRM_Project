@@ -319,9 +319,9 @@ class AddMeetingRecordForm(forms.ModelForm):
         label="Conclusion"
     )
     follow_up_date = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={'type': 'date', "class": "form-control"}),
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local', "class": "form-control"}),
         required=False,
-        label='Follow-Up Date'
+        label='Follow-Up Date & Time'
     )
     speaker = forms.ModelChoiceField(
         queryset=User.objects.all(),
