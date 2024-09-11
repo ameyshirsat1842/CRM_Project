@@ -27,6 +27,7 @@ urlpatterns = [
     path('meeting-records/update/<int:pk>/', update_meeting_record, name='update_meeting_record'),
     path('meeting-records/delete/<int:pk>/', delete_meeting_record, name='delete_meeting_record'),
     path('potential-leads/', views.potential_leads, name='potential_leads'),
+    path('potential-lead/<int:potential_lead_id>/', views.potential_lead_detail, name='connection_detail'),
     path('add-potential-lead/', views.add_potential_lead, name='add_potential_lead'),
     path('lead/update/<int:lead_id>/', views.update_potential_lead, name='update_potential_lead'),
     path('move-to-main-leads/<int:lead_id>/', views.move_to_main_leads, name='move_to_main_leads'),

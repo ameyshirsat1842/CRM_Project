@@ -481,6 +481,11 @@ def potential_leads(request):
     return render(request, 'potential_leads.html', {'leads': leads})
 
 
+def potential_lead_detail(request, potential_lead_id):
+    connection = get_object_or_404(PotentialLead, id=potential_lead_id)
+    return render(request, 'connection_detail.html', {'connection': connection})
+
+
 def leads_view(request):
     if request.user.is_authenticated:
         search_query = request.GET.get('search', '')

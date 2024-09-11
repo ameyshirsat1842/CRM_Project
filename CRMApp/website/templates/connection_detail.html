@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="font-weight-bold">Connection Details: {{ connection.client_name }} ({{ connection.company }})</h2>
+        </div>
+        <div class="card-body">
+            <!-- Display connection details -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Company:</strong>
+                </div>
+                <div class="col-md-8">
+                    {{ connection.company }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Client Name:</strong>
+                </div>
+                <div class="col-md-8">
+                    {{ connection.client_name }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Phone:</strong>
+                </div>
+                <div class="col-md-8">
+                    {{ connection.phone }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Email:</strong>
+                </div>
+                <div class="col-md-8">
+                    {{ connection.email }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Follow-Up Date:</strong>
+                </div>
+                <div class="col-md-8">
+                    {{ connection.follow_up_date|date:"F j, Y, g:i a" }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Comments:</strong>
+                </div>
+                <div class="col-md-8">
+                    {{ connection.comments }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Last Conversation:</strong>
+                </div>
+                <div class="col-md-8">
+                    {{ connection.conversation }}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'update_potential_lead' connection.id %}" class="btn btn-primary">Update</a>
+            <a href="{% url 'potential_leads' %}" class="btn btn-secondary">Back to Connections</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
