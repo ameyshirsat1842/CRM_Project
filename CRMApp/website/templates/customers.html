@@ -39,8 +39,8 @@
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">Company</th>
                         <th scope="col">Client Name</th>
+                        <th scope="col">Company</th>
                         <th scope="col">Department</th>
                         <th scope="col">Phone</th>
                         <th scope="col">Email</th>
@@ -56,8 +56,8 @@
                     {% for customer in page_obj %}
                     <tr>
                         <th scope="row"><a href="{% url 'customer_detail' customer.id %}">{{ customer.id }}</a></th>
-                        <td>{{ customer.company }}</td>
                         <td>{{ customer.client_name }}</td>
+                        <td>{{ customer.company }}</td>
                         <td>{{ customer.dept_name }}</td>
                         <td>{{ customer.phone }}</td>
                         <td>{{ customer.email }}</td>

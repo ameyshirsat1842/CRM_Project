@@ -8,8 +8,8 @@
         <thead>
             <tr>
                 <th scope="col">ID</th>
-                <th scope="col">Company</th>
                 <th scope="col">Client Name</th>
+                <th scope="col">Company</th>
                 <th scope="col">Phone</th>
                 <th scope="col">Email</th>
                 <th scope="col">Comments</th>
@@ -20,8 +20,8 @@
             {% for lead in leads %}
             <tr>
                 <th scope="row">{{ lead.id }}</th>
-                <td>{{ lead.company }}</td>
                 <td>{{ lead.client_name }}</td>
+                <td>{{ lead.company }}</td>
                 <td>{{ lead.phone }}</td>
                 <td>{{ lead.email }}</td>
                 <td>{{ lead.comments }}</td>
