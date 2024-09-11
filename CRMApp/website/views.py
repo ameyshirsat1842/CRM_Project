@@ -18,7 +18,7 @@ from django.utils import timezone
 from django.views.generic import ListView
 from openpyxl.workbook import Workbook
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, \
-    UserUpdateForm, ProfileUpdateForm, CustomerUpdateForm
+    UserUpdateForm, ProfileUpdateForm, CustomerUpdateForm, UpdatePotentialLeadForm, CustomerForm
 from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment, Customer
 from .utils import verify_otp
 from django.views.decorators.http import require_GET
@@ -461,6 +461,20 @@ def add_potential_lead(request):
     return render(request, 'add_potential_lead.html', {'form': form})
 
 
+def update_potential_lead(request, lead_id):
+    lead = get_object_or_404(PotentialLead, id=lead_id)
+
+    if request.method == "POST":
+        form = UpdatePotentialLeadForm(request.POST, instance=lead)
+        if form.is_valid():
+            form.save()
+            return redirect('success_url')  # Redirect after updating
+    else:
+        form = UpdatePotentialLeadForm(instance=lead)
+
+    return render(request, 'update_potential_lead.html', {'form': form})
+
+
 def potential_leads(request):
     leads = PotentialLead.objects.filter(created_by=request.user)
     return render(request, 'potential_leads.html', {'leads': leads})
@@ -555,6 +569,18 @@ def customers(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'customers.html', {'page_obj': page_obj})
+
+
+def add_customer(request):
+    if request.method == "POST":
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('customers')  # Redirect to a list of customers or any relevant page
+    else:
+        form = CustomerForm()
+
+    return render(request, 'add_customer.html', {'form': form})
 
 
 def move_to_customers(request, record_id):

@@ -218,14 +218,18 @@ class MeetingRecord(models.Model):
 
 
 class PotentialLead(models.Model):
-    objects = None
     company = models.CharField(max_length=255)
     client_name = models.CharField(max_length=255)
-    phone = models.CharField(max_length=10)
-    email = models.EmailField()
+    phone = models.CharField(max_length=10, null=True)
+    email = models.EmailField(null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     comments = models.TextField(blank=True, null=True)
+
+    follow_up_date = models.DateTimeField(blank=True, null=True)
+    conversation = models.TextField(blank=True, null=True)
+
+    objects = models.Manager()  # Ensures you can use .objects for querying
 
     def __str__(self):
         return self.company

@@ -27,6 +27,7 @@
                 <td>{{ lead.comments }}</td>
                 <td>
                     <a href="{% url 'move_to_main_leads' lead.id %}" class="btn btn-success btn-sm">Move to Leads</a>
+                    <a href="{% url 'update_potential_lead' lead.id %}" class="btn btn-warning btn-sm">Update</a>
                 </td>
             </tr>
 

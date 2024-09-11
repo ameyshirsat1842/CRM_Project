@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+    <div class="card mb-4">
+        <div class="card-header">
+          <h2 class="font-weight-bold">Add New Customer</h2>
+        </div>
+        <div class="card-body">
+            <form id="addCustomerForm" method="post" action="{% url 'add_customer' %}">
+                {% csrf_token %}
+
+                <!-- Company Information Section -->
+                <fieldset>
+                    <legend class="legend-custom">Company Information</legend>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_company" class="form-label">Company</label>
+                            {{ form.company }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_client_name" class="form-label">Client Name</label>
+                            {{ form.client_name }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_dept_name" class="form-label">Dept Name</label>
+                            {{ form.dept_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_phone" class="form-label">Phone</label>
+                            {{ form.phone }}
+                            <div id="phone-error" class="text-danger"></div>
+                            <div class="invalid-feedback">Please provide a valid 10-digit phone number.</div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_email" class="form-label">Email</label>
+                            {{ form.email }}
+                            <div id="email-error" class="text-danger"></div>
+                            <div class="invalid-feedback">Please provide a valid email address.</div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Location Information Section -->
+                <fieldset>
+                    <legend class="legend-custom">Location Information</legend>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_city" class="form-label">City</label>
+                            {{ form.city }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_address" class="form-label">Address</label>
+                            {{ form.address }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Lead Details Section -->
+                <fieldset>
+                    <legend class="legend-custom">Lead Details</legend>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_assigned_to" class="form-label">Assigned to</label>
+                            {{ form.assigned_to }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_classification" class="form-label">Status</label>
+                            {{ form.classification }} 
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Additional Information Section -->
+                <fieldset>
+                    <legend class="legend-custom">Additional Information</legend>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_lead_source" class="form-label">Lead Source</label>
+                            {{ form.lead_source }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_remarks" class="form-label">Remarks</label>
+                            {{ form.remarks }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="id_comments" class="form-label">Comments</label>
+                            {{ form.comments }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Financial Information Section -->
+                <fieldset>
+                    <legend class="legend-custom">Financial Information</legend>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_bank_details" class="form-label">Bank Details</label>
+                            {{ form.bank_details }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_gst_number" class="form-label">GST Number</label>
+                            {{ form.gst_number }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Form Actions -->
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
+                    <button type="submit" class="btn btn-primary">Add Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('addCustomerForm');
+        const inputs = form.querySelectorAll('input, select');
+
+        inputs.forEach(input => {
+            input.classList.add('form-control');  // Add form-control class directly in JS
+
+            input.addEventListener('focus', function() {
+                this.classList.add('highlight');
+            });
+
+            input.addEventListener('blur', function() {
+                this.classList.remove('highlight');
+            });
+
+            input.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            });
+        });
+
+        form.addEventListener('submit', async function(event) {
+            const phone = document.getElementById('id_phone');
+            const email = document.getElementById('id_email');
+
+            // Duplicate check
+            await fetch(`/check-duplicate/?phone=${phone.value}&email=${email.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('phone-error').textContent = data.phone || '';
+                    document.getElementById('email-error').textContent = data.email || '';
+                    if (data.phone || data.email) {
+                        event.preventDefault();
+                    }
+                });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .legend-custom {
+        font-size: 1.5em;
+        font-weight: bold;
+        border-bottom: 2px solid #000;
+        margin-bottom: 1rem;
+    }
+    .highlight {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .is-valid {
+        border-color: #28a745;
+    }
+
+    .is-invalid {
+        border-color: #dc3545;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+
+    .d-flex {
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+{% endblock %}

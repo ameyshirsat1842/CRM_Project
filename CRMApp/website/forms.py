@@ -143,7 +143,7 @@ class AddRecordForm(forms.ModelForm):
     remarks = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={"placeholder": "Remarks", "class": "form-control"}),
-        label="Remarks"
+        label="Meeting Type"
     )
     social_media_details = forms.CharField(
         required=False,
@@ -350,7 +350,7 @@ class AddMeetingRecordForm(forms.ModelForm):
 class PotentialLeadForm(forms.ModelForm):
     class Meta:
         model = PotentialLead
-        fields = ['company', 'client_name', 'phone', 'email', 'comments']
+        fields = ['company', 'client_name', 'phone', 'email', 'comments', 'follow_up_date', 'conversation']
         widgets = {
             'company': forms.TextInput(attrs={"placeholder": "Company", "class": "form-control"}),
             'client_name': forms.TextInput(attrs={"placeholder": "Client Name", "class": "form-control"}),
@@ -358,12 +358,44 @@ class PotentialLeadForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
             'comments': forms.Textarea(
                 attrs={"placeholder": "Comments", "class": "form-control", 'rows': 3, 'cols': 40}),
+            'follow_up_date': forms.DateTimeInput(
+                attrs={"placeholder": "Follow-up Date", "class": "form-control", "type": "date"}),
+            'conversation': forms.Textarea(
+                attrs={"placeholder": "Last Conversation", "class": "form-control", 'rows': 3, 'cols': 40}),
         }
+
+
+class UpdatePotentialLeadForm(forms.ModelForm):
+    class Meta:
+        model = PotentialLead
+        fields = ['company', 'client_name', 'phone', 'email', 'comments', 'follow_up_date', 'conversation']
+        widgets = {
+            'company': forms.TextInput(attrs={"placeholder": "Company", "class": "form-control"}),
+            'client_name': forms.TextInput(attrs={"placeholder": "Client Name", "class": "form-control"}),
+            'phone': forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"}),
+            'email': forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
+            'comments': forms.Textarea(
+                attrs={"placeholder": "Comments", "class": "form-control", 'rows': 3, 'cols': 40}),
+            'follow_up_date': forms.DateTimeInput(
+                attrs={"placeholder": "Follow-up Date", "class": "form-control", "type": "datetime-local"}),
+            'conversation': forms.Textarea(
+                attrs={"placeholder": "Conversation", "class": "form-control", 'rows': 3, 'cols': 40}),
+        }
+
 
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['company', 'client_name', 'phone', 'email', 'city', 'comments']
+        fields = ['company', 'client_name', 'phone', 'email', 'address', 'city',
+                  'dept_name', 'lead_source', 'remarks', 'comments', 'assigned_to',
+                  'classification', 'bank_details', 'gst_number']
+        widgets = {
+            'address': forms.TextInput(attrs={'rows': 3}),
+            'remarks': forms.TextInput(attrs={'rows': 3}),
+            'comments': forms.TextInput(attrs={'rows': 3}),
+            'bank_details': forms.TextInput(attrs={'placeholder': 'Bank Details'}),
+            'gst_number': forms.TextInput(attrs={'placeholder': 'GST Number'}),
+        }
 
 
 class CustomerUpdateForm(forms.ModelForm):

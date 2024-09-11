@@ -165,25 +165,25 @@
                             {% endif %}
                         </div>
                         <!-- Add Comment Button -->
-                        <div class="col-sm-8">
+                        <div class="col-sm-9">
                             <button type="button" class="btn btn-success btn-circle" id="add-comment-btn">
                                 <i class="fas fa-plus">Add Comment</i>
                             </button>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group row">
-                        <label for="remarks" class="col-sm-3 col-form-label">{{ form.remarks.label }}</label>
-                        <div class="col-sm-9">
-                            {{ form.remarks }}
-                            {% if form.remarks.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.remarks.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <br>
+                   <div class="form-group row">
+    <label for="remarks" class="col-sm-3 col-form-label">Meeting Type:</label>
+    <div class="col-sm-9">
+        {{ form.remarks }}
+        {% if form.remarks.errors %}
+            <div class="invalid-feedback d-block">
+                {{ form.remarks.errors }}
+            </div>
+        {% endif %}
+    </div>
+</div>
+<br>
                     <div class="form-group row">
                         <label for="social_media_details" class="col-sm-3 col-form-label">Social Media Details:</label>
                         <div class="col-sm-9">
