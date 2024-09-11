@@ -468,7 +468,8 @@ def update_potential_lead(request, lead_id):
         form = UpdatePotentialLeadForm(request.POST, instance=lead)
         if form.is_valid():
             form.save()
-            return redirect('success_url')  # Redirect after updating
+            messages.success(request, "Connection updated successfully!")
+            return redirect('potential_leads')  # Redirect after updating
     else:
         form = UpdatePotentialLeadForm(instance=lead)
 

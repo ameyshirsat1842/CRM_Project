@@ -12,6 +12,7 @@
                 <th scope="col">Company</th>
                 <th scope="col">Phone</th>
                 <th scope="col">Email</th>
+                <th scope="col">Follow Up</th>
                 <th scope="col">Comments</th>
                 <th scope="col">Actions</th>
             </tr>
@@ -24,10 +25,12 @@
                 <td>{{ lead.company }}</td>
                 <td>{{ lead.phone }}</td>
                 <td>{{ lead.email }}</td>
+                <td>{{ lead.follow_up_date }}</td>
                 <td>{{ lead.comments }}</td>
                 <td>
-                    <a href="{% url 'move_to_main_leads' lead.id %}" class="btn btn-success btn-sm">Move to Leads</a>
                     <a href="{% url 'update_potential_lead' lead.id %}" class="btn btn-warning btn-sm">Update</a>
+                    <br></br>
+                    <a href="{% url 'move_to_main_leads' lead.id %}" class="btn btn-success btn-sm">Convert</a>
                 </td>
             </tr>
 
