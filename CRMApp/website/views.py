@@ -477,7 +477,7 @@ def update_potential_lead(request, lead_id):
 
 
 def potential_leads(request):
-    leads = PotentialLead.objects.filter(created_by=request.user)
+    leads = PotentialLead.objects.all()
     return render(request, 'potential_leads.html', {'leads': leads})
 
 
