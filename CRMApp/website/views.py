@@ -1,5 +1,6 @@
 from datetime import timedelta
 from io import BytesIO
+
 import pandas as pd
 import pytz
 from asgiref.sync import async_to_sync
@@ -15,13 +16,14 @@ from django.db.models import Q, Count
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.views.decorators.http import require_GET
 from django.views.generic import ListView
 from openpyxl.workbook import Workbook
+
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, \
     UserUpdateForm, ProfileUpdateForm, CustomerUpdateForm, UpdatePotentialLeadForm, CustomerForm
-from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment, Customer
+from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment, Customer, DeletedRecord
 from .utils import verify_otp
-from django.views.decorators.http import require_GET
 
 
 def home(request):
@@ -175,25 +177,32 @@ def customer_record(request, pk):
 
 
 def delete_record(request, pk):
-    # Check if the user is authenticated
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to delete records.")
-        return redirect('login')  # Redirect to login page if not authenticated
+        return redirect('login')
 
-    # Check if the user is an admin
     if not request.user.is_staff:
         messages.error(request, "You do not have permission to delete this record.")
-        return redirect('record', pk=pk)  # Redirect back to the record view if not an admin
+        return redirect('record', pk=pk)
 
-    # If the user is an admin, proceed to delete the record
     record = get_object_or_404(Record, pk=pk)
 
     if request.method == 'POST':
         record.delete()
         messages.success(request, "Record deleted successfully.")
-        return redirect('leads')  # Redirect to leads page after successful deletion
+        return redirect('leads')
 
     return render(request, 'delete_record.html', {'record': record})
+
+
+def deletion_history(request):
+    history = DeletedRecord.objects.all()
+    return render(request, 'deleted_records.html', {'history': history})
+
+
+def deleted_record_detail(request, pk):
+    record = get_object_or_404(DeletedRecord, pk=pk)
+    return render(request, 'deleted_record_detail.html', {'record': record})
 
 
 def add_record(request):
@@ -579,7 +588,7 @@ def customers(request):
 
 def add_customer(request):
     if request.method == "POST":
-        form = CustomerForm(request.POST)
+        form = CustomerForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('customers')  # Redirect to a list of customers or any relevant page
@@ -661,7 +670,7 @@ def update_customer(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
 
     if request.method == 'POST':
-        form = CustomerUpdateForm(request.POST, instance=customer)
+        form = CustomerUpdateForm(request.POST, request.FILES, instance=customer)
         if form.is_valid():
             form.save()
             messages.success(request, "Customer updated successfully!")
@@ -960,11 +969,12 @@ def reports(request):
     # Apply user filter if a specific user is selected
     if selected_user != 'all':
         records = records.filter(assigned_to_id=selected_user)
+        customers = customers.filter(assigned_to_id=selected_user)  # Filter customers by assigned user
 
     # Calculate counts for different categories
     overdues_count = records.filter(follow_up_date__lt=timezone.now(), classification='in_progress').count()
     leads_count = records.count()  # Total leads count
-    converted_count = customers.filter(classification='active').count()
+    converted_count = customers.filter(classification='active').count()  # Example classification filter for customers
 
     context = {
         'records': records,

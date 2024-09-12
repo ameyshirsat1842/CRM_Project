@@ -1,7 +1,11 @@
+import json
+
 from django.db.models.signals import pre_save, post_save
-from django.dispatch import receiver
 from django.contrib.auth.models import User
-from .models import Record, MeetingRecord, Profile, Notification
+from django.utils import timezone
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+from .models import Record, MeetingRecord, Profile, Notification, DeletedRecord, DeletionHistory
 from .notifications import send_notification_to_user
 from .utils import send_otp_to_email
 
@@ -67,3 +71,50 @@ def manage_user_creation(sender, instance, created, **kwargs):
         # Update the user's profile on save
         instance.profile.save()
 
+
+@receiver(post_delete, sender=Record)
+def handle_record_deletion(sender, instance, **kwargs):
+    # Convert datetime objects to strings for serialization
+    follow_up_date = instance.follow_up_date.strftime('%Y-%m-%d %H:%M:%S') if instance.follow_up_date else None
+    created_at = instance.created_at.strftime('%Y-%m-%d %H:%M:%S') if instance.created_at else None
+
+    # Log detailed deletion history
+    DeletionHistory.objects.create(
+        record_id=instance.pk,
+        record_data=json.dumps({
+            'client_name': instance.client_name,
+            'company': instance.company,
+            'email': instance.email,
+            'phone': instance.phone,
+            'assigned_to': instance.assigned_to.username if instance.assigned_to else None,
+            'department': instance.dept_name,
+            'follow_up_date': follow_up_date,
+            'remarks': instance.remarks,
+            'comments': instance.comments,
+            'lead_source': instance.lead_source,
+            'created_at': created_at,
+        }),
+        deleted_by=instance.last_modified_by,  # Assuming you track who deleted it
+        deleted_at=timezone.now(),
+    )
+
+    # Store basic deleted record info for easy reference
+    DeletedRecord.objects.create(
+        record_id=instance.pk,
+        client_name=instance.client_name,
+        company=instance.company,
+        email=instance.email,
+        phone=instance.phone,
+        assigned_to=instance.assigned_to,
+        deleted_by=instance.last_modified_by,
+        deleted_at=timezone.now(),
+        details=json.dumps({
+            'department': instance.dept_name,
+            'address': instance.address,
+            'follow_up_date': follow_up_date,
+            'remarks': instance.remarks,
+            'comments': instance.comments,
+            'lead_source': instance.lead_source,
+            'created_at': created_at,
+        })
+    )

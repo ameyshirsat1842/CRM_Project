@@ -143,9 +143,27 @@ class Customer(models.Model):
         ],
         default='Converted'
     )
-    # New fields for additional details
-    bank_details = models.CharField(max_length=255, blank=True, null=True)
-    gst_number = models.CharField(max_length=20, blank=True, null=True)
+    # Financial Information
+    bank_details = models.FileField(
+        upload_to='attachments/',
+        null=True,
+        blank=True
+    )
+    gst_number = models.FileField(
+        upload_to='attachments/',
+        null=True,
+        blank=True
+    )
+    msme = models.FileField(
+        upload_to='attachments/',
+        null=True,
+        blank=True
+    )
+    pancard = models.FileField(
+        upload_to='attachments/',
+        null=True,
+        blank=True
+    )
     objects = models.Manager()  # Default manager
 
     def __str__(self):
@@ -270,3 +288,32 @@ class Comment(models.Model):
     text = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class DeletionHistory(models.Model):
+    objects = None
+    record_id = models.IntegerField(db_index=True)  # Indexing the record ID for faster lookup
+    record_data = models.JSONField()  # Store all details of the record in JSON format
+    deleted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    deleted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        # Handle case where deleted_by could be None
+        deleted_by_username = self.deleted_by.username if self.deleted_by else "Unknown"
+        return f"Record {self.record_id} deleted by {deleted_by_username}"
+
+
+class DeletedRecord(models.Model):
+    objects = None
+    record_id = models.IntegerField()
+    client_name = models.CharField(max_length=255)
+    company = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    deleted_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='deleted_by', null=True)
+    deleted_at = models.DateTimeField(auto_now_add=True)
+    details = models.JSONField()  # To store additional record details
+
+    def __str__(self):
+        return f"{self.client_name} - Deleted"

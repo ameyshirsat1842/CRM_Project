@@ -2,42 +2,153 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Customer Details</h1>
-    <br>
-    <div class="card mb-4">
-        <div class="card-header">
-           <h2 class="font-weight-bold"> {{ customer.client_name }} ({{ customer.company }})</h2>
-        </div>
-        <div class="card-body">
-            <h5 class="card-title">Contact Information</h5>
-            <p class="card-text"><strong>Phone:</strong> {{ customer.phone }}</p>
-            <p class="card-text"><strong>Email:</strong> {{ customer.email }}</p>
-            <p class="card-text"><strong>Address:</strong> {{ customer.address }}</p>
-            <p class="card-text"><strong>City:</strong> {{ customer.city }}</p>
+    <div class="row">
+        <div class="col-md-12 col-lg-8 mx-auto">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="font-weight-bold"> {{ customer.client_name }} ({{ customer.company }})</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+                            <h5 class="card-title">Contact Information</h5>
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Phone:</strong></td>
+                                        <td>{{ customer.phone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Email:</strong></td>
+                                        <td>{{ customer.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Address:</strong></td>
+                                        <td>{{ customer.address }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>City:</strong></td>
+                                        <td>{{ customer.city }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-            <h5 class="card-title mt-4">Additional Details</h5>
-            <p class="card-text"><strong>Department:</strong> {{ customer.dept_name }}</p>
-            <p class="card-text"><strong>Lead Source:</strong> {{ customer.lead_source }}</p>
-            <p class="card-text"><strong>Remarks:</strong> {{ customer.remarks }}</p>
-            <p class="card-text"><strong>Comments:</strong> {{ customer.comments }}</p>
-            <p class="card-text"><strong>Status:</strong> {{ customer.get_classification_display }}</p>
-            <p class="card-text"><strong>Assigned To:</strong> {% if customer.assigned_to %}{{ customer.assigned_to.username }}{% else %}N/A{% endif %}</p>
-            <p class="card-text"><strong>Created By:</strong> {% if customer.created_by %}{{ customer.created_by.username }}{% else %}N/A{% endif %}</p>
-            <p class="card-text"><strong>Created At:</strong> {{ customer.created_at|date:"F d, Y H:i" }}</p>
-            <p class="card-text"><strong>Last Modified By:</strong> {% if customer.last_modified_by %}{{ customer.last_modified_by.username }}{% else %}N/A{% endif %}</p>
-            <p class="card-text"><strong>Last Modified At:</strong> {{ customer.last_modified_at|date:"F d, Y H:i" }}</p>
+                            <h5 class="card-title mt-4">Financial Details</h5>
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Bank Details:</strong></td>
+                                        <td>
+                                            {% if customer.bank_details %}
+                                                <a href="{{ customer.bank_details.url }}" target="_blank">
+                                                    <i class="fas fa-file-download"></i> Download Bank Details
+                                                </a>
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>GST Number:</strong></td>
+                                        <td>
+                                            {% if customer.gst_number %}
+                                                <a href="{{ customer.gst_number.url }}" target="_blank">
+                                                    <i class="fas fa-file-download"></i> Download GST Number
+                                                </a>
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>MSME Certificate:</strong></td>
+                                        <td>
+                                            {% if customer.msme %}
+                                                <a href="{{ customer.msme.url }}" target="_blank">
+                                                    <i class="fas fa-file-download"></i> Download MSME Certificate
+                                                </a>
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>PAN Card:</strong></td>
+                                        <td>
+                                            {% if customer.pancard %}
+                                                <a href="{{ customer.pancard.url }}" target="_blank">
+                                                    <i class="fas fa-file-download"></i> Download PAN Card
+                                                </a>
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-            <!-- New fields for Bank Details and GST Number -->
-            <h5 class="card-title mt-4">Financial Details</h5>
-            <p class="card-text"><strong>Bank Details:</strong> {{ customer.bank_details }}</p>
-            <p class="card-text"><strong>GST Number:</strong> {{ customer.gst_number }}</p>
-        </div>
-        <div class="card-footer">
-            <a href="{% url 'update_customer' customer.id %}" class="btn btn-warning btn-sm">Update Customer</a>
-            <a href="{% url 'customers' %}" class="btn btn-secondary btn-sm">Back to Customers</a>
+                        <!-- Right Column -->
+                        <div class="col-md-6">
+                            <h5 class="card-title mt-4">Additional Details</h5>
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Department:</strong></td>
+                                        <td>{{ customer.dept_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Lead Source:</strong></td>
+                                        <td>{{ customer.lead_source }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Remarks:</strong></td>
+                                        <td>{{ customer.remarks }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Comments:</strong></td>
+                                        <td>{{ customer.comments }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Status:</strong></td>
+                                        <td>{{ customer.get_classification_display }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Assigned To:</strong></td>
+                                        <td>{% if customer.assigned_to %}{{ customer.assigned_to.username }}{% else %}N/A{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Created By:</strong></td>
+                                        <td>{% if customer.created_by %}{{ customer.created_by.username }}{% else %}N/A{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Created At:</strong></td>
+                                        <td>{{ customer.created_at|date:"F d, Y H:i" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Last Modified By:</strong></td>
+                                        <td>{% if customer.last_modified_by %}{{ customer.last_modified_by.username }}{% else %}N/A{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Last Modified At:</strong></td>
+                                        <td>{{ customer.last_modified_at|date:"F d, Y H:i" }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'customers' %}" class="btn btn-secondary">Back to Customers</a>
+                    <a href="{% url 'update_customer' customer.id %}" class="btn btn-warning">Update Customer</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+{% block extra_css %}
 <style>
     .card {
         border: 1px solid #dee2e6;
@@ -53,13 +164,9 @@
         line-height: 1.6;
     }
 
-    .table {
-        border-collapse: separate;
-        border-spacing: 0 15px;
-    }
-
     .table th, .table td {
         vertical-align: middle;
+        padding: 12px 15px;
     }
 
     .table th {
@@ -71,15 +178,7 @@
 
     .table td {
         background-color: #f8f9fa;
-        text-align: center;
-    }
-
-    .table-striped tbody tr:nth-of-type(odd) {
-        background-color: #e9ecef;
-    }
-
-    .table-hover tbody tr:hover {
-        background-color: #dee2e6;
+        text-align: left;
     }
 
     .btn {
@@ -87,8 +186,8 @@
     }
 
     .btn:hover {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 </style>
 {% endblock %}
-
+{% endblock %}

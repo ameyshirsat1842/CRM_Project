@@ -7,55 +7,55 @@
         <h1 class="dashboard-heading">{{ user.first_name }}'s Dashboard</h1>
         <br>
 
-        <!-- Meetings Today -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-lg gradient-card-blue border-0 animate__animated animate__fadeIn">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Meetings Today</h5>
-                        <p class="card-text display-4">{{ meetings_today|length }}</p>
-                        <ul class="list-group list-group-flush" id="meetingsToday">
-                            {% for meeting in meetings_today %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                        <strong>{{ meeting.client_name }}</strong> from <strong>{{ meeting.company }}</strong>
-                        <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y, h:i A" }}</span>
-                                    </div>
-                                    <a class="btn btn-primary btn-sm" href="https://us05web.zoom.us/s/83827104906#success" target="_blank">Join Zoom</a>
-                                </li>
-                            {% empty %}
-                                <li class="list-group-item">No meetings scheduled for today.</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
+     <!-- Meetings Today and Upcoming Meetings in the same row -->
+<div class="row mb-4">
+    <!-- Meetings Today -->
+    <div class="col-12 col-md-6 mb-3 mb-md-0">
+        <div class="card shadow-lg gradient-card-blue border-0 animate__animated animate__fadeIn">
+            <div class="card-body text-center">
+                <h5 class="card-title">Meetings Today</h5>
+                <p class="card-text display-4">{{ meetings_today|length }}</p>
+                <ul class="list-group list-group-flush" id="meetingsToday">
+                    {% for meeting in meetings_today %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ meeting.client_name }}</strong> from <strong>{{ meeting.company }}</strong>
+                                <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y, h:i A" }}</span>
+                            </div>
+                            <a class="btn btn-primary btn-sm" href="https://us05web.zoom.us/s/83827104906#success" target="_blank">Join Zoom</a>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">No meetings scheduled for today.</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
+    </div>
 
-        <!-- Upcoming Meetings -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-lg gradient-card-purple border-0 animate__animated animate__fadeIn">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Upcoming Meetings</h5>
-                        <p class="card-text display-4">{{ upcoming_meetings|length }}</p>
-                        <ul class="list-group list-group-flush" id="upcomingMeetings">
-                            {% for meeting in upcoming_meetings %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>{{ meeting.client_name }}</strong> from <strong>{{ meeting.company }}</strong>
-                                        <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y, h:i A" }}</span>
-                                    </div>
-                                    <a class="btn btn-primary btn-sm" href="https://outlook.live.com/calendar/0/view/month" target="_blank">Open in Outlook</a>
-                                </li>
-                            {% empty %}
-                                <li class="list-group-item">No upcoming meetings.</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
+    <!-- Upcoming Meetings -->
+    <div class="col-12 col-md-6 mb-3 mb-md-0">
+        <div class="card shadow-lg gradient-card-purple border-0 animate__animated animate__fadeIn">
+            <div class="card-body text-center">
+                <h5 class="card-title">Upcoming Meetings</h5>
+                <p class="card-text display-4">{{ upcoming_meetings|length }}</p>
+                <ul class="list-group list-group-flush" id="upcomingMeetings">
+                    {% for meeting in upcoming_meetings %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ meeting.client_name }}</strong> from <strong>{{ meeting.company }}</strong>
+                                <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y, h:i A" }}</span>
+                            </div>
+                            <a class="btn btn-primary btn-sm" href="https://outlook.live.com/calendar/0/view/month" target="_blank">Outlook</a>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">No upcoming meetings.</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
+    </div>
+</div>
+
  <!-- Overdue Leads -->
         <div class="row mb-4">
             <div class="col-12">

@@ -118,10 +118,9 @@
         </div>
     </form>
 </div>
-{% endblock %}
 <script>
      document.addEventListener('DOMContentLoaded', function () {
-        flatpickr("#follow_up_date", {
+        flatpickr("#id_follow_up_date", {
             enableTime: true,
             dateFormat: "Y-m-d H:i",
             time_24hr: false, // 12-hour format
@@ -130,3 +129,4 @@
         });
     });
 </script>
+{% endblock %}

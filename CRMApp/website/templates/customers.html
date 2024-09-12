@@ -48,7 +48,6 @@
                         <th scope="col">Assigned To</th>
                         <th scope="col">Status</th>
                         <th scope="col">Created</th>
-                        <th scope="col">GST</th>
                         <th scope="col">Edit</th>
                     </tr>
                 </thead>
@@ -65,7 +64,6 @@
                         <td>{% if customer.assigned_to %}{{ customer.assigned_to.username }}{% else %}N/A{% endif %}</td>
                         <td>{{ customer.get_classification_display }}</td>
                         <td>{{ customer.created_at|date:"F d, Y" }}</td>
-                        <td>{{ customer.gst_number }}</td>
                         <td>
                             <a href="{% url 'update_customer' customer.id %}" class="btn btn-warning btn-sm">Update</a>
                         </td>

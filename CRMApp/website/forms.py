@@ -386,15 +386,19 @@ class UpdatePotentialLeadForm(forms.ModelForm):
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['company', 'client_name', 'phone', 'email', 'address', 'city',
-                  'dept_name', 'lead_source', 'remarks', 'comments', 'assigned_to',
-                  'classification', 'bank_details', 'gst_number']
+        fields = [
+            'company', 'client_name', 'phone', 'email', 'address', 'city',
+            'dept_name', 'lead_source', 'remarks', 'comments', 'assigned_to',
+            'classification', 'bank_details', 'gst_number', 'msme', 'pancard'
+        ]
         widgets = {
             'address': forms.TextInput(attrs={'rows': 3}),
             'remarks': forms.TextInput(attrs={'rows': 3}),
             'comments': forms.TextInput(attrs={'rows': 3}),
-            'bank_details': forms.TextInput(attrs={'placeholder': 'Bank Details'}),
-            'gst_number': forms.TextInput(attrs={'placeholder': 'GST Number'}),
+            'bank_details': forms.ClearableFileInput(),
+            'gst_number': forms.ClearableFileInput(),
+            'msme': forms.ClearableFileInput(),
+            'pancard': forms.ClearableFileInput(),
         }
 
 
@@ -404,12 +408,15 @@ class CustomerUpdateForm(forms.ModelForm):
         fields = [
             'company', 'client_name', 'phone', 'email', 'address', 'city',
             'dept_name', 'lead_source', 'remarks', 'comments', 'assigned_to',
-            'classification', 'bank_details', 'gst_number'
+            'classification', 'bank_details', 'gst_number', 'msme', 'pancard'
         ]
         widgets = {
             'address': forms.TextInput(attrs={'rows': 3}),
             'remarks': forms.TextInput(attrs={'rows': 3}),
             'comments': forms.TextInput(attrs={'rows': 3}),
-            'bank_details': forms.TextInput(attrs={'placeholder': 'Bank Details'}),
-            'gst_number': forms.TextInput(attrs={'placeholder': 'GST Number'}),
+            'bank_details': forms.ClearableFileInput(),
+            'gst_number': forms.ClearableFileInput(),
+            'msme': forms.ClearableFileInput(),
+            'pancard': forms.ClearableFileInput(),
         }
+

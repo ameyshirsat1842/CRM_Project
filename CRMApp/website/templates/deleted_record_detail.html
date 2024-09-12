@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<h1>Deleted Lead Record</h1>
+<br>
+<div class="card">
+  <div class="card-header">
+    <h2 class="font-weight-bold">{{ record.client_name }}</h2>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <!-- Left Column -->
+      <div class="col-md-6">
+        <!-- Personal Details -->
+        <fieldset class="border p-3">
+          <legend class="w-auto">Personal Details</legend>
+          <h5 class="card-title">
+            <strong>ID:</strong> {{ record.record_id }}<br>
+            <strong>Company:</strong> {{ record.company }}<br>
+            <strong>Role:</strong> {{ record.details.department }}<br>
+            <strong>Phone:</strong> {{ record.phone }}<br>
+            <strong>Email:</strong> {{ record.email }}<br>
+            <strong>City:</strong> {{ record.details.city }}<br>
+            <strong>Address:</strong> {{ record.details.address }}<br>
+          </h5>
+        </fieldset>
+
+        <!-- Lead Details -->
+        <fieldset class="border p-3 mt-3">
+          <legend class="w-auto">Lead Details</legend>
+          <h5 class="card-title">
+            <strong>Lead Source:</strong> {{ record.details.lead_source }}<br>
+            <strong>Remarks:</strong> {{ record.details.remarks|linebreaksbr }}<br>
+            <strong>Comments:</strong> {{ record.details.comments|linebreaksbr }}<br>
+          </h5>
+        </fieldset>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-md-6">
+        <!-- Deletion and Assignment Info -->
+        <fieldset class="border p-3">
+          <legend class="w-auto">Deleted By & Assignment</legend>
+          <h5 class="card-title">
+            <strong>Assigned Person:</strong> {{ record.assigned_to.username }}<br>
+            <strong>Deleted By:</strong>
+            {% if record.deleted_by %}
+                {{ record.deleted_by.username }}
+            {% else %}
+                <em>Unknown</em>
+            {% endif %}
+            <br>
+            <strong>Deleted At:</strong> {{ record.deleted_at|date:"F d, Y, h:i A" }}<br>
+          </h5>
+        </fieldset>
+
+        <!-- Follow-up -->
+        <fieldset class="border p-3 mt-3">
+          <legend class="w-auto">Follow-Up</legend>
+          <h5 class="card-title">
+            <strong>Follow-Up Date:</strong> {{ record.details.follow_up_date|date:"F d, Y, h:i A" }}<br>
+          </h5>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br>
+<div class="d-flex justify-content-between">
+    <button class="btn btn-primary" onclick="window.history.back()">Back</button>
+</div>
+<br>
+
+<style>
+    .card {
+        border: 1px solid #dee2e6;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #071229;
+        color: white;
+    }
+
+    .card-body h5 {
+        line-height: 1.6;
+    }
+
+    fieldset {
+        margin-bottom: 1rem;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}

@@ -9,35 +9,68 @@
     <h2 class="font-weight-bold">{{ customer_record.client_name }}</h2>
   </div>
   <div class="card-body">
-    <h5 class="card-title">
-        <strong>ID:</strong> {{ customer_record.id }}<br>
-        <strong>Company:</strong> {{ customer_record.company }}<br>
-        <strong>Role:</strong> {{ customer_record.dept_name }}<br>
-        <strong>Phone:</strong> {{ customer_record.phone }}<br>
-        <strong>Email:</strong> {{ customer_record.email }}<br>
-        <strong>City:</strong> {{ customer_record.city }}<br>
-        <strong>Address:</strong> {{ customer_record.address }}<br>
-        <strong>Assigned Person:</strong> {{ customer_record.assigned_to.username }}<br>
-        <strong>Follow-Up Date:</strong> {{ customer_record.follow_up_date|date:"F d, Y, h:i A" }}<br>
-        <strong>Created At:</strong> {{ customer_record.created_at|date:"F d, Y, h:i A" }}<br>
-        <strong>Created By:</strong> {{ customer_record.created_by.username }}<br>
-        <strong>Modified By:</strong> {{ customer_record.last_modified_by }}<br>
-        <strong>Attachments:</strong>
-        {% if customer_record.attachments %}
-            <a href="{{ customer_record.attachments.url }}" target="_blank">{{ customer_record.attachments.name }}</a>
-        {% else %}
-            No attachments
-        {% endif %}
-        <br>
-        <strong>Social Media:</strong> {{ customer_record.social_media_details|linebreaksbr }}<br>
-        <strong>Lead Source:</strong> {{ customer_record.lead_source }}<br>
-        <strong>Comments:</strong> {{ customer_record.comments|linebreaksbr }}<br> <!-- Added Comments -->
-        <strong>Meeting Type:</strong> {{ customer_record.remarks|linebreaksbr }}<br> <!-- Added Remarks -->
-    </h5>
-    <!-- Comment History Button -->
-    <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#commentHistoryModal">
-        View Comment History
-    </button>
+    <div class="row">
+      <!-- Left Column -->
+      <div class="col-md-6">
+        <!-- Personal Details -->
+        <fieldset class="border p-3">
+          <legend class="w-auto">Personal Details</legend>
+          <h5 class="card-title">
+            <strong>ID:</strong> {{ customer_record.id }}<br>
+            <strong>Company:</strong> {{ customer_record.company }}<br>
+            <strong>Role:</strong> {{ customer_record.dept_name }}<br>
+            <strong>Phone:</strong> {{ customer_record.phone }}<br>
+            <strong>Email:</strong> {{ customer_record.email }}<br>
+            <strong>City:</strong> {{ customer_record.city }}<br>
+            <strong>Address:</strong> {{ customer_record.address }}<br>
+          </h5>
+        </fieldset>
+
+        <!-- Lead Details -->
+        <fieldset class="border p-3 mt-3">
+          <legend class="w-auto">Lead Details</legend>
+          <h5 class="card-title">
+              <strong>Created At:</strong> {{ customer_record.created_at|date:"F d, Y, h:i A" }}<br>
+            <strong>Created By:</strong> {{ customer_record.created_by.username }}<br>
+            <strong>Modified By:</strong> {{ customer_record.last_modified_by }}<br>
+            <strong>Lead Source:</strong> {{ customer_record.lead_source }}<br>
+              <strong>Other Details:</strong> {{ customer_record.social_media_details|linebreaksbr }}<br>
+          </h5>
+        </fieldset>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-md-6">
+        <!-- Follow-up and Assignment -->
+        <fieldset class="border p-3">
+          <legend class="w-auto">Follow-Up & Assignment</legend>
+          <h5 class="card-title">
+            <strong>Assigned Person:</strong> {{ customer_record.assigned_to.username }}<br>
+              <strong>Meeting Type:</strong> {{ customer_record.remarks|linebreaksbr }}<br>
+            <strong>Follow-Up Date:</strong> {{ customer_record.follow_up_date|date:"F d, Y, h:i A" }}<br>
+
+          </h5>
+        </fieldset>
+
+        <!-- Attachments & Additional Info -->
+        <fieldset class="border p-3 mt-3">
+          <legend class="w-auto">Attachments & Additional Info</legend>
+          <h5 class="card-title">
+            <strong>Attachments:</strong>
+            {% if customer_record.attachments %}
+              <a href="{{ customer_record.attachments.url }}" target="_blank">{{ customer_record.attachments.name }}</a>
+            {% else %}
+              No attachments
+            {% endif %}
+            <br>
+            <strong>Comments:</strong> {{ customer_record.comments|linebreaksbr }}<br>
+          </h5>
+          <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#commentHistoryModal">
+            View Comment History
+          </button>
+        </fieldset>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -71,7 +104,7 @@
 <br>
 
 <div class="d-flex justify-content-between">
-    <button class="btn btn-primary" onclick="window.history.back()">Back</button>
+    <button class="btn btn-primary" onclick="window.history.back()">Back to Leads</button>
     <div>
         <a href="{% url 'update_record' customer_record.id %}" class="btn btn-warning btn-sm">Update</a>
         <a href="{% url 'delete_record' customer_record.id %}" class="btn btn-danger btn-sm">Delete</a>
@@ -123,7 +156,7 @@
             <a href="https://us05web.zoom.us/s/83827104906#success" class="btn btn-primary btn-sm">Zoom</a>
             <br>
             <a href="{% url 'update_meeting_record' record.pk %}" class="btn btn-warning btn-sm">Update</a>
-            <a href="{% url 'delete_meeting_record' record.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this meeting record?')">Delete</a>
+<!--            <a href="{% url 'delete_meeting_record' record.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this meeting record?')">Delete</a>-->
         </td>
     </tr>
     {% empty %}
