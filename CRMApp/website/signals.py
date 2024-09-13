@@ -117,4 +117,5 @@ def handle_record_deletion(sender, instance, **kwargs):
             'lead_source': instance.lead_source,
             'created_at': created_at,
         })
+
     )

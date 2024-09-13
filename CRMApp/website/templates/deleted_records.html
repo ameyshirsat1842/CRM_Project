@@ -1,15 +1,15 @@
-<!-- templates/deleted_records.html -->
 {% extends 'base.html' %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Deleted Records History</h1>
+    <h1>Deleted Records</h1>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Record ID</th>
                 <th>Client Name</th>
                 <th>Company</th>
+                <th>Assigned To</th> <!-- Added Assigned To Column -->
                 <th>Deleted By</th>
                 <th>Deleted At</th>
                 <th>Details</th>
@@ -21,6 +21,13 @@
                 <td>{{ item.record_id }}</td>
                 <td>{{ item.client_name }}</td>
                 <td>{{ item.company }}</td>
+                <td>
+                    {% if item.assigned_to %}
+                        {{ item.assigned_to.username }}
+                    {% else %}
+                        <em>Unassigned</em>
+                    {% endif %}
+                </td> <!-- Display Assigned To User -->
                 <td>{{ item.deleted_by.username }}</td>
                 <td>{{ item.deleted_at|date:"F d, Y, H:i" }}</td>
                 <td>

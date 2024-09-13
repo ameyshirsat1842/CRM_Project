@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<br>
+<br xmlns="">
 <h1>Delete Record</h1>
-<p>Are you sure you want to delete this record?</p>
-
+ <div class="form-group">
+        <label for="deletion_reason">Reason for Deletion (required):</label>
+        <br></br>
+        <textarea id="deletion_reason" name="deletion_reason" class="form-control" rows="3" required></textarea>
+    </div>
+<br></br>
 <form method="post">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Confirm Delete</button>

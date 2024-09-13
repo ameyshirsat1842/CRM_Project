@@ -188,6 +188,13 @@ def delete_record(request, pk):
     record = get_object_or_404(Record, pk=pk)
 
     if request.method == 'POST':
+        deletion_reason = request.POST.get('deletion_reason', '').strip()
+
+        if not deletion_reason:
+            messages.error(request, "You must specify a reason for deletion.")
+            return render(request, 'delete_record.html', {'record': record})
+
+        # Just delete the record, signal will handle the rest
         record.delete()
         messages.success(request, "Record deleted successfully.")
         return redirect('leads')

@@ -314,6 +314,7 @@ class DeletedRecord(models.Model):
     deleted_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='deleted_by', null=True)
     deleted_at = models.DateTimeField(auto_now_add=True)
     details = models.JSONField()  # To store additional record details
+    deletion_reason = models.TextField(null=True, blank=True)  # Allow deletion reason to be nullable
 
     def __str__(self):
         return f"{self.client_name} - Deleted"

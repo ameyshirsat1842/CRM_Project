@@ -3,172 +3,143 @@
 {% block content %}
 <div class="container mt-4">
     <div class="row">
-        <div class="col-md-6">
-            <h1 class="text-center mb-4">Add Leads</h1>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="font-weight-bold">Add New Record</h2>
+            </div>
+            <div class="card-body">
+                <form id="addRecordForm" method="post" action="{% url 'add_record' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
 
-            <form id="lead-form" action="{% url 'add_record' %}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-                {% csrf_token %}
+                    <!-- Company Information Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Company Information</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="company" class="form-label">Company</label>
+                                <input type="text" id="company" name="company" class="form-control" required>
+                                <div class="invalid-feedback">Please provide a company name.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="client_name" class="form-label">Client Name</label>
+                                <input type="text" id="client_name" name="client_name" class="form-control" required>
+                                <div class="invalid-feedback">Please provide a client name.</div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="dept_name" class="form-label">Dept Name</label>
+                                <input type="text" id="dept_name" name="dept_name" class="form-control" required>
+                                <div class="invalid-feedback">Please provide a department name.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="text" id="phone" name="phone" class="form-control" required maxlength="10" pattern="\d{10}">
+                                <div class="invalid-feedback">Please provide a valid 10-digit phone number.</div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                                <div class="invalid-feedback">Please provide a valid email address.</div>
+                            </div>
+                        </div>
+                    </fieldset>
 
-                <!-- Company Information -->
-                <fieldset>
-                    <legend class="legend-custom">Company Information</legend>
-                    <div class="form-group row">
-                        <label for="company" class="col-sm-3 col-form-label">Company:</label>
-                        <div class="col-sm-9">
-                            <input type="text" id="company" name="company" class="form-control" required>
-                            <div class="invalid-feedback">Please provide a company name.</div>
+                    <!-- Location Information Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Location Information</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" id="city" name="city" class="form-control" required>
+                                <div class="invalid-feedback">Please provide a city.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="address" class="form-label">Address</label>
+                                <textarea id="address" name="address" class="form-control" required></textarea>
+                                <div class="invalid-feedback">Please provide an address.</div>
+                            </div>
                         </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="client_name" class="col-sm-3 col-form-label">Client:</label>
-                        <div class="col-sm-9">
-                            <input type="text" id="client_name" name="client_name" class="form-control" required>
-                            <div class="invalid-feedback">Please provide a client name.</div>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="dept_name" class="col-sm-3 col-form-label">Role:</label>
-                        <div class="col-sm-9">
-                            <input type="text" id="dept_name" name="dept_name" class="form-control" required>
-                            <div class="invalid-feedback">Please provide a department name.</div>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="phone" class="col-sm-3 col-form-label">Phone:</label>
-                        <div class="col-sm-9">
-                            <input type="text" id="phone" name="phone" class="form-control" required maxlength="10" pattern="\d{10}">
-                            <div id="phone-error" class="text-danger"></div>
-                            <div class="invalid-feedback">Please provide a valid 10-digit phone number.</div>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="email" class="col-sm-3 col-form-label">Email:</label>
-                        <div class="col-sm-9">
-                            <input type="email" id="email" name="email" class="form-control" required>
-                            <div id="email-error" class="text-danger"></div>
-                            <div class="invalid-feedback">Please provide a valid email address.</div>
-                        </div>
-                    </div>
-                </fieldset>
-                <br>
+                    </fieldset>
 
-                <!-- Location Information -->
-                <fieldset>
-                    <legend class="legend-custom">Location Information</legend>
-                    <div class="form-group row">
-                        <label for="city" class="col-sm-3 col-form-label">City:</label>
-                        <div class="col-sm-9">
-                            <input type="text" id="city" name="city" class="form-control" required>
-                            <div class="invalid-feedback">Please provide a city.</div>
+                    <!-- Lead Details Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Lead Details</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="classification" class="form-label">Status</label>
+                                <select id="classification" name="classification" class="form-control" required>
+                                    <option value="">Select Classification</option>
+                                    <option value="assigned">Assigned</option>
+                                    <option value="unassigned">Unassigned</option>
+                                    <option value="dead">Dead</option>
+                                    <option value="in_progress">In Progress</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a classification.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="assigned_to" class="form-label">Assigned To</label>
+                                <select id="assigned_to" name="assigned_to" class="form-control">
+                                    <option value="">---------</option>
+                                    {% for user in users %}
+                                        <option value="{{ user.id }}">{{ user.username }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="address" class="col-sm-3 col-form-label">Address:</label>
-                        <div class="col-sm-9">
-                            <textarea id="address" name="address" class="form-control" required></textarea>
-                            <div class="invalid-feedback">Please provide an address.</div>
-                        </div>
-                    </div>
-                </fieldset>
-                <br>
+                    </fieldset>
 
-                <!-- Lead Details -->
-                <fieldset>
-                    <legend class="legend-custom">Lead Details</legend>
-                    <div class="form-group row">
-                        <label for="classification" class="col-sm-3 col-form-label">Status:</label>
-                        <div class="col-sm-9">
-                            <select name="classification" id="classification" class="form-control" required>
-                                <option value="">Select Classification</option>
-                                <option value="assigned">Assigned</option>
-                                <option value="unassigned">Unassigned</option>
-                                <option value="dead">Dead</option>
-                                <option value="in_progress">In Progress</option>
-                            </select>
-                            <div class="invalid-feedback">Please select a classification.</div>
+                    <!-- Additional Information Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Additional Information</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="lead_source" class="form-label">Lead Source</label>
+                                <select id="lead_source" name="lead_source" class="form-control" required>
+                                    <option value="">Select Lead Source</option>
+                                    {% for choice in form.fields.lead_source.widget.choices %}
+                                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">Please select a lead source.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="follow_up_date" class="form-label">Follow-Up Date</label>
+                                <input type="text" id="follow_up_date" name="follow_up_date" class="form-control" required>
+                                <div class="invalid-feedback">Please provide a follow-up date.</div>
+                            </div>
                         </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="id_assigned_to" class="col-sm-3 col-form-label">Assigned To:</label>
-                        <div class="col-sm-9">
-                            <select name="assigned_to" id="id_assigned_to" class="form-control">
-                                <option value="">---------</option>
-                                {% for user in users %}
-                                    <option value="{{ user.id }}">{{ user.username }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="comments" class="form-label">Comments</label>
+                                <textarea id="comments" name="comments" class="form-control" required></textarea>
+                                <div class="invalid-feedback">Please provide comments.</div>
+                            </div>
                         </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="lead_source" class="col-sm-3 col-form-label">Lead Source:</label>
-                        <div class="col-sm-9">
-                            <select name="lead_source" id="lead_source" class="form-control" required>
-                                <option value="">Select Lead Source</option>
-                                {% for choice in form.fields.lead_source.widget.choices %}
-                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                                {% endfor %}
-                            </select>
-                            <div class="invalid-feedback">Please select a lead source.</div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="remarks" class="form-label">Meeting Type</label>
+                                <textarea id="remarks" name="remarks" class="form-control" required></textarea>
+                                <div class="invalid-feedback">Please provide remarks.</div>
+                            </div>
                         </div>
-                    </div>
-                    <br>
-                   <div class="form-group row">
-    <label for="follow_up_date" class="col-sm-3 col-form-label">Follow-Up Date & Time:</label>
-    <div class="col-sm-9">
-        <input type="text" class="form-control" id="follow_up_date" name="follow_up_date" required>
-        <div class="invalid-feedback">Please provide a follow-up date and time.</div>
-    </div>
-</div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="comments" class="col-sm-3 col-form-label">Comments:</label>
-                        <div class="col-sm-9">
-                            <textarea id="comments" name="comments" class="form-control" required></textarea>
-                            <div class="invalid-feedback">Please provide the agenda.</div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="social_media_details" class="form-label">Other Details</label>
+                                <textarea id="social_media_details" name="social_media_details" class="form-control" rows="3"></textarea>
+                            </div>
                         </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="remarks" class="col-sm-3 col-form-label">Meeting Type:</label>
-                        <div class="col-sm-9">
-                            <textarea id="remarks" name="remarks" class="form-control" required></textarea>
-                            <div class="invalid-feedback">Please provide remarks.</div>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="attachments" class="col-sm-3 col-form-label">Attachments:</label>
-                        <div class="col-sm-9">
-                            <input type="file" id="attachments" name="attachments" class="form-control">
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="social_media_details" class="col-sm-3 col-form-label">Other Details:</label>
-                        <div class="col-sm-9">
-                            <textarea id="social_media_details" name="social_media_details" class="form-control" rows="3"></textarea>
-                        </div>
-                    </div>
-                </fieldset>
-                <br>
-                <!-- Form Actions -->
-                <div class="form-group row">
-                    <div class="col-sm-9 offset-sm-3">
+                    </fieldset>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <br><br/>
+                        <button type="submit" class="btn btn-primary">Add Record</button>
                     </div>
-                </div>
-
-                <input type="hidden" name="created_by" id="id_created_by" value="{{ request.user.id }}">
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -180,14 +151,14 @@
         border-bottom: 2px solid #000;
         margin-bottom: 1rem;
     }
-
-    .text-danger {
-        color: #dc3545;
+    .form-label {
+        font-weight: 500;
     }
-
-    #phone-error,
-    #email-error {
-        margin-top: 0.5rem;
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+    .d-flex {
+        margin-top: 20px;
     }
 </style>
 
