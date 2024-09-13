@@ -253,48 +253,79 @@ class UpdateRecordForm(forms.ModelForm):
 
 
 class AddTicketForm(forms.ModelForm):
-    title = forms.CharField(required=True,
-                            widget=forms.TextInput(attrs={"placeholder": "Title", "class": "form-control"}))
-    description = forms.CharField(required=False,
-                                  widget=forms.Textarea(attrs={"placeholder": "Description", "class": "form-control"}))
-    company_name = forms.CharField(required=True,
-                                   widget=forms.TextInput(
-                                       attrs={"placeholder": "Company Name", "class": "form-control"}))
-    ticket_type = forms.CharField(required=True,
-                                  widget=forms.TextInput(attrs={"placeholder": "Ticket Type", "class": "form-control"}))
-    status = forms.CharField(required=True,
-                             widget=forms.TextInput(attrs={"placeholder": "Status", "class": "form-control"}))
-    account_name = forms.CharField(required=True,
-                                   widget=forms.TextInput(
-                                       attrs={"placeholder": "Account Name", "class": "form-control"}))
-    detailed_summary = forms.CharField(required=False,
-                                       widget=forms.Textarea(
-                                           attrs={"placeholder": "Detailed Summary", "class": "form-control"}))
-    comments_history = forms.CharField(required=False,
-                                       widget=forms.Textarea(
-                                           attrs={"placeholder": "Comments / History", "class": "form-control"}))
-    contract = forms.CharField(required=False,
-                               widget=forms.TextInput(attrs={"placeholder": "Contract", "class": "form-control"}))
-    ticket_source = forms.CharField(required=False,
-                                    widget=forms.TextInput(
-                                        attrs={"placeholder": "Ticket Source", "class": "form-control"}))
-    resolution = forms.CharField(required=False,
-                                 widget=forms.Textarea(attrs={"placeholder": "Resolution", "class": "form-control"}))
-    contact_name = forms.CharField(required=False,
-                                   widget=forms.TextInput(
-                                       attrs={"placeholder": "Contact Name", "class": "form-control"}))
-    support_mode = forms.CharField(required=False,
-                                   widget=forms.TextInput(
-                                       attrs={"placeholder": "Support Mode", "class": "form-control"}))
-    phone = forms.CharField(required=False,
-                            widget=forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"}))
-    email = forms.EmailField(required=False,
-                             widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}))
+    title = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Title", "class": "form-control"})
+    )
+    description = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={"placeholder": "Description", "class": "form-control"})
+    )
+    company_name = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Company Name", "class": "form-control"})
+    )
+    ticket_type = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Ticket Type", "class": "form-control"})
+    )
+    status = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Status", "class": "form-control"})
+    )
+    account_name = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Account Name", "class": "form-control"})
+    )
+    detailed_summary = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={"placeholder": "Detailed Summary", "class": "form-control"})
+    )
+    comments_history = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={"placeholder": "Comments / History", "class": "form-control"})
+    )
+    contract = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "Contract", "class": "form-control"})
+    )
+    ticket_source = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "Ticket Source", "class": "form-control"})
+    )
+    resolution = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={"placeholder": "Resolution", "class": "form-control"})
+    )
+    contact_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "Contact Name", "class": "form-control"})
+    )
+    support_mode = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "Support Mode", "class": "form-control"})
+    )
+    phone = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"})
+    )
+    email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"})
+    )
+
+    # Add assigned_to field to select users
+    assigned_to = forms.ModelChoiceField(
+        queryset=User.objects.all(),  # Assuming all users are eligible to be assigned
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Assign to"
+    )
 
     class Meta:
         model = Ticket
         fields = '__all__'
-        exclude = ("created_by", "created_at", "modified_at")
+        exclude = ("created_by", "created_at", "modified_at", "last_modified_by", "last_modified_at")
 
 
 class AddMeetingRecordForm(forms.ModelForm):

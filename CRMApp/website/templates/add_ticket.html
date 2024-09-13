@@ -1,81 +1,252 @@
-<!-- templates/add_ticket.html -->
-
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Add Ticket</h2>
-    <form method="post">
-        {% csrf_token %}
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    {{ form.title.label_tag }}{% if form.title.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.title }}
-                </div>
-                <div class="mb-3">
-                    {{ form.description.label_tag }}{% if form.description.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.description }}
-                </div>
-                <div class="mb-3">
-                    {{ form.company_name.label_tag }}{% if form.company_name.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.company_name }}
-                </div>
-                <div class="mb-3">
-                    {{ form.ticket_type.label_tag }}{% if form.ticket_type.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.ticket_type }}
-                </div>
-                <div class="mb-3">
-                    {{ form.status.label_tag }}{% if form.status.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.status }}
-                </div>
-                <div class="mb-3">
-                    {{ form.account_name.label_tag }}{% if form.account_name.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.account_name }}
-                </div>
-                <div class="mb-3">
-                    {{ form.detailed_summary.label_tag }}{% if form.detailed_summary.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.detailed_summary }}
-                </div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="font-weight-bold">Add Ticket</h2>
             </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    {{ form.comments_history.label_tag }}{% if form.comments_history.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.comments_history }}
-                </div>
-                <div class="mb-3">
-                    {{ form.contract.label_tag }}{% if form.contract.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.contract }}
-                </div>
-                <div class="mb-3">
-                    {{ form.ticket_source.label_tag }}{% if form.ticket_source.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.ticket_source }}
-                </div>
-                <div class="mb-3">
-                    {{ form.resolution.label_tag }}{% if form.resolution.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.resolution }}
-                </div>
-                <div class="mb-3">
-                    {{ form.contact_name.label_tag }}{% if form.contact_name.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.contact_name }}
-                </div>
-                <div class="mb-3">
-                    {{ form.support_mode.label_tag }}{% if form.support_mode.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.support_mode }}
-                </div>
-                <div class="mb-3">
-                    {{ form.phone.label_tag }}{% if form.phone.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.phone }}
-                </div>
-                <div class="mb-3">
-                    {{ form.email.label_tag }}{% if form.email.field.required %}<span class="text-danger">*</span>{% endif %}
-                    {{ form.email }}
-                </div>
+            <div class="card-body">
+                <!-- Display messages if any -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Ticket Information Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Ticket Information</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="title" class="form-label">{{ form.title.label }}</label>
+                                {{ form.title }}
+                                {% if form.title.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.title.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="description" class="form-label">{{ form.description.label }}</label>
+                                {{ form.description }}
+                                {% if form.description.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.description.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="company_name" class="form-label">{{ form.company_name.label }}</label>
+                                {{ form.company_name }}
+                                {% if form.company_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.company_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ticket_type" class="form-label">{{ form.ticket_type.label }}</label>
+                                {{ form.ticket_type }}
+                                {% if form.ticket_type.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.ticket_type.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="status" class="form-label">{{ form.status.label }}</label>
+                                {{ form.status }}
+                                {% if form.status.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.status.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="account_name" class="form-label">{{ form.account_name.label }}</label>
+                                {{ form.account_name }}
+                                {% if form.account_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.account_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Contact Information Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Contact Information</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="contact_name" class="form-label">{{ form.contact_name.label }}</label>
+                                {{ form.contact_name }}
+                                {% if form.contact_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.contact_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">{{ form.phone.label }}</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.phone.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.email.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="assigned_to" class="form-label">{{ form.assigned_to.label }}</label>
+                                {{ form.assigned_to }}
+                                {% if form.assigned_to.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.assigned_to.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Additional Information Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Additional Information</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="detailed_summary" class="form-label">{{ form.detailed_summary.label }}</label>
+                                {{ form.detailed_summary }}
+                                {% if form.detailed_summary.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.detailed_summary.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ticket_source" class="form-label">{{ form.ticket_source.label }}</label>
+                                {{ form.ticket_source }}
+                                {% if form.ticket_source.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.ticket_source.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="resolution" class="form-label">{{ form.resolution.label }}</label>
+                                {{ form.resolution }}
+                                {% if form.resolution.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.resolution.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="support_mode" class="form-label">{{ form.support_mode.label }}</label>
+                                {{ form.support_mode }}
+                                {% if form.support_mode.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.support_mode.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Comments & Contract Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Comments & Contract</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="comments_history" class="form-label">{{ form.comments_history.label }}</label>
+                                {{ form.comments_history }}
+                                {% if form.comments_history.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.comments_history.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="contract" class="form-label">{{ form.contract.label }}</label>
+                                {{ form.contract }}
+                                {% if form.contract.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.contract.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
+                        <button type="submit" class="btn btn-primary">Add Ticket</button>
+                    </div>
+                </form>
             </div>
         </div>
-        <button class="btn btn-primary mt-3" onclick="window.history.back()">Back</button>
-        <button type="submit" class="btn btn-primary mt-3">Add Ticket</button>
-    </form>
+    </div>
 </div>
+
+<style>
+    .legend-custom {
+        font-size: 1.5em;
+        font-weight: bold;
+        border-bottom: 2px solid #000;
+        margin-bottom: 1rem;
+    }
+    .form-label {
+        font-weight: 500;
+    }
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+    .d-flex {
+        margin-top: 20px;
+    }
+</style>
+
+{% block scripts %}
+<script>
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+{% endblock %}
 {% endblock %}

@@ -18,11 +18,11 @@
           <h5 class="card-title">
             <strong>ID:</strong> {{ record.record_id }}<br>
             <strong>Company:</strong> {{ record.company }}<br>
-            <strong>Role:</strong> {{ record.details.department }}<br>
+            <strong>Role:</strong> {{ record.department }}<br>
             <strong>Phone:</strong> {{ record.phone }}<br>
             <strong>Email:</strong> {{ record.email }}<br>
-            <strong>City:</strong> {{ record.details.city }}<br>
-            <strong>Address:</strong> {{ record.details.address }}<br>
+            <strong>City:</strong> {{ record.city }}<br>
+            <strong>Address:</strong> {{ record.address }}<br>
           </h5>
         </fieldset>
 
@@ -30,9 +30,9 @@
         <fieldset class="border p-3 mt-3">
           <legend class="w-auto">Lead Details</legend>
           <h5 class="card-title">
-            <strong>Lead Source:</strong> {{ record.details.lead_source }}<br>
-            <strong>Remarks:</strong> {{ record.details.remarks|linebreaksbr }}<br>
-            <strong>Comments:</strong> {{ record.details.comments|linebreaksbr }}<br>
+            <strong>Lead Source:</strong> {{ record.lead_source }}<br>
+            <strong>Remarks:</strong> {{ record.remarks|linebreaksbr }}<br>
+            <strong>Comments:</strong> {{ record.comments|linebreaksbr }}<br>
           </h5>
         </fieldset>
       </div>
@@ -46,10 +46,11 @@
             <strong>Assigned Person:</strong> {{ record.assigned_to.username }}<br>
             <strong>Deleted By:</strong>
             {% if record.deleted_by %}
-                {{ record.deleted_by.username }}
+                {{ record.deleted_by.username }}<br>
             {% else %}
                 <em>Unknown</em>
             {% endif %}
+            <strong>Reason for Delete:</strong> {{ record.deletion_reason  }}<br>
             <br>
             <strong>Deleted At:</strong> {{ record.deleted_at|date:"F d, Y, h:i A" }}<br>
           </h5>
@@ -59,7 +60,7 @@
         <fieldset class="border p-3 mt-3">
           <legend class="w-auto">Follow-Up</legend>
           <h5 class="card-title">
-            <strong>Follow-Up Date:</strong> {{ record.details.follow_up_date|date:"F d, Y, h:i A" }}<br>
+            <strong>Follow-Up Date:</strong> {{ record.follow_up_date|date:"F d, Y, h:i A" }}<br>
           </h5>
         </fieldset>
       </div>

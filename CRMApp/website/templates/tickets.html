@@ -4,6 +4,11 @@
 <div class="container mt-5">
     <h1>Tickets</h1>
 
+    <!-- Add Ticket Button at the top -->
+    <div class="mb-4">
+        <a href="{% url 'add_ticket' %}" class="btn btn-primary">Add Ticket</a>
+    </div>
+
     {% if tickets %}
         <div class="row row-cols-1 row-cols-md-2 g-4">
             {% for ticket in tickets %}
@@ -26,13 +31,10 @@
                                 <li class="list-group-item">Support Mode: {{ ticket.support_mode }}</li>
                                 <li class="list-group-item">Phone: {{ ticket.phone }}</li>
                                 <li class="list-group-item">Email: {{ ticket.email }}</li>
-
                             </ul>
                         </div>
                         <div class="card-footer d-flex justify-content-end">
                             <a href="{% url 'update_ticket' ticket.pk %}" class="btn btn-warning btn-sm me-2">Update</a>
-                                <a href="{% url 'add_ticket' %}" class="btn btn-primary mb-3">Add Ticket</a>
-
                         </div>
                     </div>
                 </div>

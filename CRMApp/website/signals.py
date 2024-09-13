@@ -1,11 +1,9 @@
-import json
-
-from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User
-from django.utils import timezone
 from django.db.models.signals import post_delete
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-from .models import Record, MeetingRecord, Profile, Notification, DeletedRecord, DeletionHistory
+from django.utils import timezone
+from .models import Record, MeetingRecord, Profile, Notification, DeletedRecord, Ticket
 from .notifications import send_notification_to_user
 from .utils import send_otp_to_email
 
@@ -20,27 +18,30 @@ def notify_user_assignment(sender, instance, **kwargs):
             if old_record.assigned_to != instance.assigned_to:
                 new_assignee = instance.assigned_to
                 if new_assignee:
-                    department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by, 'profile') else 'Unknown'
+                    department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
+                                                                                         'profile') else 'Unknown'
                     message = f"You have been assigned a new lead: {instance.client_name} from {instance.company} by {instance.last_modified_by.username} from {department} department"
                     send_notification_to_user(new_assignee, message)
-                    Notification.objects.create(user=new_assignee, message=message)
+                    Notification.objects.create(user=new_assignee, message=message, link_url=f'/record/{instance.pk}')
 
             # Handle follow-up date update notifications
             if old_record.follow_up_date != instance.follow_up_date and instance.follow_up_date:
                 assignee = instance.assigned_to
                 if assignee:
-                    department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by, 'profile') else 'Unknown'
+                    department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
+                                                                                         'profile') else 'Unknown'
                     message = f"Meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d %I:%M %p')} for lead:{instance.client_name} from {instance.company} by {instance.last_modified_by.username} from {department} department"
                     send_notification_to_user(assignee, message)
-                    Notification.objects.create(user=assignee, message=message)
+                    Notification.objects.create(user=assignee, message=message, link_url=f'/record/{instance.pk}')
         else:
             # New Record creation and assignment
             if instance.assigned_to:
                 new_assignee = instance.assigned_to
-                department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by, 'profile') else 'Unknown'
+                department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
+                                                                                     'profile') else 'Unknown'
                 message = f"You have been assigned a new lead: {instance.client_name} from {instance.company} by {instance.last_modified_by.username} from {department} department"
                 send_notification_to_user(new_assignee, message)
-                Notification.objects.create(user=new_assignee, message=message)
+                Notification.objects.create(user=new_assignee, message=message, link_url=f'/record/{instance.pk}')
     except Record.DoesNotExist:
         pass  # Handle case where old_record does not exist
 
@@ -53,10 +54,11 @@ def notify_meeting_follow_up(sender, instance, **kwargs):
             if old_meeting.follow_up_date != instance.follow_up_date and instance.follow_up_date:
                 speaker = instance.speaker
                 if speaker:
-                    department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by, 'profile') else 'Unknown'
+                    department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
+                                                                                         'profile') else 'Unknown'
                     message = f"You have a follow-up meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d %I:%M %p')} with {instance.meeting_partner} by {instance.last_modified_by.username} from {department} department"
                     send_notification_to_user(speaker, message)
-                    Notification.objects.create(user=speaker, message=message)
+                    Notification.objects.create(user=speaker, message=message, link_url=f'/record/{instance.pk}')
     except MeetingRecord.DoesNotExist:
         pass  # Handle case where old_meeting does not exist
 
@@ -74,31 +76,14 @@ def manage_user_creation(sender, instance, created, **kwargs):
 
 @receiver(post_delete, sender=Record)
 def handle_record_deletion(sender, instance, **kwargs):
-    # Convert datetime objects to strings for serialization
-    follow_up_date = instance.follow_up_date.strftime('%Y-%m-%d %H:%M:%S') if instance.follow_up_date else None
-    created_at = instance.created_at.strftime('%Y-%m-%d %H:%M:%S') if instance.created_at else None
+    # Convert datetime objects for deletion
+    follow_up_date = instance.follow_up_date if instance.follow_up_date else None
+    created_at = instance.created_at if instance.created_at else None
 
-    # Log detailed deletion history
-    DeletionHistory.objects.create(
-        record_id=instance.pk,
-        record_data=json.dumps({
-            'client_name': instance.client_name,
-            'company': instance.company,
-            'email': instance.email,
-            'phone': instance.phone,
-            'assigned_to': instance.assigned_to.username if instance.assigned_to else None,
-            'department': instance.dept_name,
-            'follow_up_date': follow_up_date,
-            'remarks': instance.remarks,
-            'comments': instance.comments,
-            'lead_source': instance.lead_source,
-            'created_at': created_at,
-        }),
-        deleted_by=instance.last_modified_by,  # Assuming you track who deleted it
-        deleted_at=timezone.now(),
-    )
+    # Ensure deletion_reason is available
+    deletion_reason = getattr(instance, 'deletion_reason', 'No reason provided')
 
-    # Store basic deleted record info for easy reference
+    # Log the deleted record's details
     DeletedRecord.objects.create(
         record_id=instance.pk,
         client_name=instance.client_name,
@@ -106,16 +91,59 @@ def handle_record_deletion(sender, instance, **kwargs):
         email=instance.email,
         phone=instance.phone,
         assigned_to=instance.assigned_to,
-        deleted_by=instance.last_modified_by,
+        deleted_by=instance.last_modified_by,  # Ensure this tracks the deleting user
         deleted_at=timezone.now(),
-        details=json.dumps({
-            'department': instance.dept_name,
-            'address': instance.address,
-            'follow_up_date': follow_up_date,
-            'remarks': instance.remarks,
-            'comments': instance.comments,
-            'lead_source': instance.lead_source,
-            'created_at': created_at,
-        })
-
+        department=instance.dept_name,
+        address=instance.address,
+        follow_up_date=follow_up_date,
+        remarks=instance.remarks,
+        comments=instance.comments,
+        lead_source=instance.lead_source,
+        deletion_reason=deletion_reason
     )
+
+    # Notify the assigned user
+    if instance.assigned_to:
+        notification_message = f"Your lead {instance.client_name} from {instance.company} has been deleted by {instance.last_modified_by.username}."
+        send_notification_to_user(instance.assigned_to, notification_message)
+
+        # Optionally save the notification to the database with link to the deleted record
+        Notification.objects.create(
+            user=instance.assigned_to,
+            message=notification_message,
+            link_url=f'/deleted-record/{instance.pk}'  # Adjust this URL if necessary
+        )
+
+
+# Signal for notifying user when a ticket is assigned or reassigned
+@receiver(pre_save, sender=Ticket)
+def notify_user_ticket_assignment(sender, instance, **kwargs):
+    try:
+        if instance.pk:  # Existing Ticket
+            old_ticket = Ticket.objects.get(pk=instance.pk)
+
+            # Check if the ticket is reassigned
+            if old_ticket.assigned_to != instance.assigned_to:
+                new_assignee = instance.assigned_to
+                if new_assignee:
+                    # Notify the new assignee
+                    message = f"You have been assigned a new ticket: {instance.title}."
+                    send_notification_to_user(new_assignee, message)
+                    Notification.objects.create(user=new_assignee, message=message, link_url=f'/ticket/{instance.pk}')
+
+                # Optionally notify the old assignee that they are no longer assigned
+                if old_ticket.assigned_to:
+                    message = f"You have been unassigned from the ticket: {instance.title}."
+                    send_notification_to_user(old_ticket.assigned_to, message)
+                    Notification.objects.create(user=old_ticket.assigned_to, message=message,
+                                                link_url=f'/ticket/{instance.pk}')
+        else:
+            # New Ticket assignment
+            if instance.assigned_to:
+                new_assignee = instance.assigned_to
+                message = f"You have been assigned a new ticket: {instance.title}."
+                send_notification_to_user(new_assignee, message)
+                Notification.objects.create(user=new_assignee, message=message, link_url=f'/ticket/{instance.pk}')
+
+    except Ticket.DoesNotExist:
+        pass  # Handle case where old_ticket does not exist

@@ -68,6 +68,7 @@
           <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#commentHistoryModal">
             View Comment History
           </button>
+
         </fieldset>
       </div>
     </div>
@@ -175,6 +176,20 @@
             window.location.href = "{% url 'delete_record' 0 %}".replace(0, id);
         }
     }
+       document.addEventListener('DOMContentLoaded', function() {
+        const addCommentBtn = document.getElementById('add-comment-btn');
+        const commentsContainer = document.getElementById('comments-container');
+
+        addCommentBtn.addEventListener('click', function() {
+            // Create a new text area for an additional comment
+            const newCommentField = document.createElement('textarea');
+            newCommentField.setAttribute('name', 'additional_comments[]');
+            newCommentField.setAttribute('class', 'form-control mt-2');
+            newCommentField.setAttribute('rows', '3');
+            newCommentField.setAttribute('placeholder', 'Add another comment...');
+            commentsContainer.appendChild(newCommentField);
+        });
+    });
 </script>
 
 <style>

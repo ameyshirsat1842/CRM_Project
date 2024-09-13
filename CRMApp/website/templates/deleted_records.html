@@ -12,6 +12,7 @@
                 <th>Assigned To</th> <!-- Added Assigned To Column -->
                 <th>Deleted By</th>
                 <th>Deleted At</th>
+                <th>Reason</th> <!-- Added deletion reason -->
                 <th>Details</th>
             </tr>
         </thead>
@@ -30,6 +31,8 @@
                 </td> <!-- Display Assigned To User -->
                 <td>{{ item.deleted_by.username }}</td>
                 <td>{{ item.deleted_at|date:"F d, Y, H:i" }}</td>
+                <td>{{ item.deletion_reason }}</td> <!-- Display the reason -->
+
                 <td>
                     <a href="{% url 'deleted_record_detail' item.id %}" class="btn btn-info">
                         View Details

@@ -83,11 +83,11 @@
                                     {% for customer in customers %}
                                         <tr>
                                             <td>{{ customer.id }}</td>
-                                            <td>{{ customer.client_name }}</td> <!-- Adjusted field name -->
+                                            <td>{{ customer.client_name }}</td>
                                             <td>{{ customer.email }}</td>
                                             <td>{{ customer.phone }}</td>
                                             <td>{{ customer.company }}</td>
-                                            <td>{{ customer.created_at|date:"F d, Y" }}</td> <!-- Adjusted field name -->
+                                            <td>{{ customer.created_at|date:"F d, Y" }}</td>
                                             <td>
                                                 <!-- View Details Button -->
                                                 <a href="{% url 'customer_detail' customer.id %}" class="btn btn-sm btn-info">View</a>
@@ -99,6 +99,48 @@
                                         <tr>
                                             <td colspan="7">No customer records available.</td>
                                         </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table for Deleted Records -->
+            <h5>Deleted Records</h5>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow animate__animated animate__fadeIn">
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Client Name</th>
+                                        <th>Company</th>
+                                        <th>Deleted By</th>
+                                        <th>Deleted At</th>
+                                        <th>Reason for Deletion</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in deleted_records %}
+                                        <tr>
+                                            <td>{{ record.record_id }}</td>
+                                            <td>{{ record.client_name }}</td>
+                                            <td>{{ record.company }}</td>
+                                            <td>{{ record.deleted_by.username }}</td>
+                                            <td>{{ record.deleted_at|date:"F d, Y" }}</td>
+                                            <td>{{ record.deletion_reason }}</td>
+                                            <td>
+                                                <a href="{% url 'deleted_record_detail' record.id %}" class="btn btn-sm btn-info">View</a>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="7">No deleted records available.</td>
                                     {% endfor %}
                                 </tbody>
                             </table>

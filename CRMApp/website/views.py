@@ -58,7 +58,8 @@ def home(request):
         overdues = Record.objects.filter(
             assigned_to=request.user,
             follow_up_date__lt=now,
-            classification='in_progress'  # Assuming in-progress leads can be overdue
+            classification='in_progress',
+            follow_up_attended=False  # Exclude leads that have been attended
         )
 
         # Notifications for the logged-in user
@@ -105,7 +106,6 @@ def logout_user(request):
 
 
 def register_user(request):
-
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -188,13 +188,15 @@ def delete_record(request, pk):
     record = get_object_or_404(Record, pk=pk)
 
     if request.method == 'POST':
-        deletion_reason = request.POST.get('deletion_reason', '').strip()
+        deletion_reason = request.POST.get('deletion_reason', None)
 
         if not deletion_reason:
-            messages.error(request, "You must specify a reason for deletion.")
+            messages.error(request, "You must provide a reason for deletion.")
             return render(request, 'delete_record.html', {'record': record})
 
-        # Just delete the record, signal will handle the rest
+        # Temporarily set the deletion_reason to the record instance
+        record.deletion_reason = deletion_reason
+
         record.delete()
         messages.success(request, "Record deleted successfully.")
         return redirect('leads')
@@ -292,13 +294,15 @@ def update_record(request, pk):
     return render(request, 'update_record.html', {'form': form, 'record': record, 'users': users})
 
 
-def send_notification_to_user(user, message):
+def send_notification_to_user(user, message, link_url=None):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        user.username,
+        f'notifications_{user.id}',
         {
             'type': 'send_notification',
-            'notification': message
+            'notification': message,
+            'link_url': link_url  # Optional URL if available
+
         }
     )
 
@@ -340,44 +344,38 @@ def tickets(request):
 
 
 def add_ticket(request):
-    if request.user.is_authenticated:
-        if request.method == "POST":
-            form = AddTicketForm(request.POST)
-            if form.is_valid():
-                ticket = form.save(commit=False)
-                ticket.created_by = request.user
-                ticket.save()
-                messages.success(request, "Ticket added successfully!")
-                return redirect('tickets')
-            else:
-                # Debug: Print form errors to console
-                print(form.errors)
-                messages.error(request, "Error adding ticket. Please check your inputs.")
+    if request.method == "POST":
+        form = AddTicketForm(request.POST)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.created_by = request.user  # Set the creator as the logged-in user
+            ticket.save()
+            messages.success(request, "Ticket added successfully!")
+            return redirect('tickets')
         else:
-            form = AddTicketForm()
-        return render(request, 'add_ticket.html', {'form': form})
+            # Debug: Print form errors to console for easier debugging during development
+            print(form.errors)
+            messages.error(request, "Error adding ticket. Please check your inputs.")
     else:
-        messages.error(request, "You must be logged in to add a ticket.")
-        return redirect('login')
+        form = AddTicketForm()
+    return render(request, 'add_ticket.html', {'form': form})
 
 
 def update_ticket(request, pk):
     ticket = get_object_or_404(Ticket, pk=pk)
-    if request.user.is_authenticated:
-        if request.method == "POST":
-            form = AddTicketForm(request.POST, instance=ticket)
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Ticket updated successfully!")
-                return redirect('tickets')
-            else:
-                messages.error(request, "Error updating ticket. Please check your inputs.")
+    if request.method == "POST":
+        form = AddTicketForm(request.POST, instance=ticket)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.last_modified_by = request.user  # Set the last_modified_by to the current user
+            ticket.save()
+            messages.success(request, "Ticket updated successfully!")
+            return redirect('tickets')
         else:
-            form = AddTicketForm(instance=ticket)
-        return render(request, 'update_ticket.html', {'form': form})
+            messages.error(request, "Error updating ticket. Please check your inputs.")
     else:
-        messages.error(request, "You must be logged in to update a ticket.")
-        return redirect('login')
+        form = AddTicketForm(instance=ticket)
+    return render(request, 'update_ticket.html', {'form': form})
 
 
 def add_meeting_record(request, pk):
@@ -650,7 +648,7 @@ def move_to_customers(request, record_id):
         customer.save()
 
         # Optionally delete the record or perform other actions
-        record.delete()
+        record.remove()
 
         messages.success(request, "Record moved to customers successfully!")
         return redirect('customers')
@@ -755,7 +753,8 @@ def export_record_to_excel(request, record_id):
         buffer.seek(0)
 
         # Create the HttpResponse object
-        response = HttpResponse(buffer, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response = HttpResponse(buffer,
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = f'attachment; filename=record_{record_id}.xlsx'
 
         return response
@@ -1000,7 +999,6 @@ def reports(request):
 
 
 def admin_dashboard(request):
-
     # Aggregating data for the dashboard
     total_leads = Record.objects.count()
     total_customers = Customer.objects.count()
@@ -1089,3 +1087,22 @@ def manage_users(request):
         'users': users
     }
     return render(request, 'manage_users.html', context)
+
+
+def mark_attended(request, lead_id):
+    if request.method == 'POST':
+        lead = get_object_or_404(Record, id=lead_id, assigned_to=request.user)
+
+        # Update the lead to mark the follow-up as attended
+        lead.follow_up_attended = True
+        lead.save()
+
+        # Display a success message
+        messages.success(request, f"Lead for {lead.client_name} marked as attended.")
+
+        # Redirect back to the dashboard
+        return redirect('home')
+    else:
+        # In case of a non-POST request, handle the error
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+

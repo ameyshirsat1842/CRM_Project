@@ -33,6 +33,7 @@ class Record(models.Model):
         blank=True
     )
     follow_up_date = models.DateTimeField(null=True, blank=True)
+    follow_up_attended = models.BooleanField(default=False)
     comments = models.CharField(max_length=200, null=True, blank=True)
     remarks = models.CharField(max_length=200, null=True, blank=True)
     visible_to = models.ManyToManyField(User, related_name='visible_tickets', blank=True)
@@ -178,6 +179,7 @@ class NotificationManager(models.Manager):
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
     message = models.TextField()
+    link_url = models.CharField(max_length=255, blank=True, null=True)  # To store the URL link
     created_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
 
@@ -195,7 +197,7 @@ class Ticket(models.Model):
     objects = None
     title = models.CharField(max_length=200)
     description = models.TextField()
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tickets_created")
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     company_name = models.CharField(max_length=200, null=True)
@@ -207,6 +209,9 @@ class Ticket(models.Model):
     contract = models.CharField(max_length=200, null=True)
     ticket_source = models.CharField(max_length=100, null=True)
     resolution = models.TextField(null=True)
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="assigned_tickets")
+    last_modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="modified_tickets")
+    last_modified_at = models.DateTimeField(auto_now=True)
     contact_name = models.CharField(max_length=200, null=True)
     support_mode = models.CharField(max_length=100, null=True)
     phone = models.CharField(max_length=20, null=True)
@@ -214,6 +219,7 @@ class Ticket(models.Model):
 
     def __str__(self):
         return self.title
+
 
 
 class MeetingRecord(models.Model):
@@ -313,7 +319,13 @@ class DeletedRecord(models.Model):
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     deleted_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='deleted_by', null=True)
     deleted_at = models.DateTimeField(auto_now_add=True)
-    details = models.JSONField()  # To store additional record details
+    # Additional details (stored directly, not in JSON)
+    department = models.CharField(max_length=255, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    follow_up_date = models.DateTimeField(null=True, blank=True)
+    remarks = models.TextField(null=True, blank=True)
+    comments = models.TextField(null=True, blank=True)
+    lead_source = models.CharField(max_length=255, null=True, blank=True)
     deletion_reason = models.TextField(null=True, blank=True)  # Allow deletion reason to be nullable
 
     def __str__(self):

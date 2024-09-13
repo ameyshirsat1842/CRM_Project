@@ -56,29 +56,35 @@
     </div>
 </div>
 
- <!-- Overdue Leads -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-lg gradient-card-red border-0 animate__animated animate__fadeIn">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Overdue Leads</h5>
-                        <p class="card-text display-4">{{ overdues|length }}</p>
-                        <ul class="list-group list-group-flush" id="overdueLeads">
-                            {% for overdue in overdues %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>{{ overdue.client_name }}</strong> from <strong>{{ overdue.company }}</strong>
-                                        <span class="text-muted">- Follow-up was on {{ overdue.follow_up_date|date:"F d, Y, h:i A" }}</span>
-                                    </div>
-                                </li>
-                            {% empty %}
-                                <li class="list-group-item">No overdue leads.</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
+<!-- Overdue Leads -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-lg gradient-card-red border-0 animate__animated animate__fadeIn">
+            <div class="card-body text-center">
+                <h5 class="card-title">Overdue Leads</h5>
+                <p class="card-text display-4">{{ overdues|length }}</p>
+                <ul class="list-group list-group-flush" id="overdueLeads">
+                    {% for overdue in overdues %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ overdue.client_name }}</strong> from <strong>{{ overdue.company }}</strong>
+                                <span class="text-muted">- Follow-up was on {{ overdue.follow_up_date|date:"F d, Y, h:i A" }}</span>
+                            </div>
+                            <!-- Mark as Attended Button Form -->
+                            <form method="POST" action="{% url 'mark_attended' overdue.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm">Mark as Attended</button>
+                            </form>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">No overdue leads.</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
+    </div>
+</div>
+
         <!-- Key Metrics -->
         <div class="row mb-4">
             <div class="col-6 col-md-3 mb-3 mb-md-0">
@@ -276,3 +282,47 @@
     }
 </style>
 {% endblock %}
+
+{% block extra_js %}
+<script>
+function markLeadAsAttended(leadId) {
+    console.log("Mark as attended clicked for lead ID:", leadId);
+
+    fetch(`/lead/${leadId}/mark-attended/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Follow-up marked as attended.');
+            location.reload();  // Optionally reload the page to reflect changes
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('An error occurred.');
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}
+
