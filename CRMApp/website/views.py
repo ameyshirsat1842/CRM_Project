@@ -648,7 +648,7 @@ def move_to_customers(request, record_id):
         customer.save()
 
         # Optionally delete the record or perform other actions
-        record.remove()
+        record.delete()
 
         messages.success(request, "Record moved to customers successfully!")
         return redirect('customers')
@@ -1045,20 +1045,52 @@ def settings_view(request):
 
 
 def master_database(request):
-    # Fetch all leads and users
+    # Get search query from the request
+    search_query = request.GET.get('search', '')
+
+    # Fetch all leads, users, customers, and deleted records
     leads = Record.objects.all()
     users = User.objects.all()
     customers = Customer.objects.all()
-    deleted_records = DeletedRecord.objects.all()  # Fetch all deleted records
+    deleted_records = DeletedRecord.objects.all()
+
+    # Filter based on the search query if provided
+    if search_query:
+        leads = leads.filter(
+            Q(company__icontains=search_query) |
+            Q(client_name__icontains=search_query) |
+            Q(phone__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+        users = users.filter(
+            Q(username__icontains=search_query) |
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+        customers = customers.filter(
+            Q(company__icontains=search_query) |
+            Q(client_name__icontains=search_query) |
+            Q(phone__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+        deleted_records = deleted_records.filter(
+            Q(company__icontains=search_query) |
+            Q(client_name__icontains=search_query) |
+            Q(phone__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
 
     context = {
         'leads': leads,
         'users': users,
         'customers': customers,
-        'deleted_records': deleted_records
+        'deleted_records': deleted_records,
+        'search_query': search_query  # Pass the search query to the template
     }
 
     return render(request, 'master_database.html', context)
+
 
 
 def delete_account(request):

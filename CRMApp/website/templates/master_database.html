@@ -6,6 +6,13 @@
         <div class="container main-content">
             <h1>Master Database</h1>
             <br>
+   <!-- Search Form -->
+    <form method="get" action="{% url 'master_database' %}">
+        <div class="input-group mb-3">
+            <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ search_query }}">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </form>
 
             <!-- Table for Leads -->
             <h5>Leads</h5>

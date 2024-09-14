@@ -2,50 +2,95 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Deleted Records</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="mb-4">Deleted Records</h1>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Client Name</th>
-                <th>Company</th>
-                <th>Assigned To</th> <!-- Added Assigned To Column -->
-                <th>Deleted By</th>
-                <th>Deleted At</th>
-                <th>Reason</th> <!-- Added deletion reason -->
-                <th>Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in history %}
-            <tr>
-                <td>{{ item.record_id }}</td>
-                <td>{{ item.client_name }}</td>
-                <td>{{ item.company }}</td>
-                <td>
-                    {% if item.assigned_to %}
-                        {{ item.assigned_to.username }}
-                    {% else %}
-                        <em>Unassigned</em>
-                    {% endif %}
-                </td> <!-- Display Assigned To User -->
-                <td>{{ item.deleted_by.username }}</td>
-                <td>{{ item.deleted_at|date:"F d, Y, H:i" }}</td>
-                <td>{{ item.deletion_reason }}</td> <!-- Display the reason -->
-                <td>
-                    <a href="{% url 'deleted_record_detail' item.id %}" class="btn btn-info">
-                        View Details
-                    </a>
-                </td>
-            </tr>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Client Name</th>
+                            <th>Company</th>
+                            <th>Assigned To</th>
+                            <th>Deleted By</th>
+                            <th>Deleted At</th>
+                            <th>Reason</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in history %}
+                        <tr>
+                            <td>{{ item.record_id }}</td>
+                            <td>{{ item.client_name }}</td>
+                            <td>{{ item.company }}</td>
+                            <td>
+                                {% if item.assigned_to %}
+                                    {{ item.assigned_to.username }}
+                                {% else %}
+                                    <em>Unassigned</em>
+                                {% endif %}
+                            </td>
+                            <td>{{ item.deleted_by.username }}</td>
+                            <td>{{ item.deleted_at|date:"F d, Y, H:i" }}</td>
+                            <td>{{ item.deletion_reason }}</td>
+                            <td>
+                                <a href="{% url 'deleted_record_detail' item.id %}" class="btn btn-info btn-sm">
+                                    View Details
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center">No deleted records found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
-            {% endfor %}
-        </tbody>
-    </table>
-      <!-- Export Button -->
-    <a href="{% url 'export_deleted_records' %}" class="btn btn-success mb-3">
-        Export Deleted Records
-    </a>
+            <!-- Export Button -->
+            <div class="mt-4">
+                <a href="{% url 'export_deleted_records' %}" class="btn btn-success">
+                    Export Deleted Records
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 8px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .thead-dark th {
+        background-color: #071229;
+        color: white;
+        border-top: none;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+</style>
 {% endblock %}
