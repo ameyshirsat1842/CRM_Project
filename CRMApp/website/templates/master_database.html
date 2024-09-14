@@ -12,7 +12,7 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card shadow animate__animated animate__fadeIn">
-                        <div class="card-body">
+                        <div class="card-body table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
@@ -66,7 +66,7 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card shadow animate__animated animate__fadeIn">
-                        <div class="card-body">
+                        <div class="card-body table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
@@ -112,7 +112,7 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card shadow animate__animated animate__fadeIn">
-                        <div class="card-body">
+                        <div class="card-body table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
@@ -121,7 +121,7 @@
                                         <th>Company</th>
                                         <th>Deleted By</th>
                                         <th>Deleted At</th>
-                                        <th>Reason for Deletion</th>
+                                        <th>Reason</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -154,7 +154,7 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card shadow animate__animated animate__fadeIn">
-                        <div class="card-body">
+                        <div class="card-body table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
@@ -202,7 +202,7 @@
 {% endblock %}
 
 {% block extra_css %}
-<!-- Add extra CSS for shadows and animations -->
+<!-- Add extra CSS for shadows, animations, and scrollable cards -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 <style>
     .shadow {
@@ -218,6 +218,10 @@
     }
     .btn-info:hover, .btn-warning:hover {
         transform: scale(1.05);
+    }
+    .table-responsive {
+        max-height: 300px; /* Set the height for scroll */
+        overflow-y: auto; /* Enable vertical scrolling */
     }
 </style>
 {% endblock %}

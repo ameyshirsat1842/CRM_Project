@@ -241,12 +241,6 @@ class UpdateRecordForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Check if form instance is tied to an existing record
-        # if self.instance and self.instance.pk:
-        #     # Convert the existing follow_up_date to a string format that works with datetime-local input
-        #     if self.instance.follow_up_date:
-        #         self.fields['follow_up_date'].initial = self.instance.follow_up_date.strftime('%Y-%m-%dT%H:%M')
-
         if self.user:
             self.fields['created_by'].initial = self.user.username
             self.fields['created_by'].widget = forms.HiddenInput()
@@ -265,29 +259,22 @@ class AddTicketForm(forms.ModelForm):
         required=True,
         widget=forms.TextInput(attrs={"placeholder": "Company Name", "class": "form-control"})
     )
-    ticket_type = forms.CharField(
+
+    # Updated ticket_type field to use ChoiceField with predefined choices
+    ticket_type = forms.ChoiceField(
         required=True,
-        widget=forms.TextInput(attrs={"placeholder": "Ticket Type", "class": "form-control"})
+        choices=Ticket.TICKET_TYPE_CHOICES,  # Use the choices defined in the model
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Ticket Type"
     )
+
     status = forms.CharField(
         required=True,
         widget=forms.TextInput(attrs={"placeholder": "Status", "class": "form-control"})
     )
-    account_name = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={"placeholder": "Account Name", "class": "form-control"})
-    )
     detailed_summary = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={"placeholder": "Detailed Summary", "class": "form-control"})
-    )
-    comments_history = forms.CharField(
-        required=False,
-        widget=forms.Textarea(attrs={"placeholder": "Comments / History", "class": "form-control"})
-    )
-    contract = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={"placeholder": "Contract", "class": "form-control"})
     )
     ticket_source = forms.CharField(
         required=False,
@@ -301,10 +288,15 @@ class AddTicketForm(forms.ModelForm):
         required=False,
         widget=forms.TextInput(attrs={"placeholder": "Contact Name", "class": "form-control"})
     )
-    support_mode = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={"placeholder": "Support Mode", "class": "form-control"})
+
+    # Updated support_mode field to use ChoiceField with predefined choices
+    support_mode = forms.ChoiceField(
+        required=True,
+        choices=Ticket.SUPPORT_MODE_CHOICES,  # Use the choices defined in the model
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Support Mode"
     )
+
     phone = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"})
@@ -450,4 +442,3 @@ class CustomerUpdateForm(forms.ModelForm):
             'msme': forms.ClearableFileInput(),
             'pancard': forms.ClearableFileInput(),
         }
-

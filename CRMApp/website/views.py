@@ -898,6 +898,148 @@ def export_leads(request):
     return response
 
 
+def export_customers(request):
+    search_query = request.GET.get('search', '')
+    classification_filter = request.GET.get('classification', '')
+    assigned_filter = request.GET.get('filter', '')
+
+    queryset = Customer.objects.all()
+
+    if search_query:
+        queryset = queryset.filter(
+            Q(company__icontains=search_query) |
+            Q(client_name__icontains=search_query) |
+            Q(dept_name__icontains=search_query) |
+            Q(phone__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(city__icontains=search_query) |
+            Q(address__icontains=search_query) |
+            Q(comments__icontains=search_query) |
+            Q(remarks__icontains=search_query)
+        )
+
+    if classification_filter:
+        queryset = queryset.filter(classification=classification_filter)
+
+    if assigned_filter == 'assigned_to_me':
+        queryset = queryset.filter(assigned_to=request.user)
+
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'Customers'
+
+    headers = [
+        'ID', 'Company', 'Client', 'Department', 'Phone', 'Email',
+        'City', 'Address', 'Comments', 'Remarks',
+        'Lead Source', 'Assigned To', 'Status', 'Created'
+    ]
+    worksheet.append(headers)
+
+    for customer in queryset:
+        worksheet.append([
+            customer.id, customer.company, customer.client_name, customer.dept_name,
+            customer.phone, customer.email, customer.city, customer.address,
+            customer.comments, customer.remarks,
+            customer.lead_source, customer.assigned_to.username if customer.assigned_to else 'N/A',
+            customer.get_classification_display(),
+            customer.created_at.strftime('%Y-%m-%d')
+        ])
+
+    stream = BytesIO()
+    workbook.save(stream)
+    stream.seek(0)
+
+    response = HttpResponse(stream, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=customers.xlsx'
+    return response
+
+
+def export_deleted_records(request):
+    # Query all deleted records
+    deleted_records = DeletedRecord.objects.all()
+
+    # Create a new workbook and worksheet
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'Deleted Records'
+
+    # Define headers, including the deletion reason
+    headers = [
+        'Record ID', 'Client Name', 'Company', 'Assigned To',
+        'Deleted By', 'Deleted At', 'Reason'
+    ]
+    worksheet.append(headers)
+
+    # Add data rows for each deleted record
+    for record in deleted_records:
+        worksheet.append([
+            record.record_id,
+            record.client_name,
+            record.company,
+            record.assigned_to.username if record.assigned_to else 'Unassigned',
+            record.deleted_by.username if record.deleted_by else 'Unknown',
+            record.deleted_at.strftime('%Y-%m-%d %H:%M:%S'),
+            record.deletion_reason or 'No reason provided'  # Include deletion reason
+        ])
+
+    # Save workbook to a BytesIO stream
+    stream = BytesIO()
+    workbook.save(stream)
+    stream.seek(0)
+
+    # Create an HTTP response with the Excel file
+    response = HttpResponse(stream, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=deleted_records.xlsx'
+    return response
+
+
+def export_meeting_records(request):
+    # Query all meeting records
+    meeting_records = MeetingRecord.objects.all()
+
+    # Create a new workbook and worksheet
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'Meeting Records'
+
+    # Define headers
+    headers = [
+        'Meeting ID', 'Client Name', 'Company', 'Meeting Partner', 'Products Discussed with Partner',
+        'Products Discussed with Company', 'Conclusion', 'Follow-Up Date', 'Created By',
+        'Created At', 'Speaker', 'Attendees', 'Location'
+    ]
+    worksheet.append(headers)
+
+    # Add data rows for each meeting record
+    for meeting in meeting_records:
+        attendees = ', '.join([attendee.username for attendee in meeting.attendees.all()])  # List all attendees
+        worksheet.append([
+            meeting.id,
+            meeting.record.client_name if meeting.record else 'N/A',
+            meeting.record.company if meeting.record else 'N/A',
+            meeting.meeting_partner,
+            meeting.products_discussed_partner,
+            meeting.products_discussed_company,
+            meeting.conclusion,
+            meeting.follow_up_date.strftime('%Y-%m-%d %H:%M:%S') if meeting.follow_up_date else 'N/A',
+            meeting.created_by.username if meeting.created_by else 'N/A',
+            meeting.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            meeting.speaker.username if meeting.speaker else 'N/A',
+            attendees,
+            meeting.meeting_location,
+        ])
+
+    # Save workbook to a BytesIO stream
+    stream = BytesIO()
+    workbook.save(stream)
+    stream.seek(0)
+
+    # Create an HTTP response with the Excel file
+    response = HttpResponse(stream, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=meeting_records.xlsx'
+    return response
+
+
 def settings_view(request):
     return render(request, 'settings.html')
 
@@ -907,11 +1049,13 @@ def master_database(request):
     leads = Record.objects.all()
     users = User.objects.all()
     customers = Customer.objects.all()
+    deleted_records = DeletedRecord.objects.all()  # Fetch all deleted records
 
     context = {
         'leads': leads,
         'users': users,
-        'customers': customers
+        'customers': customers,
+        'deleted_records': deleted_records
     }
 
     return render(request, 'master_database.html', context)
@@ -967,7 +1111,7 @@ def reports(request):
 
     # Apply classification filter if a specific classification is selected
     if selected_classification == 'over_due':
-        records = records.filter(follow_up_date__lt=timezone.now(), classification='in_progress')
+        records = records.filter(follow_up_date__lt=timezone.now(), classification='in_progress', follow_up_attended=False)
     elif selected_classification != 'all':
         records = records.filter(classification=selected_classification)
         customers = customers.filter(classification=selected_classification)
@@ -978,7 +1122,7 @@ def reports(request):
         customers = customers.filter(assigned_to_id=selected_user)  # Filter customers by assigned user
 
     # Calculate counts for different categories
-    overdues_count = records.filter(follow_up_date__lt=timezone.now(), classification='in_progress').count()
+    overdues_count = records.filter(follow_up_date__lt=timezone.now(), classification='in_progress', follow_up_attended=False).count()
     leads_count = records.count()  # Total leads count
     converted_count = customers.filter(classification='active').count()  # Example classification filter for customers
 
@@ -1105,4 +1249,3 @@ def mark_attended(request, lead_id):
     else:
         # In case of a non-POST request, handle the error
         return JsonResponse({'error': 'Invalid request method.'}, status=400)
-

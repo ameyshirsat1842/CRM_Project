@@ -48,10 +48,10 @@
                     <td>{{ record.follow_up_date|date:"F d, Y, h:i A" }}</td>
                     <td>{{ record.created_at|date:"F d, Y, h:i A" }}</td>
                     <td>
-                        <a href="https://us05web.zoom.us/s/83827104906#success" class="btn btn-primary btn-sm">Zoom</a>
-                        <br>
-                        <a href="{% url 'update_meeting_record' record.pk %}" class="btn btn-warning btn-sm">Update</a>
-<!--                        <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ record.pk }})">Delete</button>-->
+                        <div class="btn-group-vertical">
+                            <a href="https://us05web.zoom.us/s/83827104906#success" class="btn btn-primary btn-sm">Zoom</a>
+                            <a href="{% url 'update_meeting_record' record.pk %}" class="btn btn-warning btn-sm">Update</a>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
@@ -61,6 +61,10 @@
                 {% endfor %}
             </tbody>
         </table>
+        <!-- Export Button -->
+        <a href="{% url 'export_meeting_records' %}" class="btn btn-warning mb-3">
+            Export Meeting Records
+        </a>
     </div>
 </div>
 
@@ -117,6 +121,13 @@
     .input-group-append .btn:hover {
         background-color: #071229;
         border-color: #071229;
+    }
+
+    .btn-group-vertical {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
     }
 </style>
 {% endblock %}

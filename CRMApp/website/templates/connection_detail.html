@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="card">
-        <div class="card-header">
-            <h2 class="font-weight-bold">Connection Details: {{ connection.client_name }} ({{ connection.company }})</h2>
+    <div class="card shadow-sm">
+        <div class="card-header text-white">
+            <h2 class="font-weight-bold">{{ connection.client_name }}</h2>
         </div>
         <div class="card-body">
             <!-- Display connection details -->
@@ -50,25 +50,58 @@
             </div>
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <strong>Comments:</strong>
-                </div>
-                <div class="col-md-8">
-                    {{ connection.comments }}
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4">
                     <strong>Last Conversation:</strong>
                 </div>
                 <div class="col-md-8">
                     {{ connection.conversation }}
                 </div>
             </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Comments:</strong>
+                </div>
+                <div class="col-md-8">
+                    {{ connection.comments }}
+                </div>
+            </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer d-flex justify-content-between">
             <a href="{% url 'potential_leads' %}" class="btn btn-secondary">Back to Connections</a>
             <a href="{% url 'update_potential_lead' connection.id %}" class="btn btn-primary">Update</a>
         </div>
     </div>
 </div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 8px;
+    }
+
+    .card-header {
+        background-color: #071229;
+        color: #ffffff;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .row {
+        margin-bottom: 10px;
+    }
+
+    .card-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+</style>
 {% endblock %}

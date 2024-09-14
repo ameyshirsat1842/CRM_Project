@@ -3,10 +3,11 @@
 {% block content %}
 <div class="container mt-4">
     <h1>Deleted Records</h1>
+
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Record ID</th>
+                <th>ID</th>
                 <th>Client Name</th>
                 <th>Company</th>
                 <th>Assigned To</th> <!-- Added Assigned To Column -->
@@ -32,15 +33,19 @@
                 <td>{{ item.deleted_by.username }}</td>
                 <td>{{ item.deleted_at|date:"F d, Y, H:i" }}</td>
                 <td>{{ item.deletion_reason }}</td> <!-- Display the reason -->
-
                 <td>
                     <a href="{% url 'deleted_record_detail' item.id %}" class="btn btn-info">
                         View Details
                     </a>
                 </td>
             </tr>
+
             {% endfor %}
         </tbody>
     </table>
+      <!-- Export Button -->
+    <a href="{% url 'export_deleted_records' %}" class="btn btn-success mb-3">
+        Export Deleted Records
+    </a>
 </div>
 {% endblock %}

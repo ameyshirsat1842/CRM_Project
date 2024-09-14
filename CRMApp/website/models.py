@@ -194,32 +194,46 @@ class Notification(models.Model):
 
 
 class Ticket(models.Model):
+    # Define the choices for ticket_type
     objects = None
+    TICKET_TYPE_CHOICES = [
+        ('Acronis Backup Support', 'Acronis Backup Support'),
+        ('Cloud Meetings', 'Cloud Meetings'),
+        ('Email Support', 'Email Support'),
+        ('General Inquiry', 'General Inquiry'),
+        ('Marketing Leads', 'Marketing Leads'),
+        ('On-Premises Support', 'On-Premises Support'),
+        ('Sales', 'Sales'),
+        ('Server/Network Support', 'Server/Network Support'),
+    ]
+
+    # Define the choices for support_mode
+    SUPPORT_MODE_CHOICES = [
+        ('On Site', 'On Site'),
+        ('Remote', 'Remote'),
+    ]
+
     title = models.CharField(max_length=200)
     description = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tickets_created")
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     company_name = models.CharField(max_length=200, null=True)
-    ticket_type = models.CharField(max_length=100, null=True)
+    ticket_type = models.CharField(max_length=100, choices=TICKET_TYPE_CHOICES, null=True)  # Add choices here
     status = models.CharField(max_length=50)
-    account_name = models.CharField(max_length=200, null=True)
     detailed_summary = models.TextField(null=True)
-    comments_history = models.TextField(null=True)
-    contract = models.CharField(max_length=200, null=True)
     ticket_source = models.CharField(max_length=100, null=True)
     resolution = models.TextField(null=True)
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="assigned_tickets")
     last_modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="modified_tickets")
     last_modified_at = models.DateTimeField(auto_now=True)
     contact_name = models.CharField(max_length=200, null=True)
-    support_mode = models.CharField(max_length=100, null=True)
+    support_mode = models.CharField(max_length=100, choices=SUPPORT_MODE_CHOICES, null=True)  # Add choices here
     phone = models.CharField(max_length=20, null=True)
     email = models.EmailField(null=True)
 
     def __str__(self):
         return self.title
-
 
 
 class MeetingRecord(models.Model):
@@ -249,7 +263,6 @@ class PotentialLead(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     comments = models.TextField(blank=True, null=True)
-
     follow_up_date = models.DateTimeField(blank=True, null=True)
     conversation = models.TextField(blank=True, null=True)
 
@@ -319,7 +332,6 @@ class DeletedRecord(models.Model):
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     deleted_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='deleted_by', null=True)
     deleted_at = models.DateTimeField(auto_now_add=True)
-    # Additional details (stored directly, not in JSON)
     department = models.CharField(max_length=255, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     follow_up_date = models.DateTimeField(null=True, blank=True)
