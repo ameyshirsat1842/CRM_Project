@@ -6,7 +6,7 @@
     <form method="POST" action="">
         {% csrf_token %}
         {{ form.non_field_errors }}
-        
+
         <div class="form-group">
             <label for="company">Company</label>
             {{ form.company }}
@@ -76,9 +76,40 @@
                 </div>
             {% endif %}
         </div>
-<br>
+
+        <!-- Section for Additional Comments -->
+        <div id="additional-comments-section" class="form-group mt-4">
+            <label for="additional-comments">Additional Comments</label>
+            <div id="additional-comments-container">
+                <!-- Additional comments will be added here -->
+            </div>
+            <button type="button" id="add-comment-btn" class="btn btn-warning mt-2">
+                Add Comment
+            </button>
+        </div>
+
+        <br>
         <button type="submit" class="btn btn-primary">Update Lead</button>
         <a href="{% url 'potential_leads' %}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addCommentBtn = document.getElementById('add-comment-btn');
+        const commentsContainer = document.getElementById('additional-comments-container');
+
+        addCommentBtn.addEventListener('click', function () {
+            // Create a new textarea for an additional comment
+            const newCommentField = document.createElement('textarea');
+            newCommentField.setAttribute('name', 'additional_comments[]');  // Name it as an array
+            newCommentField.setAttribute('class', 'form-control mt-2');
+            newCommentField.setAttribute('rows', '3');
+            newCommentField.setAttribute('placeholder', 'Add another comment...');
+
+            // Append the new comment field to the container
+            commentsContainer.appendChild(newCommentField);
+        });
+    });
+</script>
 {% endblock %}

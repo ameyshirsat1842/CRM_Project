@@ -337,34 +337,60 @@ def mark_notification_as_read(request, notification_id):
 
 
 def tickets(request):
-    # Query all tickets
-    ticket = Ticket.objects.all()
+    # Get search and filter parameters from the request
+    search_query = request.GET.get('search', '')
+    status_filter = request.GET.get('status', '')
 
-    return render(request, 'tickets.html', {'tickets': ticket})
+    # Query tickets with search and status filtering
+    tickets = Ticket.objects.select_related('customer').all()
+
+    if search_query:
+        tickets = tickets.filter(
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(company_name__icontains=search_query) |
+            Q(contact_name__icontains=search_query) |
+            Q(phone__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+
+    if status_filter in ['Inactive', 'In Progress', 'Closed']:
+        tickets = tickets.filter(status=status_filter)
+
+    return render(request, 'tickets.html', {'tickets': tickets, 'search_query': search_query, 'status_filter': status_filter})
 
 
 def add_ticket(request):
     if request.method == "POST":
-        form = AddTicketForm(request.POST)
+        form = AddTicketForm(request.POST, request.FILES)  # Include request.FILES if there's a file upload
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.created_by = request.user  # Set the creator as the logged-in user
+
+            if ticket.customer:
+                customer = ticket.customer
+                ticket.company_name = customer.company
+                ticket.contact_name = customer.client_name
+                ticket.phone = customer.phone
+                ticket.email = customer.email
+
             ticket.save()
             messages.success(request, "Ticket added successfully!")
             return redirect('tickets')
         else:
-            # Debug: Print form errors to console for easier debugging during development
+            # Log or print form errors for debugging
             print(form.errors)
             messages.error(request, "Error adding ticket. Please check your inputs.")
     else:
         form = AddTicketForm()
-    return render(request, 'add_ticket.html', {'form': form})
+    customers = Customer.objects.all()  # Pass customers to the template
+    return render(request, 'add_ticket.html', {'form': form, 'customers': customers})
 
 
 def update_ticket(request, pk):
     ticket = get_object_or_404(Ticket, pk=pk)
     if request.method == "POST":
-        form = AddTicketForm(request.POST, instance=ticket)
+        form = AddTicketForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.last_modified_by = request.user  # Set the last_modified_by to the current user
@@ -376,6 +402,11 @@ def update_ticket(request, pk):
     else:
         form = AddTicketForm(instance=ticket)
     return render(request, 'update_ticket.html', {'form': form})
+
+
+def ticket_detail(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    return render(request, 'ticket_detail.html', {'ticket': ticket})
 
 
 def add_meeting_record(request, pk):
@@ -481,7 +512,15 @@ def update_potential_lead(request, lead_id):
     if request.method == "POST":
         form = UpdatePotentialLeadForm(request.POST, instance=lead)
         if form.is_valid():
+            # Save the main lead form
             form.save()
+
+            # Handle additional comments if any
+            additional_comments = request.POST.getlist('additional_comments[]')
+            for comment_text in additional_comments:
+                if comment_text.strip():  # Make sure it's not empty
+                    lead.add_comment(request.user, comment_text)
+
             messages.success(request, "Connection updated successfully!")
             return redirect('potential_leads')  # Redirect after updating
     else:
@@ -505,9 +544,9 @@ def leads_view(request):
         search_query = request.GET.get('search', '')
         classification = request.GET.get('classification', '')
         filter_option = request.GET.get('filter', '')
+        priority = request.GET.get('priority', '')  # New priority filter
 
-        # Apply search query
-        records = Record.objects.all().order_by('-created_at')
+        records = Record.objects.filter(is_converted=False).order_by('-created_at')
         if search_query:
             records = records.filter(
                 Q(company__icontains=search_query) |
@@ -529,6 +568,10 @@ def leads_view(request):
         if filter_option == 'assigned_to_me':
             records = records.filter(assigned_to=request.user)
 
+        # Apply priority filter
+        if priority and priority != 'all':
+            records = records.filter(priority=priority)
+
         paginator = Paginator(records, 10)  # Show 10 leads per page
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -538,6 +581,7 @@ def leads_view(request):
             'search_query': search_query,
             'classification': classification,
             'filter_option': filter_option,
+            'priority': priority,  # Include priority in context
         }
         return render(request, 'leads.html', context)
     else:
@@ -648,7 +692,8 @@ def move_to_customers(request, record_id):
         customer.save()
 
         # Optionally delete the record or perform other actions
-        record.delete()
+        record.is_converted = True
+        record.save()
 
         messages.success(request, "Record moved to customers successfully!")
         return redirect('customers')
@@ -738,7 +783,7 @@ def export_record_to_excel(request, record_id):
             'Attachments': [record.attachments.name if record.attachments else 'No attachments'],
             'Assigned To': [record.assigned_to.username if record.assigned_to else 'N/A'],
             'Created By': [record.created_by.username if record.created_by else 'N/A'],
-            'Social Media Details': [record.social_media_details],
+            'Event Details': [record.social_media_details],
             'Status': [record.classification],
             'Lead Source': [record.lead_source],
             'Created At': [created_at],
@@ -844,7 +889,7 @@ def export_leads(request):
     classification_filter = request.GET.get('classification', '')
     assigned_filter = request.GET.get('filter', '')
 
-    queryset = Record.objects.all()
+    queryset = Record.objects.filter(is_converted=False)
 
     if search_query:
         queryset = queryset.filter(
@@ -873,7 +918,7 @@ def export_leads(request):
 
     headers = [
         'ID', 'Company', 'Client', 'Department', 'Phone', 'Email',
-        'City', 'Address', 'Comments', 'Remarks', 'Social Media Details',
+        'City', 'Address', 'Comments', 'Remarks', 'Event Details',
         'Lead Source', 'Assigned To', 'Status', 'Created', 'Follow-Up'
     ]
     worksheet.append(headers)
@@ -1049,7 +1094,7 @@ def master_database(request):
     search_query = request.GET.get('search', '')
 
     # Fetch all leads, users, customers, and deleted records
-    leads = Record.objects.all()
+    leads = Record.objects.filter(is_converted=False)
     users = User.objects.all()
     customers = Customer.objects.all()
     deleted_records = DeletedRecord.objects.all()
@@ -1086,11 +1131,10 @@ def master_database(request):
         'users': users,
         'customers': customers,
         'deleted_records': deleted_records,
-        'search_query': search_query  # Pass the search query to the template
+        'search_query': search_query
     }
 
     return render(request, 'master_database.html', context)
-
 
 
 def delete_account(request):
@@ -1211,11 +1255,11 @@ def admin_dashboard(request):
 
 
 def manage_users(request):
-    users = User.objects.all()  # Get all users
+    users = User.objects.all()
 
     if request.method == 'POST':
-        user_id = request.POST.get('user_id')  # Get user ID from POST data
-        action = request.POST.get('action')  # Get action from POST data
+        user_id = request.POST.get('user_id')
+        action = request.POST.get('action')
 
         # Handle delete action
         if action == 'delete':

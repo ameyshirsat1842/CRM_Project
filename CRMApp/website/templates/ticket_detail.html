@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <!-- Header Section -->
+        <div class="card-header bg-primary text-white">
+            <h2 class="font-weight-bold">{{ ticket.company_name }} - Ticket Details</h2>
+        </div>
+
+        <!-- Body Section -->
+        <div class="card-body">
+            <!-- Ticket Information Section -->
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Company Name:</strong></div>
+                <div class="col-md-8">{{ ticket.company_name }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Contact Name:</strong></div>
+                <div class="col-md-8">{{ ticket.contact_name }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Phone:</strong></div>
+                <div class="col-md-8">{{ ticket.phone }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Email:</strong></div>
+                <div class="col-md-8">{{ ticket.email }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Ticket Type:</strong></div>
+                <div class="col-md-8">{{ ticket.ticket_type }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Status:</strong></div>
+                <div class="col-md-8">{{ ticket.status }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Due Date:</strong></div>
+                <div class="col-md-8">{{ ticket.due_date|date:"F j, Y, g:i a" }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Assigned To:</strong></div>
+                <div class="col-md-8">
+                    {% if ticket.assigned_to %}
+                        {{ ticket.assigned_to.username }}
+                    {% else %}
+                        Unassigned
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Detailed Summary:</strong></div>
+                <div class="col-md-8">{{ ticket.detailed_summary }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Support Mode:</strong></div>
+                <div class="col-md-8">{{ ticket.support_mode }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Resolution:</strong></div>
+                <div class="col-md-8">{{ ticket.resolution }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Created By:</strong></div>
+                <div class="col-md-8">{{ ticket.created_by.username }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Last Modified At:</strong></div>
+                <div class="col-md-8">{{ ticket.modified_at|date:"F j, Y, g:i a" }}</div>
+            </div>
+            <!-- Proof of Work Section -->
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Proof of Work:</strong></div>
+                <div class="col-md-8">
+                    {% if ticket.attachment %}
+                        <a href="{{ ticket.attachment.url }}" target="_blank">Download Attachment</a>
+                    {% else %}
+                        <p>No attachment available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{% url 'update_ticket' ticket.pk %}" class="btn btn-primary">Update Ticket</a>
+            <a href="{% url 'customers' %}" class="btn btn-secondary">Back to Customer</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 8px;
+    }
+
+    .card-header {
+        background-color: #071229;
+        color: #ffffff;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .row {
+        margin-bottom: 10px;
+    }
+
+    .card-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}

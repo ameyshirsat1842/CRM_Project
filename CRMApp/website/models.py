@@ -37,6 +37,7 @@ class Record(models.Model):
     comments = models.CharField(max_length=200, null=True, blank=True)
     remarks = models.CharField(max_length=200, null=True, blank=True)
     visible_to = models.ManyToManyField(User, related_name='visible_tickets', blank=True)
+    is_converted = models.BooleanField(default=False)
     attachments = models.FileField(
         upload_to='attachments/',
         null=True,
@@ -77,6 +78,18 @@ class Record(models.Model):
         null=True,
         default='Other Source'
     )
+    # Priority Choices
+    PRIORITY_CHOICES = [
+        ('high', 'High'),
+        ('mid', 'Mid'),
+        ('low', 'Low'),
+    ]
+    priority = models.CharField(
+        max_length=10,
+        choices=PRIORITY_CHOICES,
+        default='mid'
+    )
+    value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     objects = models.Manager()  # Default manager
 
@@ -195,6 +208,7 @@ class Notification(models.Model):
 
 class Ticket(models.Model):
     # Define the choices for ticket_type
+    DoesNotExist = None
     objects = None
     TICKET_TYPE_CHOICES = [
         ('Acronis Backup Support', 'Acronis Backup Support'),
@@ -212,15 +226,23 @@ class Ticket(models.Model):
         ('On Site', 'On Site'),
         ('Remote', 'Remote'),
     ]
-
+    # Define status choices
+    STATUS_CHOICES = [
+        ('In Progress', 'In Progress'),
+        ('Dead', 'Dead'),
+        ('Closed', 'Closed'),
+    ]
     title = models.CharField(max_length=200)
     description = models.TextField()
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='tickets',null=True)  # Link to Customer
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tickets_created")
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     company_name = models.CharField(max_length=200, null=True)
     ticket_type = models.CharField(max_length=100, choices=TICKET_TYPE_CHOICES, null=True)  # Add choices here
-    status = models.CharField(max_length=50)
+
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='In Progress')  # Updated field with choices
+
     detailed_summary = models.TextField(null=True)
     ticket_source = models.CharField(max_length=100, null=True)
     resolution = models.TextField(null=True)
@@ -231,6 +253,8 @@ class Ticket(models.Model):
     support_mode = models.CharField(max_length=100, choices=SUPPORT_MODE_CHOICES, null=True)  # Add choices here
     phone = models.CharField(max_length=20, null=True)
     email = models.EmailField(null=True)
+    due_date = models.DateTimeField(null=True, blank=True)  # New due date field
+    proof_of_work = models.FileField(upload_to='proof_of_work/', null=True, blank=True)  # Proof of Work attachment field
 
     def __str__(self):
         return self.title
@@ -265,11 +289,34 @@ class PotentialLead(models.Model):
     comments = models.TextField(blank=True, null=True)
     follow_up_date = models.DateTimeField(blank=True, null=True)
     conversation = models.TextField(blank=True, null=True)
+    additional_comments = models.TextField(blank=True, null=True)
 
     objects = models.Manager()  # Ensures you can use .objects for querying
 
     def __str__(self):
         return self.company
+
+    def add_comment(self, user, comment_text):
+        # Format: "username|timestamp|comment_text"
+        comment = f"{user.username}|{timezone.now().isoformat()}|{comment_text}"
+        if self.additional_comments:
+            # Append the new comment to existing comments
+            self.additional_comments += f"\n{comment}"
+        else:
+            self.additional_comments = comment
+        self.save()
+
+    def get_additional_comments(self):
+        comments_list = []
+        if self.additional_comments:
+            for line in self.additional_comments.split('\n'):
+                username, timestamp, text = line.split('|', 2)
+                comments_list.append({
+                    "user": username,
+                    "timestamp": timezone.datetime.fromisoformat(timestamp),
+                    "comment": text
+                })
+        return comments_list
 
 
 class UserSettings(models.Model):

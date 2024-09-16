@@ -80,6 +80,24 @@
                                 <div class="invalid-feedback">Please select a classification.</div>
                             </div>
                             <div class="col-md-6">
+                                <label for="priority" class="form-label">Priority</label>
+                                <select id="priority" name="priority" class="form-control" required>
+                                    <option value="">Select Priority</option>
+                                    <option value="high">High</option>
+                                    <option value="mid">Mid</option>
+                                    <option value="low">Low</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a priority.</div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="value" class="form-label">Value</label>
+                                <input type="number" id="value" name="value" class="form-control" step="0.01" required>
+                                <div class="invalid-feedback">Please provide a value.</div>
+                            </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
                                 <label for="assigned_to" class="form-label">Assigned To</label>
                                 <select id="assigned_to" name="assigned_to" class="form-control">
                                     <option value="">---------</option>
@@ -127,7 +145,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-12">
-                                <label for="social_media_details" class="form-label">Other Details</label>
+                                <label for="social_media_details" class="form-label">Event Details</label>
                                 <textarea id="social_media_details" name="social_media_details" class="form-control" rows="3"></textarea>
                             </div>
                         </div>
@@ -163,21 +181,17 @@
 </style>
 
 <script>
-
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#follow_up_date", {
             enableTime: true,
             dateFormat: "Y-m-d H:i",
-            time_24hr: false, // 12-hour format
+            time_24hr: false,
             altInput: true,
-            altFormat: "F j, Y h:i K", // Display format with AM/PM
+            altFormat: "F j, Y h:i K",
         });
-    });
-    document.addEventListener('DOMContentLoaded', function () {
+
         const phoneField = document.getElementById('phone');
         const emailField = document.getElementById('email');
-        const phoneError = document.getElementById('phone-error');
-        const emailError = document.getElementById('email-error');
 
         async function checkDuplicate() {
             const phone = phoneField.value;
@@ -187,10 +201,6 @@
                 const response = await fetch(`/check-duplicate/?phone=${phone}&email=${email}`);
                 const data = await response.json();
 
-                phoneError.textContent = data.phone || '';
-                emailError.textContent = data.email || '';
-
-                // Clear invalid feedback if there's no error
                 phoneField.classList.toggle('is-invalid', !!data.phone);
                 emailField.classList.toggle('is-invalid', !!data.email);
             } catch (error) {
@@ -201,10 +211,10 @@
         phoneField.addEventListener('blur', checkDuplicate);
         emailField.addEventListener('blur', checkDuplicate);
 
-        document.getElementById('lead-form').addEventListener('submit', async (event) => {
+        document.getElementById('addRecordForm').addEventListener('submit', async (event) => {
             await checkDuplicate();
-            const errors = document.querySelectorAll('.text-danger');
-            if ([...errors].some(error => error.textContent)) {
+            const errors = document.querySelectorAll('.is-invalid');
+            if (errors.length > 0) {
                 event.preventDefault();
             }
         });

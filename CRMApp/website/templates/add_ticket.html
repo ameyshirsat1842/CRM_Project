@@ -8,7 +8,6 @@
                 <h2 class="font-weight-bold">Add Ticket</h2>
             </div>
             <div class="card-body">
-                <!-- Display messages if any -->
                 {% if messages %}
                     {% for message in messages %}
                         <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
@@ -20,6 +19,78 @@
 
                 <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                     {% csrf_token %}
+
+                    <!-- Customer Selection Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Customer Selection</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="customer" class="form-label">{{ form.customer.label }}</label>
+                                {{ form.customer }}
+                                {% if form.customer.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.customer.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Contact Information Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Contact Information</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="company_name" class="form-label">{{ form.company_name.label }}</label>
+                                {{ form.company_name }}
+                                {% if form.company_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.company_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="contact_name" class="form-label">{{ form.contact_name.label }}</label>
+                                {{ form.contact_name }}
+                                {% if form.contact_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.contact_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">{{ form.phone.label }}</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.phone.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.email.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="assigned_to" class="form-label">{{ form.assigned_to.label }}</label>
+                                {{ form.assigned_to }}
+                                {% if form.assigned_to.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.assigned_to.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </fieldset>
 
                     <!-- Ticket Information Section -->
                     <fieldset>
@@ -46,25 +117,14 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="company_name" class="form-label">{{ form.company_name.label }}</label>
-                                {{ form.company_name }}
-                                {% if form.company_name.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.company_name.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
                                 <label for="ticket_type" class="form-label">{{ form.ticket_type.label }}</label>
-                                {{ form.ticket_type }} <!-- This now renders as a dropdown due to ChoiceField -->
+                                {{ form.ticket_type }}
                                 {% if form.ticket_type.errors %}
                                     <div class="invalid-feedback d-block">
                                         {{ form.ticket_type.errors }}
                                     </div>
                                 {% endif %}
                             </div>
-                        </div>
-                        <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="status" class="form-label">{{ form.status.label }}</label>
                                 {{ form.status }}
@@ -74,57 +134,14 @@
                                     </div>
                                 {% endif %}
                             </div>
-                            <div class="col-md-6">
-                                <label for="account_name" class="form-label">{{ form.account_name.label }}</label>
-                                {{ form.account_name }}
-                                {% if form.account_name.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.account_name.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <!-- Contact Information Section -->
-                    <fieldset>
-                        <legend class="legend-custom">Contact Information</legend>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="contact_name" class="form-label">{{ form.contact_name.label }}</label>
-                                {{ form.contact_name }}
-                                {% if form.contact_name.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.contact_name.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="phone" class="form-label">{{ form.phone.label }}</label>
-                                {{ form.phone }}
-                                {% if form.phone.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.phone.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="email" class="form-label">{{ form.email.label }}</label>
-                                {{ form.email }}
-                                {% if form.email.errors %}
+                                <label for="due_date" class="form-label">{{ form.due_date.label }}</label>
+                                {{ form.due_date }}
+                                {% if form.due_date.errors %}
                                     <div class="invalid-feedback d-block">
-                                        {{ form.email.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="assigned_to" class="form-label">{{ form.assigned_to.label }}</label>
-                                {{ form.assigned_to }}
-                                {% if form.assigned_to.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.assigned_to.errors }}
+                                        {{ form.due_date.errors }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -166,7 +183,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="support_mode" class="form-label">{{ form.support_mode.label }}</label>
-                                {{ form.support_mode }} <!-- This now renders as a dropdown due to ChoiceField -->
+                                {{ form.support_mode }}
                                 {% if form.support_mode.errors %}
                                     <div class="invalid-feedback d-block">
                                         {{ form.support_mode.errors }}
@@ -175,6 +192,17 @@
                             </div>
                         </div>
                     </fieldset>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="proof_of_work" class="form-label">{{ form.proof_of_work.label }}</label>
+                            {{ form.proof_of_work }}
+                            {% if form.proof_of_work.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.proof_of_work.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
 
                     <!-- Form Actions -->
                     <div class="d-flex justify-content-between">
@@ -207,21 +235,39 @@
 
 {% block scripts %}
 <script>
-    (function () {
-        'use strict';
-        window.addEventListener('load', function () {
-            var forms = document.getElementsByClassName('needs-validation');
-            Array.prototype.filter.call(forms, function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        }, false);
-    })();
+    document.addEventListener('DOMContentLoaded', function() {
+        const customerSelect = document.getElementById('id_customer');
+        const companyNameInput = document.getElementById('id_company_name');
+        const contactNameInput = document.getElementById('id_contact_name');
+        const phoneInput = document.getElementById('id_phone');
+        const emailInput = document.getElementById('id_email');
+
+        const customerData = {
+            {% for customer in customers %}
+                "{{ customer.id }}": {
+                    "company_name": "{{ customer.company }}",
+                    "client_name": "{{ customer.client_name }}",
+                    "phone": "{{ customer.phone }}",
+                    "email": "{{ customer.email }}"
+                },
+            {% endfor %}
+        };
+
+        customerSelect.addEventListener('change', function() {
+            const selectedCustomerId = this.value;
+            if (selectedCustomerId in customerData) {
+                companyNameInput.value = customerData[selectedCustomerId].company_name;
+                contactNameInput.value = customerData[selectedCustomerId].client_name;
+                phoneInput.value = customerData[selectedCustomerId].phone;
+                emailInput.value = customerData[selectedCustomerId].email;
+            } else {
+                companyNameInput.value = '';
+                contactNameInput.value = '';
+                phoneInput.value = '';
+                emailInput.value = '';
+            }
+        });
+    });
 </script>
 {% endblock %}
 {% endblock %}

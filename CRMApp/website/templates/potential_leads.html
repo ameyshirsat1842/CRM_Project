@@ -24,7 +24,7 @@
                         {% for lead in leads %}
                         <tr>
                             <th scope="row"><a href="{% url 'connection_detail' lead.id %}">{{ lead.id }}</a></th>
-                            <td>{{ lead.client_name }}</td>
+                            <td><a href="{% url 'connection_detail' lead.id %}">{{ lead.client_name }}</a></td>
                             <td>{{ lead.company }}</td>
                             <td>{{ lead.phone }}</td>
                             <td>{{ lead.email }}</td>

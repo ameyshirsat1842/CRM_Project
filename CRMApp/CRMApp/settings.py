@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_celery_beat',
-    'django_celery_results'
+    # 'django_celery_beat',
+    # 'django_celery_results'
 ]
 
 MIDDLEWARE = [
@@ -154,10 +154,13 @@ OTP_EMAIL_BODY_TEMPLATE = 'Your OTP is: %(token)s'
 CELERY_BEAT_SCHEDULE = {
     'send-follow-up-alerts-daily': {
         'task': 'website.tasks.send_follow_up_alerts',
-        'schedule': crontab(hour='8,12,3'),  # Runs at 8:15 AM, 12:15 PM, and 6:15 PM
+        'schedule': crontab(hour='8,12,15'),  # Correct format for hours
     },
 }
 
-CELERY_BROKER_URL = 'django-db'
-CELERY_RESULT_BACKEND = 'django-db'
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+
 broker_connection_retry_on_startup = True

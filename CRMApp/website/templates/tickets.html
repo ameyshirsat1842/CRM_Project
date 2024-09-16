@@ -1,48 +1,123 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1>Tickets</h1>
-
-
-    {% if tickets %}
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        {% for ticket in tickets %}
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">{{ ticket.title }}</h5>
-                    <p class="card-text">{{ ticket.description }}</p>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Company Name:</strong> {{ ticket.company_name }}</li>
-                        <li class="list-group-item"><strong>Ticket Type:</strong> {{ ticket.ticket_type }}</li>
-                        <li class="list-group-item"><strong>Status:</strong> {{ ticket.status }}</li>
-                        <li class="list-group-item"><strong>Detailed Summary:</strong> {{ ticket.detailed_summary }}</li>
-                        <li class="list-group-item"><strong>Contract:</strong> {{ ticket.contract }}</li>
-                        <li class="list-group-item"><strong>Ticket Source:</strong> {{ ticket.ticket_source }}</li>
-                        <li class="list-group-item"><strong>Resolution:</strong> {{ ticket.resolution }}</li>
-                        <li class="list-group-item"><strong>Contact Name:</strong> {{ ticket.contact_name }}</li>
-                        <li class="list-group-item"><strong>Support Mode:</strong> {{ ticket.support_mode }}</li>
-                        <li class="list-group-item"><strong>Phone:</strong> {{ ticket.phone }}</li>
-                        <li class="list-group-item"><strong>Email:</strong> {{ ticket.email }}</li>
-                    </ul>
-                </div>
-                <div class="card-footer d-flex justify-content-end">
-                    <a href="{% url 'update_ticket' ticket.pk %}" class="btn btn-warning btn-sm me-2">Update</a>
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">Tickets</h1>
+                <!-- Filter Buttons -->
+                <div>
+                    <a href="{% url 'tickets' %}" class="btn btn-secondary mb-2 {% if not status_filter %}active highlighted{% endif %}">
+                        All
+                        {% if not status_filter %}
+                            <span class="tick-mark">✔</span>
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'tickets' %}?status=In%20Progress" class="btn btn-warning mb-2 {% if status_filter == 'In Progress' %}active highlighted{% endif %}">
+                        In Progress
+                        {% if status_filter == 'In Progress' %}
+                            <span class="tick-mark">✔</span>
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'tickets' %}?status=Inactive" class="btn btn-danger mb-2 {% if status_filter == 'Inactive' %}active highlighted{% endif %}">
+                        Inactive
+                        {% if status_filter == 'Inactive' %}
+                            <span class="tick-mark">✔</span>
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'tickets' %}?status=Closed" class="btn btn-success mb-2 {% if status_filter == 'Closed' %}active highlighted{% endif %}">
+                        Closed
+                        {% if status_filter == 'Closed' %}
+                            <span class="tick-mark">✔</span>
+                        {% endif %}
+                    </a>
                 </div>
             </div>
+
+            <!-- Search Form -->
+            <form method="GET" action="{% url 'tickets' %}" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search tickets..." value="{{ search_query }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+
+                        {% if tickets %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">ID</th> <!-- Changed Title to ID -->
+                            <th scope="col">Company Name</th>
+                            <th scope="col">Assigned To</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Due Date</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in tickets %}
+                        <tr>
+                            <td>{{ ticket.id }}</td> <!-- Displaying ticket ID -->
+                            <td>{{ ticket.company_name }}</td>
+                            <td>
+                                {% if ticket.assigned_to %}
+                                    {{ ticket.assigned_to.username }}
+                                {% else %}
+                                    Unassigned
+                                {% endif %}
+                            </td>
+                            <td>{{ ticket.status }}</td>
+                            <td>{{ ticket.due_date|date:"F j, Y, g:i a" }}</td>
+                            <td>
+                                <div class="btn-group-vertical">
+                                    <a href="{% url 'ticket_detail' ticket.pk %}" class="btn btn-primary btn-sm">View Details</a>
+                                    <a href="{% url 'update_ticket' ticket.pk %}" class="btn btn-warning btn-sm">Update</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info mt-4">
+                No tickets found.
+            </div>
+            {% endif %}
         </div>
-        {% endfor %}
     </div>
-    {% else %}
-    <div class="alert alert-info mt-4">
-        No tickets found.
-    </div>
-    {% endif %}
 </div>
 
 <style>
-    /* Card Styling */
+    .highlighted {
+        position: relative;
+        background-color: #5a6268;
+        color: #ffffff;
+        border: none;
+    }
+
+    .highlighted .tick-mark {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.2em;
+        color: #ffffff;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
     .card {
         border: none;
         border-radius: 8px;
@@ -52,31 +127,18 @@
         padding: 20px;
     }
 
-    .card-title {
-        margin-bottom: 15px;
-        font-weight: bold;
+    .thead-dark th {
+        border-top: none;
     }
 
-    .list-group-item {
-        padding: 10px 15px;
-        border: none;
+    .btn.active {
+        opacity: 0.8;
     }
 
-    .card-footer {
-        background-color: #f8f9fa;
-        border-top: 1px solid #dee2e6;
-    }
-
-    /* Responsive styling */
-    @media (max-width: 767.98px) {
-        .card {
-            margin-bottom: 20px;
-        }
-    }
-
-    /* Button Margin Adjustment */
-    .btn-sm {
-        margin-right: 5px;
+    .ml-3 {
+        margin-left: 15px;
     }
 </style>
+
+
 {% endblock %}

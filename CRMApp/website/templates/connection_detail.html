@@ -3,71 +3,89 @@
 {% block content %}
 <div class="container mt-4">
     <div class="card shadow-sm">
-        <div class="card-header text-white">
+        <!-- Header Section -->
+        <div class="card-header bg-primary text-white">
             <h2 class="font-weight-bold">{{ connection.client_name }}</h2>
         </div>
+
+        <!-- Body Section -->
         <div class="card-body">
-            <!-- Display connection details -->
+            <!-- Display connection details in a grid format -->
             <div class="row mb-3">
-                <div class="col-md-4">
-                    <strong>Company:</strong>
-                </div>
-                <div class="col-md-8">
-                    {{ connection.company }}
-                </div>
+                <div class="col-md-4"><strong>Company:</strong></div>
+                <div class="col-md-8">{{ connection.company }}</div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-4">
-                    <strong>Client Name:</strong>
-                </div>
-                <div class="col-md-8">
-                    {{ connection.client_name }}
-                </div>
+                <div class="col-md-4"><strong>Client Name:</strong></div>
+                <div class="col-md-8">{{ connection.client_name }}</div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-4">
-                    <strong>Phone:</strong>
-                </div>
-                <div class="col-md-8">
-                    {{ connection.phone }}
-                </div>
+                <div class="col-md-4"><strong>Phone:</strong></div>
+                <div class="col-md-8">{{ connection.phone }}</div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-4">
-                    <strong>Email:</strong>
-                </div>
-                <div class="col-md-8">
-                    {{ connection.email }}
-                </div>
+                <div class="col-md-4"><strong>Email:</strong></div>
+                <div class="col-md-8">{{ connection.email }}</div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-4">
-                    <strong>Follow-Up Date:</strong>
-                </div>
-                <div class="col-md-8">
-                    {{ connection.follow_up_date|date:"F j, Y, g:i a" }}
-                </div>
+                <div class="col-md-4"><strong>Follow-Up Date:</strong></div>
+                <div class="col-md-8">{{ connection.follow_up_date|date:"F j, Y, g:i a" }}</div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-4">
-                    <strong>Last Conversation:</strong>
-                </div>
-                <div class="col-md-8">
-                    {{ connection.conversation }}
-                </div>
+                <div class="col-md-4"><strong>Last Conversation:</strong></div>
+                <div class="col-md-8">{{ connection.conversation }}</div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-4">
-                    <strong>Comments:</strong>
-                </div>
-                <div class="col-md-8">
-                    {{ connection.comments }}
-                </div>
+                <div class="col-md-4"><strong>Comments:</strong></div>
+                <div class="col-md-8">{{ connection.comments }}</div>
+            </div>
+
+            <!-- Additional Comments Section -->
+            <div class="mt-4">
+                <h5>Additional Comments</h5>
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#commentsModal">
+                    View Comments
+                </button>
+            </div>
+
+            <!-- Created By and Created At Section -->
+            <div class="row mt-4 mb-3">
+                <div class="col-md-4"><strong>Created By:</strong></div>
+                <div class="col-md-8">{{ connection.created_by.username }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Created At:</strong></div>
+                <div class="col-md-8">{{ connection.created_at|date:"F j, Y, g:i a" }}</div>
             </div>
         </div>
+
+        <!-- Footer Section -->
         <div class="card-footer d-flex justify-content-between">
             <a href="{% url 'potential_leads' %}" class="btn btn-secondary">Back to Connections</a>
             <a href="{% url 'update_potential_lead' connection.id %}" class="btn btn-primary">Update</a>
+        </div>
+    </div>
+</div>
+
+<!-- Comments Modal -->
+<div class="modal fade" id="commentsModal" tabindex="-1" aria-labelledby="commentsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="commentsModalLabel">Additional Comments</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Display existing comments -->
+                {% for comment in connection.get_additional_comments %}
+                    <div class="border p-2 mb-2">
+                        <p>{{ comment.comment }}</p>
+                        <small>{{ comment.user }} {{ comment.timestamp|date:"F j, Y, g:i a" }}</small>
+                    </div>
+                {% empty %}
+                    <p>No additional comments.</p>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>
@@ -81,6 +99,8 @@
     .card-header {
         background-color: #071229;
         color: #ffffff;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
     }
 
     .card-body {
@@ -94,6 +114,8 @@
     .card-footer {
         background-color: #f8f9fa;
         border-top: 1px solid #dee2e6;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
     }
 
     .btn {
@@ -102,6 +124,12 @@
 
     .btn:hover {
         transform: scale(1.05);
+    }
+
+    .border {
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        background-color: #f8f9fa;
     }
 </style>
 {% endblock %}

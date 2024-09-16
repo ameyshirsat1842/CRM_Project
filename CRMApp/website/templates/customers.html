@@ -50,14 +50,14 @@
                             <th scope="col">Assigned To</th>
                             <th scope="col">Status</th>
                             <th scope="col">Created</th>
-                            <th scope="col">Edit</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for customer in page_obj %}
                         <tr>
                             <th scope="row"><a href="{% url 'customer_detail' customer.id %}">{{ customer.id }}</a></th>
-                            <td>{{ customer.client_name }}</td>
+                            <td><a href="{% url 'customer_detail' customer.id %}">{{ customer.client_name }}</a></td>
                             <td>{{ customer.company }}</td>
                             <td>{{ customer.dept_name }}</td>
                             <td>{{ customer.phone }}</td>
@@ -68,6 +68,9 @@
                             <td>{{ customer.created_at|date:"F d, Y" }}</td>
                             <td>
                                 <a href="{% url 'update_customer' customer.id %}" class="btn btn-warning btn-sm">Update</a>
+                                {% for ticket in customer.tickets.all %}
+                                    <a href="{% url 'ticket_detail' ticket.id %}" class="btn btn-info btn-sm mt-2">View Ticket</a>
+                                {% endfor %}
                             </td>
                         </tr>
                         {% empty %}

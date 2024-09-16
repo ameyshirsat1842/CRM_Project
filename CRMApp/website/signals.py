@@ -125,9 +125,12 @@ def notify_user_ticket_assignment(sender, instance, **kwargs):
             # Check if the ticket is reassigned
             if old_ticket.assigned_to != instance.assigned_to:
                 new_assignee = instance.assigned_to
+                assigner = instance.last_modified_by  # Assumed the last modified user is the assigner
+
                 if new_assignee:
                     # Notify the new assignee
-                    message = f"You have been assigned a new ticket: {instance.title}."
+                    due_date_str = instance.due_date.strftime('%Y-%m-%d %H:%M') if instance.due_date else "No due date"
+                    message = f"You have been assigned a new ticket: {instance.title} by {assigner.username}. Due date: {due_date_str}."
                     send_notification_to_user(new_assignee, message)
                     Notification.objects.create(user=new_assignee, message=message, link_url=f'/ticket/{instance.pk}')
 
@@ -141,7 +144,9 @@ def notify_user_ticket_assignment(sender, instance, **kwargs):
             # New Ticket assignment
             if instance.assigned_to:
                 new_assignee = instance.assigned_to
-                message = f"You have been assigned a new ticket: {instance.title}."
+                assigner = instance.created_by  # Assumed the creator is the assigner
+                due_date_str = instance.due_date.strftime('%Y-%m-%d %H:%M') if instance.due_date else "No due date"
+                message = f"You have been assigned a new ticket: {instance.title} by {assigner.username}. Due date: {due_date_str}."
                 send_notification_to_user(new_assignee, message)
                 Notification.objects.create(user=new_assignee, message=message, link_url=f'/ticket/{instance.pk}')
 

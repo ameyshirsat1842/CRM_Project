@@ -6,7 +6,21 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="mb-0">Leads</h1>
+                <div class="d-flex align-items-center">
+                    <h1 class="mb-0">Leads</h1>
+                    <!-- Buttons for Priority Choices -->
+                    <div class="ml-3">
+                        <a href="{% url 'leads' %}?priority=high" class="btn btn-danger mb-2 {% if request.GET.priority == 'high' %}active{% endif %}">
+                            High
+                        </a>
+                        <a href="{% url 'leads' %}?priority=mid" class="btn btn-warning mb-2 {% if request.GET.priority == 'mid' %}active{% endif %}">
+                            Mid
+                        </a>
+                        <a href="{% url 'leads' %}?priority=low" class="btn btn-success mb-2 {% if request.GET.priority == 'low' %}active{% endif %}">
+                            Low
+                        </a>
+                    </div>
+                </div>
 
                 <!-- Buttons for Classification Choices -->
                 <div>
@@ -95,7 +109,7 @@
                         <!-- Previous Page Button -->
                         {% if page_obj.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.classification %}&classification={{ request.GET.classification }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}" aria-label="Previous">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.classification %}&classification={{ request.GET.classification }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}{% if request.GET.priority %}&priority={{ request.GET.priority }}{% endif %}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo; Previous</span>
                             </a>
                         </li>
@@ -108,14 +122,14 @@
                         <!-- Page Numbers -->
                         {% for num in page_obj.paginator.page_range %}
                         <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                            <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.classification %}&classification={{ request.GET.classification }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}">{{ num }}</a>
+                            <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.classification %}&classification={{ request.GET.classification }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}{% if request.GET.priority %}&priority={{ request.GET.priority }}{% endif %}">{{ num }}</a>
                         </li>
                         {% endfor %}
 
                         <!-- Next Page Button -->
                         {% if page_obj.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.classification %}&classification={{ request.GET.classification }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}" aria-label="Next">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.classification %}&classification={{ request.GET.classification }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}{% if request.GET.priority %}&priority={{ request.GET.priority }}{% endif %}" aria-label="Next">
                                 <span aria-hidden="true">Next &raquo;</span>
                             </a>
                         </li>
@@ -132,14 +146,14 @@
                     <p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
                 </div>
             </div>
-
-
         </div>
     </div>
-<div class="text-center mt-4">
-                <a href="javascript:history.back()" class="btn btn-primary">Back</a>
-                <a href="{% url 'export_leads' %}?search={{ request.GET.search }}&classification={{ request.GET.classification }}&filter={{ request.GET.filter }}" class="btn btn-success ml-2">Export Leads</a>
-            </div>
+
+    <div class="text-center mt-4">
+        <a href="javascript:history.back()" class="btn btn-primary">Back</a>
+        <a href="{% url 'export_leads' %}?search={{ request.GET.search }}&classification={{ request.GET.classification }}&filter={{ request.GET.filter }}&priority={{ request.GET.priority }}" class="btn btn-success ml-2">Export Leads</a>
+    </div>
+
     {% else %}
     <div class="alert alert-warning mt-4" role="alert">
         You need to <a href="{% url 'login' %}" class="alert-link">log in</a> to view the leads.
@@ -148,10 +162,11 @@
 </div>
 
 <style>
+
     /* Highlighted button styling */
     .highlighted {
         position: relative;
-        background-color: #5a6268; /* Updated button color when highlighted */
+        background-color: #5a6268;
         color: #ffffff;
         border: none;
     }
@@ -160,10 +175,10 @@
     .highlighted::before {
         content: '✔';
         position: absolute;
-        top: -30px; /* Positioned outside the button */
+        top: -30px;
         left: 50%;
         transform: translateX(-50%);
-        color: #ffffff; /* Tick mark color */
+        color: #ffffff;
         font-size: 1.2em;
         z-index: 1;
     }
@@ -194,6 +209,15 @@
 
     .thead-dark th {
         border-top: none;
+    }
+
+    .btn.active {
+        opacity: 0.8;
+    }
+
+    /* Adjust margin-left for the priority buttons */
+    .ml-3 {
+        margin-left: 15px;
     }
 </style>
 {% endblock %}

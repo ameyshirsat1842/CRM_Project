@@ -23,6 +23,8 @@ urlpatterns = [
     path('tickets/', views.tickets, name='tickets'),
     path('tickets/add/', views.add_ticket, name='add_ticket'),
     path('tickets/update/<int:pk>/', views.update_ticket, name='update_ticket'),
+    path('ticket/<int:ticket_id>/', views.ticket_detail, name='ticket_detail'),
+
     path('notifications/', views.notifications_view, name='notifications'),
     path('notifications/mark-as-read/<int:notification_id>/', views.mark_notification_as_read,
          name='mark_notification_as_read'),
@@ -58,6 +60,7 @@ urlpatterns = [
     path('customers/<int:customer_id>/', views.customer_detail, name='customer_detail'),
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('manage-users/', views.manage_users, name='manage_users'),
+
 
     # path('dashboard/', views.dashboard, name='dashboard'),
 ]

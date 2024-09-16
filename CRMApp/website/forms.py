@@ -163,12 +163,25 @@ class AddRecordForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": "form-control"}),
         label="Lead Source"
     )
+    priority = forms.ChoiceField(
+        choices=Record.PRIORITY_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Priority"
+    )
+    value = forms.DecimalField(
+        required=False,
+        max_digits=10,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={"placeholder": "Value", "class": "form-control"}),
+        label="Value"
+    )
 
     class Meta:
         model = Record
         fields = ['company', 'client_name', 'dept_name', 'phone', 'email', 'city', 'address', 'classification',
                   'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details',
-                  'lead_source']
+                  'lead_source', 'value']
         widgets = {
             'created_by': forms.HiddenInput(),
             'social_media_details': forms.Textarea(attrs={'rows': 3, 'cols': 40}),
@@ -218,14 +231,25 @@ class UpdateRecordForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": "form-control"}),
         label="Lead Source"
     )
+    priority = forms.ChoiceField(
+        choices=Record.PRIORITY_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Priority"
+    )
+    value = forms.DecimalField(
+        required=False,
+        max_digits=10,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={"placeholder": "Value", "class": "form-control"}),
+        label="Value"
+    )
 
     class Meta:
         model = Record
-        fields = [
-            'company', 'client_name', 'dept_name', 'phone', 'email', 'city',
-            'address', 'assigned_to', 'follow_up_date', 'comments', 'remarks', 'visible_to', 'attachments',
-            'social_media_details', 'classification', 'lead_source'
-        ]
+        fields = ['company', 'client_name', 'dept_name', 'phone', 'email', 'city', 'address', 'classification',
+                  'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details',
+                  'lead_source', 'value']
         widgets = {
             'visible_to': forms.CheckboxSelectMultiple(),
             'created_by': forms.HiddenInput(),
@@ -267,10 +291,10 @@ class AddTicketForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": "form-control"}),
         label="Ticket Type"
     )
-
-    status = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={"placeholder": "Status", "class": "form-control"})
+    status = forms.ChoiceField(
+        choices=Ticket.STATUS_CHOICES,  # Use the choices defined in the model
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Status"
     )
     detailed_summary = forms.CharField(
         required=False,
@@ -312,6 +336,22 @@ class AddTicketForm(forms.ModelForm):
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
         label="Assign to"
+    )
+    due_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local', "class": "form-control"}),
+        required=False,
+        label='Due Date & Time'
+    )
+    proof_of_work = forms.FileField(
+        required=False,
+        widget=forms.ClearableFileInput(attrs={"class": "form-control"}),
+        label="Proof of Work"
+    )
+    customer = forms.ModelChoiceField(
+        queryset=Customer.objects.all(),  # Allow selection of customers
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Select Customer"
     )
 
     class Meta:
@@ -389,20 +429,30 @@ class PotentialLeadForm(forms.ModelForm):
 
 
 class UpdatePotentialLeadForm(forms.ModelForm):
+    additional_comments = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                "placeholder": "Add additional comments...",
+                "class": "form-control",
+                "rows": 3,
+                "cols": 40,
+            }
+        ),
+        required=False,
+        label="Additional Comments"
+    )
+
     class Meta:
         model = PotentialLead
-        fields = ['company', 'client_name', 'phone', 'email', 'comments', 'follow_up_date', 'conversation']
+        fields = ['company', 'client_name', 'phone', 'email', 'comments', 'follow_up_date', 'conversation', 'additional_comments']
         widgets = {
             'company': forms.TextInput(attrs={"placeholder": "Company", "class": "form-control"}),
             'client_name': forms.TextInput(attrs={"placeholder": "Client Name", "class": "form-control"}),
             'phone': forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"}),
             'email': forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
-            'comments': forms.Textarea(
-                attrs={"placeholder": "Comments", "class": "form-control", 'rows': 3, 'cols': 40}),
-            'follow_up_date': forms.DateTimeInput(
-                attrs={"placeholder": "Follow-up Date", "class": "form-control", "type": "datetime-local"}),
-            'conversation': forms.Textarea(
-                attrs={"placeholder": "Conversation", "class": "form-control", 'rows': 3, 'cols': 40}),
+            'comments': forms.Textarea(attrs={"placeholder": "Comments", "class": "form-control", 'rows': 3, 'cols': 40}),
+            'follow_up_date': forms.DateTimeInput(attrs={"placeholder": "Follow-up Date", "class": "form-control", "type": "datetime-local"}),
+            'conversation': forms.Textarea(attrs={"placeholder": "Conversation", "class": "form-control", 'rows': 3, 'cols': 40}),
         }
 
 
