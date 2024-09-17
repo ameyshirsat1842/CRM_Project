@@ -235,7 +235,8 @@
 
 {% block scripts %}
 <script>
-     document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize flatpickr
         flatpickr("#follow_up_date", {
             enableTime: true,
             dateFormat: "Y-m-d H:i",
@@ -244,7 +245,7 @@
             altFormat: "F j, Y h:i K",
         });
 
-    document.addEventListener('DOMContentLoaded', function() {
+        // Customer selection logic
         const customerSelect = document.getElementById('id_customer');
         const companyNameInput = document.getElementById('id_company_name');
         const contactNameInput = document.getElementById('id_contact_name');
@@ -278,5 +279,6 @@
         });
     });
 </script>
+
 {% endblock %}
 {% endblock %}
