@@ -10,35 +10,43 @@
 
         <!-- Body Section -->
         <div class="card-body">
-            <!-- Display connection details in a grid format -->
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Company:</strong></div>
-                <div class="col-md-8">{{ connection.company }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Client Name:</strong></div>
-                <div class="col-md-8">{{ connection.client_name }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Phone:</strong></div>
-                <div class="col-md-8">{{ connection.phone }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Email:</strong></div>
-                <div class="col-md-8">{{ connection.email }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Follow-Up Date:</strong></div>
-                <div class="col-md-8">{{ connection.follow_up_date|date:"F j, Y, g:i a" }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Last Conversation:</strong></div>
-                <div class="col-md-8">{{ connection.conversation }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Initial Comments:</strong></div>
-                <div class="col-md-8">{{ connection.initial_comments }}</div>
-            </div>
+            <!-- Personal and Company Details -->
+            <fieldset class="border p-3">
+                <legend class="w-auto">Personal & Company Details</legend>
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>Company:</strong></div>
+                    <div class="col-md-8">{{ connection.company }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>Client Name:</strong></div>
+                    <div class="col-md-8">{{ connection.client_name }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>Phone:</strong></div>
+                    <div class="col-md-8">{{ connection.phone }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>Email:</strong></div>
+                    <div class="col-md-8">{{ connection.email }}</div>
+                </div>
+            </fieldset>
+
+            <!-- Follow-Up and Conversation Details -->
+            <fieldset class="border p-3 mt-3">
+                <legend class="w-auto">Follow-Up & Conversation Details</legend>
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>Follow-Up Date:</strong></div>
+                    <div class="col-md-8">{{ connection.follow_up_date|date:"F j, Y, g:i a" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>Last Conversation:</strong></div>
+                    <div class="col-md-8">{{ connection.conversation }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>Initial Comments:</strong></div>
+                    <div class="col-md-8">{{ connection.initial_comments }}</div>
+                </div>
+            </fieldset>
 
             <!-- Additional Comments Section -->
             <div class="mt-4">
@@ -49,14 +57,17 @@
             </div>
 
             <!-- Created By and Created At Section -->
-            <div class="row mt-4 mb-3">
-                <div class="col-md-4"><strong>Created By:</strong></div>
-                <div class="col-md-8">{{ connection.created_by.username }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Created At:</strong></div>
-                <div class="col-md-8">{{ connection.created_at|date:"F j, Y, g:i a" }}</div>
-            </div>
+            <fieldset class="border p-3 mt-3">
+                <legend class="w-auto">Creation Details</legend>
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>Created By:</strong></div>
+                    <div class="col-md-8">{{ connection.created_by.username }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>Created At:</strong></div>
+                    <div class="col-md-8">{{ connection.created_at|date:"F j, Y, g:i a" }}</div>
+                </div>
+            </fieldset>
         </div>
 
         <!-- Footer Section -->

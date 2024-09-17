@@ -837,7 +837,7 @@ def import_records_from_excel(request):
             expected_columns = [
                 'ID', 'Company', 'Client', 'Department', 'Phone', 'Email',
                 'City', 'Address', 'Follow-Up', 'Comments', 'Remarks',
-                'Social Media Details', 'Lead Source', 'Assigned To', 'Status',
+                'Event Details', 'Lead Source', 'Assigned To', 'Status',
                 'Created', 'Follow-Up'
             ]
 
@@ -867,7 +867,7 @@ def import_records_from_excel(request):
                         attachments=None,  # Handle file attachments separately if needed
                         assigned_to=User.objects.get(username=row.get('Assigned To')) if pd.notna(
                             row.get('Assigned To')) else None,
-                        social_media_details=row.get('Social Media Details'),
+                        social_media_details=row.get('Event Details Details'),
                         classification=row.get('Status'),
                         lead_source=row.get('Lead Source'),
                     )
