@@ -45,9 +45,13 @@
                                 {{ form.status.label_tag }}
                                 {{ form.status }}
                             </div>
+                             <div class="mb-3">
+                                {{ form.detailed_summary.label_tag }}
+                                {{ form.detailed_summary }}
+                            </div>
                             <div class="mb-3">
-                                {{ form.account_name.label_tag }}
-                                {{ form.account_name }}
+                                {{ form.ticket_source.label_tag }}
+                                {{ form.ticket_source }}
                             </div>
                         </fieldset>
                     </div>
@@ -57,22 +61,6 @@
                         <fieldset>
                             <legend class="legend-custom">Additional Details</legend>
                             <div class="mb-3">
-                                {{ form.detailed_summary.label_tag }}
-                                {{ form.detailed_summary }}
-                            </div>
-                            <div class="mb-3">
-                                {{ form.comments_history.label_tag }}
-                                {{ form.comments_history }}
-                            </div>
-                            <div class="mb-3">
-                                {{ form.contract.label_tag }}
-                                {{ form.contract }}
-                            </div>
-                            <div class="mb-3">
-                                {{ form.ticket_source.label_tag }}
-                                {{ form.ticket_source }}
-                            </div>
-                            <div class="mb-3">
                                 {{ form.resolution.label_tag }}
                                 {{ form.resolution }}
                             </div>
@@ -80,14 +68,22 @@
                                 {{ form.support_mode.label_tag }}
                                 {{ form.support_mode }}
                             </div>
+                            <div class="mb-3">
+                                {{ form.assigned_to.label_tag }}
+                                {{ form.assigned_to }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.due_date.label_tag }}
+                                {{ form.due_date }}
+                            </div>
                         </fieldset>
                         <fieldset>
                             <legend class="legend-custom">Proof of Work</legend>
                             <div class="mb-3">
-                                {{ form.attachment.label_tag }}
-                                {{ form.attachment }}
-                                {% if ticket.attachment %}
-                                    <p>Current Attachment: <a href="{{ ticket.attachment.url }}" target="_blank">View</a></p>
+                                {{ form.proof_of_work.label_tag }}
+                                {{ form.proof_of_work }}
+                                {% if ticket.proof_of_work %}
+                                    <p>Current Proof of Work: <a href="{{ ticket.proof_of_work.url }}" target="_blank">View</a></p>
                                 {% endif %}
                             </div>
                         </fieldset>
@@ -95,6 +91,7 @@
                 </div>
 
                 <!-- Submit Button -->
+                <button type="button" class="btn btn-secondary mt-3" onclick="window.history.back()">Back</button>
                 <button type="submit" class="btn btn-primary mt-3">Update Ticket</button>
             </form>
         </div>

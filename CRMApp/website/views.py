@@ -501,6 +501,8 @@ def add_potential_lead(request):
             potential_lead.save()
             messages.success(request, "Potential lead added successfully!")
             return redirect('potential_leads')
+        else:
+            messages.error(request, "Error adding potential lead. Please check the form.")
     else:
         form = PotentialLeadForm()
     return render(request, 'add_potential_lead.html', {'form': form})
@@ -523,10 +525,15 @@ def update_potential_lead(request, lead_id):
 
             messages.success(request, "Connection updated successfully!")
             return redirect('potential_leads')  # Redirect after updating
+        else:
+            messages.error(request, "Error updating connection. Please check the form.")
     else:
         form = UpdatePotentialLeadForm(instance=lead)
 
-    return render(request, 'update_potential_lead.html', {'form': form})
+    # Fetch existing comments to show in the template
+    existing_comments = lead.get_additional_comments()
+
+    return render(request, 'update_potential_lead.html', {'form': form, 'existing_comments': existing_comments})
 
 
 def potential_leads(request):
@@ -543,10 +550,11 @@ def leads_view(request):
     if request.user.is_authenticated:
         search_query = request.GET.get('search', '')
         classification = request.GET.get('classification', '')
-        filter_option = request.GET.get('filter', '')
-        priority = request.GET.get('priority', '')  # New priority filter
+        priority = request.GET.get('priority', '')
 
         records = Record.objects.filter(is_converted=False).order_by('-created_at')
+
+        # Apply search filter
         if search_query:
             records = records.filter(
                 Q(company__icontains=search_query) |
@@ -564,12 +572,8 @@ def leads_view(request):
         if classification and classification != 'all':
             records = records.filter(classification=classification)
 
-        # Apply 'assigned_to_me' filter
-        if filter_option == 'assigned_to_me':
-            records = records.filter(assigned_to=request.user)
-
-        # Apply priority filter
-        if priority and priority != 'all':
+        # Apply priority filter only if priority is set
+        if priority:
             records = records.filter(priority=priority)
 
         paginator = Paginator(records, 10)  # Show 10 leads per page
@@ -580,8 +584,7 @@ def leads_view(request):
             'page_obj': page_obj,
             'search_query': search_query,
             'classification': classification,
-            'filter_option': filter_option,
-            'priority': priority,  # Include priority in context
+            'priority': priority,
         }
         return render(request, 'leads.html', context)
     else:
@@ -1093,11 +1096,12 @@ def master_database(request):
     # Get search query from the request
     search_query = request.GET.get('search', '')
 
-    # Fetch all leads, users, customers, and deleted records
+    # Fetch all leads, users, customers, tickets, and deleted records
     leads = Record.objects.filter(is_converted=False)
     users = User.objects.all()
     customers = Customer.objects.all()
     deleted_records = DeletedRecord.objects.all()
+    tickets = Ticket.objects.all()  # Fetch all tickets
 
     # Filter based on the search query if provided
     if search_query:
@@ -1125,12 +1129,21 @@ def master_database(request):
             Q(phone__icontains=search_query) |
             Q(email__icontains=search_query)
         )
+        tickets = tickets.filter(  # Apply search filter to tickets
+            Q(company_name__icontains=search_query) |
+            Q(contact_name__icontains=search_query) |
+            Q(phone__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
 
     context = {
         'leads': leads,
         'users': users,
         'customers': customers,
         'deleted_records': deleted_records,
+        'tickets': tickets,  # Include tickets in the context
         'search_query': search_query
     }
 
@@ -1174,7 +1187,7 @@ def reports(request):
         end_date = None  # No date filter for 'all'
 
     # Query for all records initially
-    records = Record.objects.all()
+    records = Record.objects.filter(is_converted=False)
     customers = Customer.objects.all()
 
     # Apply time filter if a start date is defined

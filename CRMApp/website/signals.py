@@ -111,7 +111,7 @@ def handle_record_deletion(sender, instance, **kwargs):
         Notification.objects.create(
             user=instance.assigned_to,
             message=notification_message,
-            link_url=f'/deleted-record/{instance.pk}'  # Adjust this URL if necessary
+            link_url=f'/deleted-record/{instance.pk}'
         )
 
 

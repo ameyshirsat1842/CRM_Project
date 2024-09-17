@@ -444,13 +444,13 @@ class UpdatePotentialLeadForm(forms.ModelForm):
 
     class Meta:
         model = PotentialLead
-        fields = ['company', 'client_name', 'phone', 'email', 'comments', 'follow_up_date', 'conversation', 'additional_comments']
+        fields = ['company', 'client_name', 'phone', 'email', 'initial_comments', 'follow_up_date', 'conversation', 'additional_comments']
         widgets = {
             'company': forms.TextInput(attrs={"placeholder": "Company", "class": "form-control"}),
             'client_name': forms.TextInput(attrs={"placeholder": "Client Name", "class": "form-control"}),
             'phone': forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"}),
             'email': forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
-            'comments': forms.Textarea(attrs={"placeholder": "Comments", "class": "form-control", 'rows': 3, 'cols': 40}),
+            'initial_comments': forms.Textarea(attrs={"placeholder": "Comments", "class": "form-control", 'rows': 3, 'cols': 40}),
             'follow_up_date': forms.DateTimeInput(attrs={"placeholder": "Follow-up Date", "class": "form-control", "type": "datetime-local"}),
             'conversation': forms.Textarea(attrs={"placeholder": "Conversation", "class": "form-control", 'rows': 3, 'cols': 40}),
         }

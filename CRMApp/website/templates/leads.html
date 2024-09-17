@@ -10,13 +10,17 @@
                     <h1 class="mb-0">Leads</h1>
                     <!-- Buttons for Priority Choices -->
                     <div class="ml-3">
-                        <a href="{% url 'leads' %}?priority=high" class="btn btn-danger mb-2 {% if request.GET.priority == 'high' %}active{% endif %}">
+                        <!-- Toggle logic: If 'priority=high' is set, clicking again should remove the filter -->
+                        <a href="{% if request.GET.priority == 'high' %}{% url 'leads' %}?classification={{ request.GET.classification }}{% else %}{% url 'leads' %}?priority=high&classification={{ request.GET.classification }}{% endif %}"
+                           class="btn btn-danger mb-2 {% if request.GET.priority == 'high' %}active{% endif %}">
                             High
                         </a>
-                        <a href="{% url 'leads' %}?priority=mid" class="btn btn-warning mb-2 {% if request.GET.priority == 'mid' %}active{% endif %}">
+                        <a href="{% if request.GET.priority == 'mid' %}{% url 'leads' %}?classification={{ request.GET.classification }}{% else %}{% url 'leads' %}?priority=mid&classification={{ request.GET.classification }}{% endif %}"
+                           class="btn btn-warning mb-2 {% if request.GET.priority == 'mid' %}active{% endif %}">
                             Mid
                         </a>
-                        <a href="{% url 'leads' %}?priority=low" class="btn btn-success mb-2 {% if request.GET.priority == 'low' %}active{% endif %}">
+                        <a href="{% if request.GET.priority == 'low' %}{% url 'leads' %}?classification={{ request.GET.classification }}{% else %}{% url 'leads' %}?priority=low&classification={{ request.GET.classification }}{% endif %}"
+                           class="btn btn-success mb-2 {% if request.GET.priority == 'low' %}active{% endif %}">
                             Low
                         </a>
                     </div>
@@ -24,19 +28,19 @@
 
                 <!-- Buttons for Classification Choices -->
                 <div>
-                    <a href="{% url 'leads' %}" class="btn btn-secondary mb-2 {% if not request.GET.classification and not request.GET.filter %}active highlighted{% endif %}">
+                    <a href="{% url 'leads' %}?priority={{ request.GET.priority }}" class="btn btn-secondary mb-2 {% if not request.GET.classification and not request.GET.filter %}active highlighted{% endif %}">
                         All
                     </a>
-                    <a href="{% url 'leads' %}?classification=unassigned" class="btn btn-primary mb-2 {% if request.GET.classification == 'unassigned' %}active highlighted{% endif %}">
+                    <a href="{% url 'leads' %}?classification=unassigned&priority={{ request.GET.priority }}" class="btn btn-primary mb-2 {% if request.GET.classification == 'unassigned' %}active highlighted{% endif %}">
                         Unassigned
                     </a>
-                    <a href="{% url 'leads' %}?classification=dead" class="btn btn-danger mb-2 {% if request.GET.classification == 'dead' %}active highlighted{% endif %}">
+                    <a href="{% url 'leads' %}?classification=dead&priority={{ request.GET.priority }}" class="btn btn-danger mb-2 {% if request.GET.classification == 'dead' %}active highlighted{% endif %}">
                         Dead
                     </a>
-                    <a href="{% url 'leads' %}?classification=in_progress" class="btn btn-warning mb-2 {% if request.GET.classification == 'in_progress' %}active highlighted{% endif %}">
+                    <a href="{% url 'leads' %}?classification=in_progress&priority={{ request.GET.priority }}" class="btn btn-warning mb-2 {% if request.GET.classification == 'in_progress' %}active highlighted{% endif %}">
                         In Progress
                     </a>
-                    <a href="{% url 'leads' %}?filter=assigned_to_me" class="btn btn-success mb-2 {% if request.GET.filter == 'assigned_to_me' %}active highlighted{% endif %}">
+                    <a href="{% url 'leads' %}?filter=assigned_to_me&priority={{ request.GET.priority }}" class="btn btn-success mb-2 {% if request.GET.filter == 'assigned_to_me' %}active highlighted{% endif %}">
                         Assigned to Me
                     </a>
                 </div>
@@ -74,7 +78,7 @@
                     <tbody>
                         {% for record in page_obj %}
                         <tr>
-                            <th scope="row"><a href="{% url 'record' record.id %}">{{ record.id }}</a></th>
+                            <th scope="row"><a href="{% url 'record' record.id %}" class="btn btn-primary btn-sm">{{ record.id }}</a></th>
                             <td><a href="{% url 'record' record.id %}">{{ record.client_name }}</a></td>
                             <td>{{ record.company }}</td>
                             <td>{{ record.dept_name }}</td>
@@ -162,13 +166,13 @@
 </div>
 
 <style>
-
     /* Highlighted button styling */
     .highlighted {
         position: relative;
-        background-color: #5a6268;
+        background-color: #6c757d; /* Neutral gray color */
         color: #ffffff;
         border: none;
+        opacity: 0.7; /* Reduce opacity to make it less prominent */
     }
 
     /* Tick mark styling */
@@ -212,7 +216,9 @@
     }
 
     .btn.active {
-        opacity: 0.8;
+        background-color: #778899 !important; /* Neutral gray color */
+        color: #ffffff;
+        opacity: 0.7; /* Reduced opacity */
     }
 
     /* Adjust margin-left for the priority buttons */
@@ -220,4 +226,5 @@
         margin-left: 15px;
     }
 </style>
+
 {% endblock %}

@@ -286,21 +286,19 @@ class PotentialLead(models.Model):
     email = models.EmailField(null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    comments = models.TextField(blank=True, null=True)
+    initial_comments = models.TextField(blank=True, null=True)  # Renamed field
     follow_up_date = models.DateTimeField(blank=True, null=True)
     conversation = models.TextField(blank=True, null=True)
     additional_comments = models.TextField(blank=True, null=True)
 
-    objects = models.Manager()  # Ensures you can use .objects for querying
+    objects = models.Manager()
 
     def __str__(self):
         return self.company
 
     def add_comment(self, user, comment_text):
-        # Format: "username|timestamp|comment_text"
         comment = f"{user.username}|{timezone.now().isoformat()}|{comment_text}"
         if self.additional_comments:
-            # Append the new comment to existing comments
             self.additional_comments += f"\n{comment}"
         else:
             self.additional_comments = comment
@@ -317,6 +315,16 @@ class PotentialLead(models.Model):
                     "comment": text
                 })
         return comments_list
+
+
+class LeadComment(models.Model):
+    lead = models.ForeignKey(PotentialLead, on_delete=models.CASCADE, related_name='lead_comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.lead.client_name}"
 
 
 class UserSettings(models.Model):

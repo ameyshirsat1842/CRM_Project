@@ -6,13 +6,13 @@
         <div class="container main-content">
             <h1>Master Database</h1>
             <br>
-   <!-- Search Form -->
-    <form method="get" action="{% url 'master_database' %}">
-        <div class="input-group mb-3">
-            <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ search_query }}">
-            <button class="btn btn-primary" type="submit">Search</button>
-        </div>
-    </form>
+            <!-- Search Form -->
+            <form method="get" action="{% url 'master_database' %}">
+                <div class="input-group mb-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ search_query }}">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </form>
 
             <!-- Table for Leads -->
             <h5>Leads</h5>
@@ -186,6 +186,56 @@
                                     {% empty %}
                                         <tr>
                                             <td colspan="6">No users available.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table for Tickets -->
+            <h5>Tickets</h5>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow animate__animated animate__fadeIn">
+                        <div class="card-body table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Company Name</th>
+                                        <th>Assigned To</th>
+                                        <th>Status</th>
+                                        <th>Due Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ticket in tickets %}
+                                        <tr>
+                                            <td>{{ ticket.id }}</td>
+                                            <td>{{ ticket.title }}</td>
+                                            <td>{{ ticket.company_name }}</td>
+                                            <td>
+                                                {% if ticket.assigned_to %}
+                                                    {{ ticket.assigned_to.username }}
+                                                {% else %}
+                                                    Unassigned
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ ticket.status }}</td>
+                                            <td>{{ ticket.due_date|date:"F d, Y" }}</td>
+                                            <td>
+                                                <a href="{% url 'ticket_detail' ticket.id %}" class="btn btn-sm btn-info">View</a>
+                                                <a href="{% url 'update_ticket' ticket.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="7">No tickets available.</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>

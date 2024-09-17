@@ -4,88 +4,70 @@
 <div class="container mt-4">
     <div class="card shadow-sm">
         <!-- Header Section -->
-        <div class="card-header bg-primary text-white">
+        <div class="card-header text-white">
             <h2 class="font-weight-bold">{{ ticket.company_name }} - Ticket Details</h2>
         </div>
 
         <!-- Body Section -->
         <div class="card-body">
-            <!-- Ticket Information Section -->
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Company Name:</strong></div>
-                <div class="col-md-8">{{ ticket.company_name }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Contact Name:</strong></div>
-                <div class="col-md-8">{{ ticket.contact_name }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Phone:</strong></div>
-                <div class="col-md-8">{{ ticket.phone }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Email:</strong></div>
-                <div class="col-md-8">{{ ticket.email }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Ticket Type:</strong></div>
-                <div class="col-md-8">{{ ticket.ticket_type }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Status:</strong></div>
-                <div class="col-md-8">{{ ticket.status }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Due Date:</strong></div>
-                <div class="col-md-8">{{ ticket.due_date|date:"F j, Y, g:i a" }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Assigned To:</strong></div>
-                <div class="col-md-8">
-                    {% if ticket.assigned_to %}
-                        {{ ticket.assigned_to.username }}
-                    {% else %}
-                        Unassigned
-                    {% endif %}
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <!-- Ticket Information -->
+                    <fieldset class="border p-3">
+                        <legend class="w-auto">Ticket Information</legend>
+                        <h5 class="card-title">
+                            <strong>ID:</strong> {{ ticket.id }}<br>
+                            <strong>Contact Name:</strong> {{ ticket.contact_name }}<br>
+                            <strong>Phone:</strong> {{ ticket.phone }}<br>
+                            <strong>Email:</strong> {{ ticket.email }}<br>
+                            <strong>Ticket Type:</strong> {{ ticket.ticket_type }}<br>
+                            <strong>Status:</strong> {{ ticket.status }}<br>
+                            <strong>Due Date:</strong> {{ ticket.due_date|date:"F j, Y, g:i a" }}<br>
+                        </h5>
+                    </fieldset>
+
+                    <!-- Support Details -->
+                    <fieldset class="border p-3 mt-3">
+                        <legend class="w-auto">Support Details</legend>
+                        <h5 class="card-title">
+                            <strong>Support Mode:</strong> {{ ticket.support_mode }}<br>
+                            <strong>Resolution:</strong> {{ ticket.resolution }}<br>
+                            <strong>Created By:</strong> {{ ticket.created_by.username }}<br>
+                            <strong>Last Modified At:</strong> {{ ticket.modified_at|date:"F j, Y, g:i a" }}<br>
+                        </h5>
+                    </fieldset>
                 </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Detailed Summary:</strong></div>
-                <div class="col-md-8">{{ ticket.detailed_summary }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Support Mode:</strong></div>
-                <div class="col-md-8">{{ ticket.support_mode }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Resolution:</strong></div>
-                <div class="col-md-8">{{ ticket.resolution }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Created By:</strong></div>
-                <div class="col-md-8">{{ ticket.created_by.username }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Last Modified At:</strong></div>
-                <div class="col-md-8">{{ ticket.modified_at|date:"F j, Y, g:i a" }}</div>
-            </div>
-            <!-- Proof of Work Section -->
-            <div class="row mb-3">
-                <div class="col-md-4"><strong>Proof of Work:</strong></div>
-                <div class="col-md-8">
-                    {% if ticket.attachment %}
-                        <a href="{{ ticket.attachment.url }}" target="_blank">Download Attachment</a>
-                    {% else %}
-                        <p>No attachment available.</p>
-                    {% endif %}
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <!-- Detailed Summary -->
+                    <fieldset class="border p-3">
+                        <legend class="w-auto">Detailed Summary</legend>
+                        <h5 class="card-title">
+                            {{ ticket.detailed_summary }}
+                        </h5>
+                    </fieldset>
+
+                    <!-- Proof of Work -->
+                    <fieldset class="border p-3 mt-3">
+                        <legend class="w-auto">Proof of Work</legend>
+                        <h5 class="card-title">
+                            {% if ticket.attachment %}
+                                <a href="{{ ticket.attachment.url }}" target="_blank">Download Attachment</a>
+                            {% else %}
+                                No attachment available.
+                            {% endif %}
+                        </h5>
+                    </fieldset>
                 </div>
             </div>
         </div>
 
         <!-- Footer Section -->
         <div class="card-footer d-flex justify-content-between">
-            <a href="{% url 'update_ticket' ticket.pk %}" class="btn btn-primary">Update Ticket</a>
             <a href="{% url 'customers' %}" class="btn btn-secondary">Back to Customer</a>
+            <a href="{% url 'update_ticket' ticket.pk %}" class="btn btn-primary">Update Ticket</a>
         </div>
     </div>
 </div>

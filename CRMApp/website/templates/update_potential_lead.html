@@ -7,6 +7,7 @@
         {% csrf_token %}
         {{ form.non_field_errors }}
 
+        <!-- Basic Form Fields -->
         <div class="form-group">
             <label for="company">Company</label>
             {{ form.company }}
@@ -81,7 +82,13 @@
         <div id="additional-comments-section" class="form-group mt-4">
             <label for="additional-comments">Additional Comments</label>
             <div id="additional-comments-container">
-                <!-- Additional comments will be added here -->
+                <!-- Display existing comments if any -->
+                {% for comment in lead.get_additional_comments %}
+                    <div class="comment-container">
+                        <textarea name="additional_comments[]" class="form-control mt-2" rows="3">{{ comment.comment }}</textarea>
+                        <button type="button" class="btn btn-danger btn-sm mt-1 remove-comment-btn">Remove</button>
+                    </div>
+                {% endfor %}
             </div>
             <button type="button" id="add-comment-btn" class="btn btn-warning mt-2">
                 Add Comment
@@ -99,7 +106,12 @@
         const addCommentBtn = document.getElementById('add-comment-btn');
         const commentsContainer = document.getElementById('additional-comments-container');
 
+        // Add new comment field
         addCommentBtn.addEventListener('click', function () {
+            // Create a container for the comment and the remove button
+            const commentContainer = document.createElement('div');
+            commentContainer.classList.add('comment-container');
+
             // Create a new textarea for an additional comment
             const newCommentField = document.createElement('textarea');
             newCommentField.setAttribute('name', 'additional_comments[]');  // Name it as an array
@@ -107,8 +119,31 @@
             newCommentField.setAttribute('rows', '3');
             newCommentField.setAttribute('placeholder', 'Add another comment...');
 
-            // Append the new comment field to the container
-            commentsContainer.appendChild(newCommentField);
+            // Create a remove button for the comment
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'mt-1', 'remove-comment-btn');
+            removeButton.innerText = 'Remove';
+
+            // Append the textarea and remove button to the comment container
+            commentContainer.appendChild(newCommentField);
+            commentContainer.appendChild(removeButton);
+
+            // Append the comment container to the comments section
+            commentsContainer.appendChild(commentContainer);
+
+            // Attach the remove event to the new remove button
+            removeButton.addEventListener('click', function () {
+                commentsContainer.removeChild(commentContainer);
+            });
+        });
+
+        // Attach remove event to existing remove buttons
+        commentsContainer.querySelectorAll('.remove-comment-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const commentContainer = button.closest('.comment-container');
+                commentsContainer.removeChild(commentContainer);
+            });
         });
     });
 </script>
