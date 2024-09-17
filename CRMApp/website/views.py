@@ -22,7 +22,8 @@ from openpyxl.workbook import Workbook
 
 from .forms import SignUpForm, AddRecordForm, AddTicketForm, UpdateRecordForm, AddMeetingRecordForm, PotentialLeadForm, \
     UserUpdateForm, ProfileUpdateForm, CustomerUpdateForm, UpdatePotentialLeadForm, CustomerForm
-from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment, Customer, DeletedRecord
+from .models import Record, Notification, Ticket, MeetingRecord, PotentialLead, Comment, Customer, DeletedRecord, \
+    LeadComment
 from .utils import verify_otp
 
 
@@ -521,7 +522,8 @@ def update_potential_lead(request, lead_id):
             additional_comments = request.POST.getlist('additional_comments[]')
             for comment_text in additional_comments:
                 if comment_text.strip():  # Make sure it's not empty
-                    lead.add_comment(request.user, comment_text)
+                    # Save each additional comment as a new LeadComment object
+                    LeadComment.objects.create(lead=lead, user=request.user, comment=comment_text)
 
             messages.success(request, "Connection updated successfully!")
             return redirect('potential_leads')  # Redirect after updating
@@ -530,8 +532,8 @@ def update_potential_lead(request, lead_id):
     else:
         form = UpdatePotentialLeadForm(instance=lead)
 
-    # Fetch existing comments to show in the template
-    existing_comments = lead.get_additional_comments()
+    # Fetch existing comments to show in the modal, not in the editable form
+    existing_comments = LeadComment.objects.filter(lead=lead)
 
     return render(request, 'update_potential_lead.html', {'form': form, 'existing_comments': existing_comments})
 
@@ -543,7 +545,11 @@ def potential_leads(request):
 
 def potential_lead_detail(request, potential_lead_id):
     connection = get_object_or_404(PotentialLead, id=potential_lead_id)
-    return render(request, 'connection_detail.html', {'connection': connection})
+    additional_comments = LeadComment.objects.filter(lead=connection).order_by('-timestamp')
+    return render(request, 'connection_detail.html', {
+        'connection': connection,
+        'additional_comments': additional_comments
+    })
 
 
 def leads_view(request):

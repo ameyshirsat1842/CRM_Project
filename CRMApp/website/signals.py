@@ -129,7 +129,7 @@ def notify_user_ticket_assignment(sender, instance, **kwargs):
 
                 if new_assignee:
                     # Notify the new assignee
-                    due_date_str = instance.due_date.strftime('%Y-%m-%d %H:%M') if instance.due_date else "No due date"
+                    due_date_str = instance.due_date.strftime('%b %d, %Y %I:%M %p') if instance.due_date else "No due date"
                     message = f"You have been assigned a new ticket: {instance.title} by {assigner.username}. Due date: {due_date_str}."
                     send_notification_to_user(new_assignee, message)
                     Notification.objects.create(user=new_assignee, message=message, link_url=f'/ticket/{instance.pk}')
@@ -145,10 +145,11 @@ def notify_user_ticket_assignment(sender, instance, **kwargs):
             if instance.assigned_to:
                 new_assignee = instance.assigned_to
                 assigner = instance.created_by  # Assumed the creator is the assigner
-                due_date_str = instance.due_date.strftime('%Y-%m-%d %H:%M') if instance.due_date else "No due date"
+                due_date_str = instance.due_date.strftime('%b %d, %Y %I:%M %p') if instance.due_date else "No due date"
                 message = f"You have been assigned a new ticket: {instance.title} by {assigner.username}. Due date: {due_date_str}."
                 send_notification_to_user(new_assignee, message)
                 Notification.objects.create(user=new_assignee, message=message, link_url=f'/ticket/{instance.pk}')
 
     except Ticket.DoesNotExist:
         pass  # Handle case where old_ticket does not exist
+

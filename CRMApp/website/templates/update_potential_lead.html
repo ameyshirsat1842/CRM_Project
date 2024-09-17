@@ -49,11 +49,11 @@
         </div>
 
         <div class="form-group">
-            <label for="comments">Comments</label>
-            {{ form.comments }}
-            {% if form.comments.errors %}
+            <label for="initial_comments">Initial Comments</label>
+            {{ form.initial_comments }}
+            {% if form.initial_comments.errors %}
                 <div class="text-danger">
-                    {{ form.comments.errors }}
+                    {{ form.initial_comments.errors }}
                 </div>
             {% endif %}
         </div>
@@ -78,17 +78,11 @@
             {% endif %}
         </div>
 
-        <!-- Section for Additional Comments -->
+        <!-- Section for Adding New Comments -->
         <div id="additional-comments-section" class="form-group mt-4">
-            <label for="additional-comments">Additional Comments</label>
+            <label for="additional-comments">New Comments</label>
             <div id="additional-comments-container">
-                <!-- Display existing comments if any -->
-                {% for comment in lead.get_additional_comments %}
-                    <div class="comment-container">
-                        <textarea name="additional_comments[]" class="form-control mt-2" rows="3">{{ comment.comment }}</textarea>
-                        <button type="button" class="btn btn-danger btn-sm mt-1 remove-comment-btn">Remove</button>
-                    </div>
-                {% endfor %}
+                <!-- Textarea for new comments -->
             </div>
             <button type="button" id="add-comment-btn" class="btn btn-warning mt-2">
                 Add Comment
@@ -101,6 +95,29 @@
     </form>
 </div>
 
+<!-- Comments Modal -->
+<div class="modal fade" id="commentsModal" tabindex="-1" aria-labelledby="commentsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="commentsModalLabel">Additional Comments</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Display existing comments -->
+                {% for comment in connection.get_additional_comments %}
+                    <div class="border p-2 mb-2">
+                        <p>{{ comment.comment }}</p>
+                        <small>{{ comment.user }} - {{ comment.timestamp|date:"F j, Y, g:i a" }}</small>
+                    </div>
+                {% empty %}
+                    <p>No additional comments.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const addCommentBtn = document.getElementById('add-comment-btn');
@@ -108,7 +125,7 @@
 
         // Add new comment field
         addCommentBtn.addEventListener('click', function () {
-            // Create a container for the comment and the remove button
+            // Create a container for the comment
             const commentContainer = document.createElement('div');
             commentContainer.classList.add('comment-container');
 
@@ -119,31 +136,11 @@
             newCommentField.setAttribute('rows', '3');
             newCommentField.setAttribute('placeholder', 'Add another comment...');
 
-            // Create a remove button for the comment
-            const removeButton = document.createElement('button');
-            removeButton.type = 'button';
-            removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'mt-1', 'remove-comment-btn');
-            removeButton.innerText = 'Remove';
-
-            // Append the textarea and remove button to the comment container
+            // Append the textarea to the comment container
             commentContainer.appendChild(newCommentField);
-            commentContainer.appendChild(removeButton);
 
             // Append the comment container to the comments section
             commentsContainer.appendChild(commentContainer);
-
-            // Attach the remove event to the new remove button
-            removeButton.addEventListener('click', function () {
-                commentsContainer.removeChild(commentContainer);
-            });
-        });
-
-        // Attach remove event to existing remove buttons
-        commentsContainer.querySelectorAll('.remove-comment-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const commentContainer = button.closest('.comment-container');
-                commentsContainer.removeChild(commentContainer);
-            });
         });
     });
 </script>

@@ -297,8 +297,10 @@ class PotentialLead(models.Model):
         return self.company
 
     def add_comment(self, user, comment_text):
+        # Format: "username|timestamp|comment_text"
         comment = f"{user.username}|{timezone.now().isoformat()}|{comment_text}"
         if self.additional_comments:
+            # Append the new comment to existing comments
             self.additional_comments += f"\n{comment}"
         else:
             self.additional_comments = comment
@@ -318,6 +320,7 @@ class PotentialLead(models.Model):
 
 
 class LeadComment(models.Model):
+    objects = None
     lead = models.ForeignKey(PotentialLead, on_delete=models.CASCADE, related_name='lead_comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()

@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <div class="card shadow-sm">
         <!-- Header Section -->
-        <div class="card-header bg-primary text-white">
+        <div class="card-header text-white">
             <h2 class="font-weight-bold">{{ connection.client_name }}</h2>
         </div>
 
@@ -36,15 +36,15 @@
                 <div class="col-md-8">{{ connection.conversation }}</div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-4"><strong>Comments:</strong></div>
-                <div class="col-md-8">{{ connection.comments }}</div>
+                <div class="col-md-4"><strong>Initial Comments:</strong></div>
+                <div class="col-md-8">{{ connection.initial_comments }}</div>
             </div>
 
             <!-- Additional Comments Section -->
             <div class="mt-4">
                 <h5>Additional Comments</h5>
                 <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#commentsModal">
-                    View Comments
+                    View All Comments
                 </button>
             </div>
 
@@ -77,10 +77,10 @@
             </div>
             <div class="modal-body">
                 <!-- Display existing comments -->
-                {% for comment in connection.get_additional_comments %}
+                {% for comment in additional_comments %}
                     <div class="border p-2 mb-2">
                         <p>{{ comment.comment }}</p>
-                        <small>{{ comment.user }} {{ comment.timestamp|date:"F j, Y, g:i a" }}</small>
+                        <small>By {{ comment.user.username }} on {{ comment.timestamp|date:"F j, Y, g:i a" }}</small>
                     </div>
                 {% empty %}
                     <p>No additional comments.</p>
