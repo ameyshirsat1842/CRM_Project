@@ -2,17 +2,122 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Add Connection</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
-        <button type="submit" class="btn btn-primary">Add Lead</button>
-    </form>
-</div>
-{% endblock %}
-<script>
+    <div class="row">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="font-weight-bold">Add New Connection</h2>
+            </div>
+            <div class="card-body">
+                <form id="addPotentialLeadForm" method="post" action="{% url 'add_potential_lead' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
 
+                    <!-- Company Information Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Company Information</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="company" class="form-label">Company</label>
+                                {{ form.company }}
+                                {% if form.company.errors %}
+                                    <div class="invalid-feedback">{{ form.company.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="client_name" class="form-label">Client Name</label>
+                                {{ form.client_name }}
+                                {% if form.client_name.errors %}
+                                    <div class="invalid-feedback">{{ form.client_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Contact Information Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Contact Information</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Phone</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback">{{ form.phone.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback">{{ form.email.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Lead Details Section -->
+                    <fieldset>
+                        <legend class="legend-custom">Lead Details</legend>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="initial_comments" class="form-label">Initial Comments</label>
+                                {{ form.initial_comments }}
+                                {% if form.initial_comments.errors %}
+                                    <div class="invalid-feedback">{{ form.initial_comments.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="follow_up_date" class="form-label">Follow-up Date</label>
+                                {{ form.follow_up_date }}
+                                {% if form.follow_up_date.errors %}
+                                    <div class="invalid-feedback">{{ form.follow_up_date.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="conversation" class="form-label">Last Conversation</label>
+                                {{ form.conversation }}
+                                {% if form.conversation.errors %}
+                                    <div class="invalid-feedback">{{ form.conversation.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
+                        <button type="submit" class="btn btn-primary">Add Lead</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .legend-custom {
+        font-size: 1.5em;
+        font-weight: bold;
+        border-bottom: 2px solid #000;
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+
+    .d-flex {
+        margin-top: 20px;
+    }
+</style>
+
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#id_follow_up_date", {
             enableTime: true,
@@ -23,3 +128,4 @@
         });
     });
 </script>
+{% endblock %}
