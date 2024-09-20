@@ -60,7 +60,8 @@ def home(request):
             assigned_to=request.user,
             follow_up_date__lt=now,
             classification='in_progress',
-            follow_up_attended=False  # Exclude leads that have been attended
+            follow_up_attended=False,
+            is_converted=False
         )
 
         # Notifications for the logged-in user
