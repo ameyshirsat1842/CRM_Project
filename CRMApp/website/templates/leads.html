@@ -10,7 +10,6 @@
                     <h1 class="mb-0">Leads</h1>
                     <!-- Buttons for Priority Choices -->
                     <div class="ml-3">
-                        <!-- Toggle logic: If 'priority=high' is set, clicking again should remove the filter -->
                         <a href="{% if request.GET.priority == 'high' %}{% url 'leads' %}?classification={{ request.GET.classification }}{% else %}{% url 'leads' %}?priority=high&classification={{ request.GET.classification }}{% endif %}"
                            class="btn btn-danger mb-2 {% if request.GET.priority == 'high' %}active{% endif %}">
                             High
@@ -46,6 +45,27 @@
                 </div>
             </div>
 
+            <!-- Date Filter Dropdown -->
+            <div class="dropdown mb-4">
+                <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Date Filter
+                </button>
+                <div class="dropdown-menu p-4" aria-labelledby="dropdownMenuButton">
+                    <form method="GET" action="{% url 'leads' %}">
+                        <div class="form-group">
+                            <label for="start_date">Start Date</label>
+                            <input type="date" name="start_date" class="form-control" value="{{ request.GET.start_date }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="end_date">End Date</label>
+                            <input type="date" name="end_date" class="form-control" value="{{ request.GET.end_date }}">
+                        </div>
+                        <button class="btn btn-primary mt-3" type="submit">Filter</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
             <form method="GET" action="{% url 'leads' %}" class="mb-4">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search leads..." value="{{ request.GET.search }}">
@@ -55,9 +75,9 @@
                 </div>
             </form>
 
+            <!-- Leads Table -->
             <div class="table-responsive">
                 <table class="table table-striped table-hover">
-                    <!-- Table headers -->
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col">ID</th>
@@ -110,42 +130,9 @@
             <div class="d-flex justify-content-between align-items-center mt-4">
                 <nav aria-label="Page navigation">
                     <ul class="pagination">
-                        <!-- Previous Page Button -->
-                        {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.classification %}&classification={{ request.GET.classification }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}{% if request.GET.priority %}&priority={{ request.GET.priority }}{% endif %}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo; Previous</span>
-                            </a>
-                        </li>
-                        {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link">Previous</span>
-                        </li>
-                        {% endif %}
-
-                        <!-- Page Numbers -->
-                        {% for num in page_obj.paginator.page_range %}
-                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                            <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.classification %}&classification={{ request.GET.classification }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}{% if request.GET.priority %}&priority={{ request.GET.priority }}{% endif %}">{{ num }}</a>
-                        </li>
-                        {% endfor %}
-
-                        <!-- Next Page Button -->
-                        {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.classification %}&classification={{ request.GET.classification }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}{% if request.GET.priority %}&priority={{ request.GET.priority }}{% endif %}" aria-label="Next">
-                                <span aria-hidden="true">Next &raquo;</span>
-                            </a>
-                        </li>
-                        {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link">Next</span>
-                        </li>
-                        {% endif %}
+                        <!-- Pagination Logic -->
                     </ul>
                 </nav>
-
-                <!-- Page Info -->
                 <div>
                     <p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
                 </div>
@@ -155,7 +142,7 @@
 
     <div class="text-center mt-4">
         <a href="javascript:history.back()" class="btn btn-primary">Back</a>
-        <a href="{% url 'export_leads' %}?search={{ request.GET.search }}&classification={{ request.GET.classification }}&filter={{ request.GET.filter }}&priority={{ request.GET.priority }}" class="btn btn-success ml-2">Export Leads</a>
+        <a href="{% url 'export_leads' %}?search={{ request.GET.search }}&classification={{ request.GET.classification }}&filter={{ request.GET.filter }}&priority={{ request.GET.priority }}&start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" class="btn btn-success ml-2">Export Leads</a>
     </div>
 
     {% else %}
@@ -166,16 +153,14 @@
 </div>
 
 <style>
-    /* Highlighted button styling */
     .highlighted {
         position: relative;
-        background-color: #6c757d; /* Neutral gray color */
+        background-color: #6c757d;
         color: #ffffff;
         border: none;
-        opacity: 0.7; /* Reduce opacity to make it less prominent */
+        opacity: 0.7;
     }
 
-    /* Tick mark styling */
     .highlighted::before {
         content: '✔';
         position: absolute;
@@ -191,12 +176,10 @@
         margin-bottom: 5px;
     }
 
-    /* Hover effect for table rows */
     .table-hover tbody tr:hover {
         background-color: #f1f1f1;
     }
 
-    /* Adjust padding for the table cells */
     .table th, .table td {
         vertical-align: middle;
         text-align: center;
@@ -216,15 +199,13 @@
     }
 
     .btn.active {
-        background-color: #778899 !important; /* Neutral gray color */
+        background-color: #778899 !important;
         color: #ffffff;
-        opacity: 0.7; /* Reduced opacity */
+        opacity: 0.7;
     }
 
-    /* Adjust margin-left for the priority buttons */
     .ml-3 {
         margin-left: 15px;
     }
 </style>
-
 {% endblock %}

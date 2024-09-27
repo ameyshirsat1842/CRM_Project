@@ -558,6 +558,8 @@ def leads_view(request):
         search_query = request.GET.get('search', '')
         classification = request.GET.get('classification', '')
         priority = request.GET.get('priority', '')
+        start_date = request.GET.get('start_date', '')
+        end_date = request.GET.get('end_date', '')
 
         records = Record.objects.filter(is_converted=False).order_by('-created_at')
 
@@ -579,9 +581,13 @@ def leads_view(request):
         if classification and classification != 'all':
             records = records.filter(classification=classification)
 
-        # Apply priority filter only if priority is set
+        # Apply priority filter
         if priority:
             records = records.filter(priority=priority)
+
+        # Apply date filter
+        if start_date and end_date:
+            records = records.filter(created_at__range=[start_date, end_date])
 
         paginator = Paginator(records, 10)  # Show 10 leads per page
         page_number = request.GET.get('page')
@@ -592,11 +598,12 @@ def leads_view(request):
             'search_query': search_query,
             'classification': classification,
             'priority': priority,
+            'start_date': start_date,
+            'end_date': end_date,
         }
         return render(request, 'leads.html', context)
     else:
         return redirect('login')
-
 
 def move_to_main_leads(request, lead_id):
     lead = PotentialLead.objects.get(id=lead_id)
@@ -898,9 +905,13 @@ def export_leads(request):
     search_query = request.GET.get('search', '')
     classification_filter = request.GET.get('classification', '')
     assigned_filter = request.GET.get('filter', '')
+    priority_filter = request.GET.get('priority', '')
+    start_date = request.GET.get('start_date', '')
+    end_date = request.GET.get('end_date', '')
 
     queryset = Record.objects.filter(is_converted=False)
 
+    # Apply search filter
     if search_query:
         queryset = queryset.filter(
             Q(company__icontains=search_query) |
@@ -916,12 +927,23 @@ def export_leads(request):
             Q(lead_source__icontains=search_query)
         )
 
+    # Apply classification filter
     if classification_filter:
         queryset = queryset.filter(classification=classification_filter)
 
+    # Apply 'Assigned to Me' filter
     if assigned_filter == 'assigned_to_me':
         queryset = queryset.filter(assigned_to=request.user)
 
+    # Apply priority filter
+    if priority_filter:
+        queryset = queryset.filter(priority=priority_filter)
+
+    # Apply date filter
+    if start_date and end_date:
+        queryset = queryset.filter(created_at__range=[start_date, end_date])
+
+    # Create Excel file
     workbook = Workbook()
     worksheet = workbook.active
     worksheet.title = 'Leads'
@@ -929,7 +951,7 @@ def export_leads(request):
     headers = [
         'ID', 'Company', 'Client', 'Department', 'Phone', 'Email',
         'City', 'Address', 'Comments', 'Remarks', 'Event Details',
-        'Lead Source', 'Assigned To', 'Status', 'Created', 'Follow-Up'
+        'Lead Source', 'Assigned To', 'Status', 'Priority', 'Created', 'Follow-Up'
     ]
     worksheet.append(headers)
 
@@ -940,10 +962,12 @@ def export_leads(request):
             record.comments, record.remarks, record.social_media_details,
             record.lead_source, record.assigned_to.username if record.assigned_to else 'N/A',
             record.get_classification_display(),
+            record.get_priority_display(),
             record.created_at.strftime('%Y-%m-%d'),
             record.follow_up_date.strftime('%Y-%m-%d') if record.follow_up_date else ''
         ])
 
+    # Prepare the response
     stream = BytesIO()
     workbook.save(stream)
     stream.seek(0)
