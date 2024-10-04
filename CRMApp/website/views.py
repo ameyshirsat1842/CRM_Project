@@ -605,6 +605,7 @@ def leads_view(request):
     else:
         return redirect('login')
 
+
 def move_to_main_leads(request, lead_id):
     lead = PotentialLead.objects.get(id=lead_id)
     main_lead = Record(
@@ -612,7 +613,7 @@ def move_to_main_leads(request, lead_id):
         client_name=lead.client_name,
         phone=lead.phone,
         email=lead.email,
-        comments=lead.comments,
+        comments=lead.initial_comments,
         created_by=lead.created_by
     )
     main_lead.save()
@@ -796,7 +797,7 @@ def export_record_to_excel(request, record_id):
             'Address': [record.address],
             'Follow-Up': [follow_up_date],
             'Comments': [record.comments],
-            'Remarks': [record.remarks],
+            'Meeting Type': [record.remarks],
             'Attachments': [record.attachments.name if record.attachments else 'No attachments'],
             'Assigned To': [record.assigned_to.username if record.assigned_to else 'N/A'],
             'Created By': [record.created_by.username if record.created_by else 'N/A'],
@@ -844,7 +845,7 @@ def import_records_from_excel(request):
             # Update the expected columns list according to the actual columns
             expected_columns = [
                 'ID', 'Company', 'Client', 'Department', 'Phone', 'Email',
-                'City', 'Address', 'Follow-Up', 'Comments', 'Remarks',
+                'City', 'Address', 'Follow-Up', 'Comments', 'Meeting Type',
                 'Event Details', 'Lead Source', 'Assigned To', 'Status',
                 'Created', 'Follow-Up'
             ]
@@ -871,11 +872,11 @@ def import_records_from_excel(request):
                         address=row.get('Address'),
                         follow_up_date=follow_up_date,
                         comments=row.get('Comments'),
-                        remarks=row.get('Remarks'),
+                        remarks=row.get('Meeting Type'),
                         attachments=None,  # Handle file attachments separately if needed
                         assigned_to=User.objects.get(username=row.get('Assigned To')) if pd.notna(
                             row.get('Assigned To')) else None,
-                        social_media_details=row.get('Event Details Details'),
+                        social_media_details=row.get('Event Details'),
                         classification=row.get('Status'),
                         lead_source=row.get('Lead Source'),
                     )
@@ -950,7 +951,7 @@ def export_leads(request):
 
     headers = [
         'ID', 'Company', 'Client', 'Department', 'Phone', 'Email',
-        'City', 'Address', 'Comments', 'Remarks', 'Event Details',
+        'City', 'Address', 'Comments', 'Meeting type', 'Event Details',
         'Lead Source', 'Assigned To', 'Status', 'Priority', 'Created', 'Follow-Up'
     ]
     worksheet.append(headers)
