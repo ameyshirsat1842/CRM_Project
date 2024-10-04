@@ -36,7 +36,7 @@ class Record(models.Model):
     follow_up_attended = models.BooleanField(default=False)
     comments = models.CharField(max_length=200, null=True, blank=True)
     remarks = models.CharField(max_length=200, null=True, blank=True)
-    visible_to = models.ManyToManyField(User, related_name='visible_tickets', blank=True)
+    visible_to = models.ManyToManyField(User, related_name='visible_records', blank=True)
     is_converted = models.BooleanField(default=False)
     attachments = models.FileField(
         upload_to='attachments/',

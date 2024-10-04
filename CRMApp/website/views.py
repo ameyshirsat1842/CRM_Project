@@ -242,20 +242,10 @@ def add_record(request):
 
             record.save()
 
-            # Handle visibility settings
-            visible_to_ids = request.POST.getlist('visible_to')
-            if visible_to_ids:
-                users = User.objects.filter(id__in=visible_to_ids)
-                record.visible_to.set(users)
-                for user in users:
-                    message = f"New record added by {request.user.username}: {record.company}"
-                    send_notification_to_user(user, message)
-
             messages.success(request, "Record added successfully!")
             return redirect('leads')
         else:
-            print(f"Form errors: {form.errors}")
-            messages.error(request, "There was an error with the form. Please check the details and try again.")
+            messages.error(request, "There was an error with the form.")
     else:
         form = AddRecordForm(user=request.user)
 

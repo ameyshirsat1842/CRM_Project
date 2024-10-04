@@ -125,11 +125,6 @@ class AddRecordForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": "form-control"}),
         label="Assigned To"
     )
-    visible_to = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False
-    )
     follow_up_date = forms.DateTimeField(
         widget=forms.DateTimeInput(attrs={'type': 'datetime-local', "class": "form-control"}),
         required=False,
