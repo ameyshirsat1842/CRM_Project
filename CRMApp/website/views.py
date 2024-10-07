@@ -476,7 +476,7 @@ class MeetingRecordListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset().order_by('-created_at')
-        query = self.request.GET.get('q')
+        query = self.request.GET.get('search')
         if query:
             queryset = queryset.filter(
                 Q(meeting_partner__icontains=query) |
@@ -910,7 +910,6 @@ def import_records_from_excel(request):
             return redirect('import_leads')
 
     return render(request, 'import_leads.html')
-
 
 
 def export_leads(request):
