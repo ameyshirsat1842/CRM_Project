@@ -181,7 +181,7 @@ class AddRecordForm(forms.ModelForm):
         model = Record
         fields = ['company', 'client_name', 'dept_name', 'phone', 'email', 'city', 'address', 'classification',
                   'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details',
-                  'lead_source', 'value', 'attachment']
+                  'lead_source', 'value', 'attachment', 'priority']
         widgets = {
             'created_by': forms.HiddenInput(),
             'social_media_details': forms.Textarea(attrs={'rows': 3, 'cols': 40}),
@@ -254,7 +254,7 @@ class UpdateRecordForm(forms.ModelForm):
         model = Record
         fields = ['company', 'client_name', 'dept_name', 'phone', 'email', 'city', 'address', 'classification',
                   'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details',
-                  'lead_source', 'value', 'attachment']
+                  'lead_source', 'value', 'attachment', 'priority']
         widgets = {
             'visible_to': forms.CheckboxSelectMultiple(),
             'created_by': forms.HiddenInput(),
