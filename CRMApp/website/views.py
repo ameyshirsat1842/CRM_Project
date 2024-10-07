@@ -131,10 +131,10 @@ def otp_verify(request, user_id):
 
     if request.method == 'POST':
         otp = request.POST.get('otp')
-        if verify_otp(user, otp):  # Assuming `verify_otp` is implemented in `utils.py`
-            user.is_active = True  # Activate the user after successful OTP verification
+        if verify_otp(user, otp):
+            user.is_active = True
             user.save()
-            login(request, user)  # Log the user in after OTP verification
+            login(request, user)
             messages.success(request, "Your account has been activated. You are now logged in.")
             return redirect('home')
         else:
@@ -240,6 +240,10 @@ def add_record(request):
                 follow_up_date = timezone.make_aware(follow_up_date, timezone.get_current_timezone())
                 record.follow_up_date = follow_up_date
 
+            # Handle attachments if present
+            if 'attachments' in request.FILES:
+                record.attachments = request.FILES['attachments']
+
             record.save()
 
             messages.success(request, "Record added successfully!")
@@ -269,6 +273,13 @@ def update_record(request, pk):
                 follow_up_date = timezone.make_aware(follow_up_date, timezone.get_current_timezone())
                 updated_record.follow_up_date = follow_up_date
 
+            # Handle attachments if present, otherwise keep the existing file
+            if 'attachments' in request.FILES:
+                updated_record.attachments = request.FILES['attachments']
+            else:
+                # Preserve the existing file if no new file is uploaded
+                updated_record.attachments = record.attachments
+
             updated_record.save()
 
             # Process additional comments from the dynamically added comment fields
@@ -279,6 +290,8 @@ def update_record(request, pk):
 
             messages.success(request, "Record updated successfully!")
             return redirect('leads')
+        else:
+            messages.error(request, "Error updating the record. Please correct the errors below.")
     else:
         form = UpdateRecordForm(instance=record)
 

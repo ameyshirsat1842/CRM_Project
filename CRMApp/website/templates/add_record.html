@@ -151,7 +151,17 @@
                             </div>
                         </div>
                     </fieldset>
-
+<!-- Attachments Section -->
+    <fieldset>
+        <legend class="legend-custom">Attachments</legend>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label for="attachments" class="form-label">Upload Attachments</label>
+                <input type="file" id="attachments" name="attachments" class="form-control" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx">
+                <div class="invalid-feedback">Please upload a valid file.</div>
+            </div>
+        </div>
+    </fieldset>
                     <!-- Form Actions -->
                     <div class="d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
