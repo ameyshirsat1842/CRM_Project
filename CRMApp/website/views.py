@@ -845,14 +845,14 @@ def import_records_from_excel(request):
             # Print columns for debugging
             print("Detected columns:", df.columns.tolist())
 
-            # Update the expected columns list according to the actual columns
+            # Expected columns
             expected_columns = [
                 'ID', 'Company', 'Client', 'Department', 'Phone', 'Email',
-                'City', 'Address', 'Follow-Up', 'Comments', 'Meeting Type',
-                'Event Details', 'Lead Source', 'Assigned To', 'Status',
-                'Created', 'Follow-Up'
+                'City', 'Address', 'Comments', 'Meeting Type', 'Event Details',
+                'Lead Source', 'Assigned To', 'Status', 'Priority', 'Created', 'Follow-Up'
             ]
 
+            # Check if columns are missing
             missing_columns = [col for col in expected_columns if col not in df.columns]
             if missing_columns:
                 raise ValueError(f'Excel file is missing the following columns: {", ".join(missing_columns)}')
@@ -860,8 +860,15 @@ def import_records_from_excel(request):
             # Iterate over the rows in the DataFrame and create Record objects
             for index, row in df.iterrows():
                 try:
+                    # Parse 'Created' and 'Follow-Up' as datetime, if they exist
                     created_at = pd.to_datetime(row.get('Created'), errors='coerce')
                     follow_up_date = pd.to_datetime(row.get('Follow-Up'), errors='coerce')
+
+                    # If 'Created' or 'Follow-Up' is NaT (invalid date), set to None
+                    if pd.isna(created_at):
+                        created_at = None
+                    if pd.isna(follow_up_date):
+                        follow_up_date = None
 
                     # Create or update the Record object
                     record = Record(
@@ -876,12 +883,12 @@ def import_records_from_excel(request):
                         follow_up_date=follow_up_date,
                         comments=row.get('Comments'),
                         remarks=row.get('Meeting Type'),
-                        attachments=None,  # Handle file attachments separately if needed
-                        assigned_to=User.objects.get(username=row.get('Assigned To')) if pd.notna(
-                            row.get('Assigned To')) else None,
+                        attachments=None,
+                        assigned_to=User.objects.get(username=row.get('Assigned To')) if pd.notna(row.get('Assigned To')) else None,
                         social_media_details=row.get('Event Details'),
                         classification=row.get('Status'),
                         lead_source=row.get('Lead Source'),
+                        priority=row.get('Priority'),
                     )
 
                     # Save the record
@@ -903,6 +910,7 @@ def import_records_from_excel(request):
             return redirect('import_leads')
 
     return render(request, 'import_leads.html')
+
 
 
 def export_leads(request):
@@ -954,7 +962,7 @@ def export_leads(request):
 
     headers = [
         'ID', 'Company', 'Client', 'Department', 'Phone', 'Email',
-        'City', 'Address', 'Comments', 'Meeting type', 'Event Details',
+        'City', 'Address', 'Comments', 'Meeting Type', 'Event Details',
         'Lead Source', 'Assigned To', 'Status', 'Priority', 'Created', 'Follow-Up'
     ]
     worksheet.append(headers)
