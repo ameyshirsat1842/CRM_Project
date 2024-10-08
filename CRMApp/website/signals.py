@@ -20,7 +20,7 @@ def notify_user_assignment(sender, instance, **kwargs):
                 if new_assignee:
                     department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
                                                                                          'profile') else 'Unknown'
-                    message = f"You have been assigned a new lead: {instance.client_name} from {instance.company} by {instance.last_modified_by.username} from {department} department"
+                    message = f"You have been re-assigned a lead: {instance.client_name} from {instance.company} by {instance.last_modified_by.username} from {department} department"
                     send_notification_to_user(new_assignee, message)
                     Notification.objects.create(user=new_assignee, message=message, link_url=f'/record/{instance.pk}')
 
