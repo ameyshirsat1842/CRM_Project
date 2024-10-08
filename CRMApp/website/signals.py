@@ -43,7 +43,7 @@ def notify_user_assignment(sender, instance, **kwargs):
                 send_notification_to_user(new_assignee, message)
                 Notification.objects.create(user=new_assignee, message=message, link_url=f'/record/{instance.pk}')
     except Record.DoesNotExist:
-        pass  # Handle case where old_record does not exist
+        pass
 
 
 @receiver(pre_save, sender=MeetingRecord)

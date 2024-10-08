@@ -71,8 +71,8 @@
                     {% for overdue in overdues %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                    <strong>{{ meeting.client_name }}</strong> from <strong>{{ meeting.company }}</strong>
-                                    <span class="text-muted">on {{ meeting.follow_up_date|date:"F d, Y, h:i A" }}</span>
+                                    <strong>{{ overdue.client_name }}</strong> from <strong>{{ overdue.company }}</strong>
+                                    <span class="text-muted">on {{ overdue.follow_up_date|date:"F d, Y, h:i A" }}</span>
                             </div>
                             <!-- Mark as Attended Button Form -->
                             <form method="POST" action="{% url 'mark_attended' overdue.id %}">

@@ -889,6 +889,8 @@ def import_records_from_excel(request):
                         classification=row.get('Status'),
                         lead_source=row.get('Lead Source'),
                         priority=row.get('Priority'),
+                        created_by=request.user,
+
                     )
 
                     # Save the record
