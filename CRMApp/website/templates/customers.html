@@ -69,7 +69,7 @@
                             <td>
                                 <a href="{% url 'update_customer' customer.id %}" class="btn btn-warning btn-sm">Update</a>
                                 {% for ticket in customer.tickets.all %}
-                                    <a href="{% url 'ticket_detail' ticket.id %}" class="btn btn-info btn-sm btn-sm">View Ticket</a>
+                                    <a href="{% url 'ticket_detail' ticket.id %}" class="btn btn-info btn-sm btn-sm">Ticket</a>
                                 {% endfor %}
                             </td>
                         </tr>

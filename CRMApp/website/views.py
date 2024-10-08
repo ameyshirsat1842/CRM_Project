@@ -870,6 +870,19 @@ def import_records_from_excel(request):
                     if pd.isna(follow_up_date):
                         follow_up_date = None
 
+                    # Check if the 'Assigned To' user exists
+                    assigned_to_user = None
+                    assigned_to = row.get('Assigned To')
+                    if pd.notna(assigned_to):
+                        try:
+                            assigned_to_user = User.objects.get(username=assigned_to)
+                        except User.DoesNotExist:
+                            raise ValueError(f"Row {index}: User '{assigned_to}' does not exist.")
+
+                    # Check for required fields (example: company, client name)
+                    if pd.isna(row.get('Company')) or pd.isna(row.get('Client')):
+                        raise ValueError(f"Row {index}: Missing required fields (Company or Client).")
+
                     # Create or update the Record object
                     record = Record(
                         created_at=created_at,
@@ -884,31 +897,39 @@ def import_records_from_excel(request):
                         comments=row.get('Comments'),
                         remarks=row.get('Meeting Type'),
                         attachments=None,
-                        assigned_to=User.objects.get(username=row.get('Assigned To')) if pd.notna(row.get('Assigned To')) else None,
+                        assigned_to=assigned_to_user,  # Use the found user or None
                         social_media_details=row.get('Event Details'),
                         classification=row.get('Status'),
                         lead_source=row.get('Lead Source'),
                         priority=row.get('Priority'),
-                        created_by=request.user,
-
+                        created_by=request.user,  # User who is importing
                     )
 
                     # Save the record
                     record.save()
 
                 except ValidationError as ve:
+                    # Display validation errors for this row
                     print(f"Validation error for row {index}: {ve}")
+                    messages.error(request, f"Row {index}: Validation error: {ve}")
+                except ValueError as ve:
+                    # Display specific value errors for this row
+                    print(f"Value error for row {index}: {ve}")
+                    messages.error(request, f"Row {index}: {ve}")
                 except Exception as e:
+                    # Catch all other exceptions
                     print(f"Error saving row {index}: {e}")
+                    messages.error(request, f"Row {index}: Unexpected error: {e}")
 
-            # Redirect to the leads view with a success message
-            messages.success(request, 'Records imported successfully.')
+            # Redirect to the leads view with a success message if no errors
+            if not messages.get_messages(request):
+                messages.success(request, 'Records imported successfully.')
             return redirect('leads')
 
         except Exception as e:
             # Print the exception to the console and display an error message
             print("Error processing file:", str(e))
-            messages.error(request, 'Error processing file. Please ensure the file is in the correct format.')
+            messages.error(request, f'Error processing file: {e}. Please ensure the file is in the correct format.')
             return redirect('import_leads')
 
     return render(request, 'import_leads.html')
