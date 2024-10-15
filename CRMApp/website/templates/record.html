@@ -155,10 +155,9 @@
         <td>{{ record.follow_up_date|date:"F d, Y, h:i A" }}</td>
         <td>{{ record.created_at|date:"F d, Y, h:i A" }}</td>
         <td>
-            <a href="https://us05web.zoom.us/s/83827104906#success" class="btn btn-primary btn-sm">Zoom</a>
-            <br>
+<!--<a href="https://us05web.zoom.us/s/83827104906#success" class="btn btn-primary btn-sm">Zoom</a>-->
             <a href="{% url 'update_meeting_record' record.pk %}" class="btn btn-warning btn-sm">Update</a>
-<!--            <a href="{% url 'delete_meeting_record' record.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this meeting record?')">Delete</a>-->
+<!--<a href="{% url 'delete_meeting_record' record.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this meeting record?')">Delete</a>-->
         </td>
     </tr>
 
