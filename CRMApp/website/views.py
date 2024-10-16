@@ -563,8 +563,13 @@ def leads_view(request):
         priority = request.GET.get('priority', '')
         start_date = request.GET.get('start_date', '')
         end_date = request.GET.get('end_date', '')
+        assigned_to_me = request.GET.get('filter', '')
 
         records = Record.objects.filter(is_converted=False).order_by('-created_at')
+
+        # Apply "Assigned to Me" filter
+        if assigned_to_me == 'assigned_to_me':
+            records = records.filter(assigned_to=request.user)
 
         # Apply search filter
         if search_query:
@@ -603,6 +608,7 @@ def leads_view(request):
             'priority': priority,
             'start_date': start_date,
             'end_date': end_date,
+            'assigned_to_me': assigned_to_me,
         }
         return render(request, 'leads.html', context)
     else:
