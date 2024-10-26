@@ -15,7 +15,15 @@ class Record(models.Model):
         max_length=10,
         validators=[RegexValidator(r'^\d{10}$', message="Phone number must be 10 digits.")]
     )
+    phone_2 = models.CharField(
+        max_length=10,
+        validators=[RegexValidator(r'^\d{10}$', message="Phone number must be 10 digits.")],
+        null=True,
+        blank=True
+    )
+
     email = models.EmailField(max_length=100)
+    email_2 = models.EmailField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=50, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
     assigned_to = models.ForeignKey(
@@ -234,7 +242,7 @@ class Ticket(models.Model):
     ]
     title = models.CharField(max_length=200)
     description = models.TextField()
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='tickets',null=True)  # Link to Customer
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='tickets',null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tickets_created")
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)

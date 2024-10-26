@@ -34,16 +34,24 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="phone" class="form-label">Phone</label>
-                                <input type="text" id="phone" name="phone" class="form-control" required maxlength="10" pattern="\d{10}">
+                                <div class="input-group">
+                                    <input type="text" id="phone" name="phone" class="form-control" required maxlength="10" pattern="\d{10}">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="addPhoneField()">+</button>
+                                </div>
                                 <div class="invalid-feedback">Please provide a valid 10-digit phone number.</div>
                             </div>
+                            <div id="extraPhoneFields"></div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" id="email" name="email" class="form-control" required>
+                                <div class="input-group">
+                                    <input type="email" id="email" name="email" class="form-control" required>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="addEmailField()">+</button>
+                                </div>
                                 <div class="invalid-feedback">Please provide a valid email address.</div>
                             </div>
+                            <div id="extraEmailFields"></div>
                         </div>
                     </fieldset>
 
@@ -201,34 +209,107 @@
             altFormat: "F j, Y h:i K",
         });
 
+        // Main fields for duplicate check
         const phoneField = document.getElementById('phone');
         const emailField = document.getElementById('email');
 
-        async function checkDuplicate() {
-            const phone = phoneField.value;
-            const email = emailField.value;
-
+        // Fetch duplicate data
+        async function checkDuplicate(phone, email) {
             try {
                 const response = await fetch(`/check-duplicate/?phone=${phone}&email=${email}`);
-                const data = await response.json();
-
-                phoneField.classList.toggle('is-invalid', !!data.phone);
-                emailField.classList.toggle('is-invalid', !!data.email);
+                return await response.json();
             } catch (error) {
                 console.error('Error checking duplicates:', error);
+                return {};
             }
         }
 
-        phoneField.addEventListener('blur', checkDuplicate);
-        emailField.addEventListener('blur', checkDuplicate);
+        // Add invalid class based on duplicate data
+        async function validateDuplicates() {
+            const phoneInputs = document.querySelectorAll('[name^="phone"]');
+            const emailInputs = document.querySelectorAll('[name^="email"]');
+            let hasErrors = false;
 
+            for (const phoneInput of phoneInputs) {
+                const data = await checkDuplicate(phoneInput.value, emailField.value);
+                phoneInput.classList.toggle('is-invalid', !!data.phone);
+                hasErrors ||= !!data.phone;
+            }
+
+            for (const emailInput of emailInputs) {
+                const data = await checkDuplicate(phoneField.value, emailInput.value);
+                emailInput.classList.toggle('is-invalid', !!data.email);
+                hasErrors ||= !!data.email;
+            }
+            return hasErrors;
+        }
+
+        // Validate on blur for existing fields
+        phoneField.addEventListener('blur', validateDuplicates);
+        emailField.addEventListener('blur', validateDuplicates);
+
+        // Validate on form submission
         document.getElementById('addRecordForm').addEventListener('submit', async (event) => {
-            await checkDuplicate();
-            const errors = document.querySelectorAll('.is-invalid');
-            if (errors.length > 0) {
+            if (await validateDuplicates()) {
                 event.preventDefault();
             }
         });
+
+        // Add dynamic phone field with listener
+        function addPhoneField() {
+            const container = document.getElementById('extraPhoneFields');
+            const inputGroup = document.createElement('div');
+            inputGroup.className = 'input-group mt-2';
+
+            const newInput = document.createElement('input');
+            newInput.type = 'text';
+            newInput.name = 'phone_2';  // For each additional phone, use unique names like phone_3, etc.
+            newInput.className = 'form-control';
+            newInput.placeholder = 'Secondary Phone';
+            newInput.maxLength = '10';
+            newInput.pattern = '\\d{10}';
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'btn btn-outline-danger';
+            removeButton.innerText = '-';
+            removeButton.onclick = () => container.removeChild(inputGroup);
+
+            newInput.addEventListener('blur', validateDuplicates);
+
+            inputGroup.appendChild(newInput);
+            inputGroup.appendChild(removeButton);
+            container.appendChild(inputGroup);
+        }
+
+        // Add dynamic email field with listener
+        function addEmailField() {
+            const container = document.getElementById('extraEmailFields');
+            const inputGroup = document.createElement('div');
+            inputGroup.className = 'input-group mt-2';
+
+            const newInput = document.createElement('input');
+            newInput.type = 'email';
+            newInput.name = 'email_2';  // For each additional email, use unique names like email_3, etc.
+            newInput.className = 'form-control';
+            newInput.placeholder = 'Secondary Email';
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'btn btn-outline-danger';
+            removeButton.innerText = '-';
+            removeButton.onclick = () => container.removeChild(inputGroup);
+
+            newInput.addEventListener('blur', validateDuplicates);
+
+            inputGroup.appendChild(newInput);
+            inputGroup.appendChild(removeButton);
+            container.appendChild(inputGroup);
+        }
+
+        window.addPhoneField = addPhoneField;
+        window.addEmailField = addEmailField;
     });
 </script>
+
 {% endblock %}

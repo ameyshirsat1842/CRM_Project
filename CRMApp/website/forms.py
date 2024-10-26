@@ -105,10 +105,21 @@ class AddRecordForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"}),
         label="Phone"
     )
+    phone_2 = forms.CharField(
+        required=False,
+        max_length=10,
+        widget=forms.TextInput(attrs={"placeholder": "Secondary Phone", "class": "form-control"}),
+        label="Secondary Phone"
+    )
     email = forms.EmailField(
         required=True,
         widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
         label="Email"
+    )
+    email_2 = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={"placeholder": "Secondary Email", "class": "form-control"}),
+        label="Secondary Email"
     )
     city = forms.CharField(
         required=True,
@@ -179,7 +190,7 @@ class AddRecordForm(forms.ModelForm):
 
     class Meta:
         model = Record
-        fields = ['company', 'client_name', 'dept_name', 'phone', 'email', 'city', 'address', 'classification',
+        fields = ['company', 'client_name', 'dept_name', 'phone', 'phone_2', 'email', 'email_2', 'city', 'address', 'classification',
                   'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details',
                   'lead_source', 'value', 'attachment', 'priority']
         widgets = {
@@ -252,7 +263,7 @@ class UpdateRecordForm(forms.ModelForm):
 
     class Meta:
         model = Record
-        fields = ['company', 'client_name', 'dept_name', 'phone', 'email', 'city', 'address', 'classification',
+        fields = ['company', 'client_name', 'dept_name', 'phone', 'phone_2', 'email', 'email_2', 'city', 'address', 'classification',
                   'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details',
                   'lead_source', 'value', 'attachment', 'priority']
         widgets = {
