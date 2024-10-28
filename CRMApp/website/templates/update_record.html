@@ -3,157 +3,163 @@
 {% block content %}
 <div class="container mt-4">
     <div class="row">
-            <div class="card mb-4">
-          <h2 class="font-weight-bold">Update Record</h2>
+        <div class="card mb-4">
+            <h2 class="font-weight-bold">Update Record</h2>
         </div>
-            <!-- Display messages if any -->
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
 
-            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-                {% csrf_token %}
-
-                <!-- Company Information -->
-                <fieldset>
-                    <legend class="legend-custom">Company Information</legend>
-                    <div class="form-group row">
-                        <label for="company" class="col-sm-3 col-form-label">{{ form.company.label }}</label>
-                        <div class="col-sm-9">
-                            {{ form.company }}
-                            {% if form.company.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.company.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="client_name" class="col-sm-3 col-form-label">{{ form.client_name.label }}</label>
-                        <div class="col-sm-9">
-                            {{ form.client_name }}
-                            {% if form.client_name.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.client_name.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="dept_name" class="col-sm-3 col-form-label">{{ form.dept_name.label }}</label>
-                        <div class="col-sm-9">
-                            {{ form.dept_name }}
-                            {% if form.dept_name.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.dept_name.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="phone" class="col-sm-3 col-form-label">{{ form.phone.label }}</label>
-                        <div class="col-sm-9">
-                            {{ form.phone }}
-                            {% if form.phone.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.phone.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="email" class="col-sm-3 col-form-label">{{ form.email.label }}</label>
-                        <div class="col-sm-9">
-                            {{ form.email }}
-                            {% if form.email.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.email.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </fieldset>
-                <br>
-
-                <!-- Location Information -->
-                <fieldset>
-                    <legend class="legend-custom">Location Information</legend>
-                    <div class="form-group row">
-                        <label for="city" class="col-sm-3 col-form-label">{{ form.city.label }}</label>
-                        <div class="col-sm-9">
-                            {{ form.city }}
-                            {% if form.city.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.city.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="address" class="col-sm-3 col-form-label">{{ form.address.label }}</label>
-                        <div class="col-sm-9">
-                            {{ form.address }}
-                            {% if form.address.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.address.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </fieldset>
-                <br>
-
-                <!-- Lead Details -->
-                <fieldset>
-                    <legend class="legend-custom">Lead Details</legend>
-                    <div class="form-group row">
-                        <label for="assigned_to" class="col-sm-3 col-form-label">{{ form.assigned_to.label }}</label>
-                        <div class="col-sm-9">
-                            {{ form.assigned_to }}
-                            {% if form.assigned_to.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.assigned_to.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <br>
-<div class="form-group row">
-    <label for="follow_up_date" class="col-sm-3 col-form-label">{{ form.follow_up_date.label }}</label>
-    <div class="col-sm-9">
-        {{ form.follow_up_date }}
-        {% if form.follow_up_date.errors %}
-            <div class="invalid-feedback d-block">
-                {{ form.follow_up_date.errors }}
-            </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
         {% endif %}
-    </div>
-</div>
-                    <br>
-                      <div class="form-group row">
-                        <label for="classification" class="col-sm-3 col-form-label">Status:</label>
-                        <div class="col-sm-9">
-                            {{ form.classification }}
-                            {% if form.classification.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.classification.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+            {% csrf_token %}
+
+            <!-- Company Information -->
+            <fieldset>
+                <legend class="legend-custom">Company Information</legend>
+                <div class="form-group row">
+                    <label for="company" class="col-sm-3 col-form-label">{{ form.company.label }}</label>
+                    <div class="col-sm-9">
+                        {{ form.company }}
+                        {% if form.company.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.company.errors }}
+                            </div>
+                        {% endif %}
                     </div>
-                </fieldset>
+                </div>
                 <br>
-                 <!-- Add the priority field here -->
+                <div class="form-group row">
+                    <label for="client_name" class="col-sm-3 col-form-label">{{ form.client_name.label }}</label>
+                    <div class="col-sm-9">
+                        {{ form.client_name }}
+                        {% if form.client_name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.client_name.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label for="dept_name" class="col-sm-3 col-form-label">{{ form.dept_name.label }}</label>
+                    <div class="col-sm-9">
+                        {{ form.dept_name }}
+                        {% if form.dept_name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.dept_name.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label for="phone" class="col-sm-3 col-form-label">{{ form.phone.label }}</label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            {{ form.phone }}
+                            <button type="button" class="btn btn-outline-primary" onclick="addPhoneField()">+</button>
+                        </div>
+                        <div id="extraPhoneFields"></div>
+                        {% if form.phone.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.phone.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label for="email" class="col-sm-3 col-form-label">{{ form.email.label }}</label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            {{ form.email }}
+                            <button type="button" class="btn btn-outline-primary" onclick="addEmailField()">+</button>
+                        </div>
+                        <div id="extraEmailFields"></div>
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.email.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+            <br>
+
+            <!-- Location Information -->
+            <fieldset>
+                <legend class="legend-custom">Location Information</legend>
+                <div class="form-group row">
+                    <label for="city" class="col-sm-3 col-form-label">{{ form.city.label }}</label>
+                    <div class="col-sm-9">
+                        {{ form.city }}
+                        {% if form.city.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.city.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label for="address" class="col-sm-3 col-form-label">{{ form.address.label }}</label>
+                    <div class="col-sm-9">
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.address.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+            <br>
+
+            <!-- Lead Details -->
+            <fieldset>
+                <legend class="legend-custom">Lead Details</legend>
+                <div class="form-group row">
+                    <label for="assigned_to" class="col-sm-3 col-form-label">{{ form.assigned_to.label }}</label>
+                    <div class="col-sm-9">
+                        {{ form.assigned_to }}
+                        {% if form.assigned_to.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.assigned_to.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label for="follow_up_date" class="col-sm-3 col-form-label">{{ form.follow_up_date.label }}</label>
+                    <div class="col-sm-9">
+                        {{ form.follow_up_date }}
+                        {% if form.follow_up_date.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.follow_up_date.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label for="classification" class="col-sm-3 col-form-label">Status:</label>
+                    <div class="col-sm-9">
+                        {{ form.classification }}
+                        {% if form.classification.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.classification.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
                 <div class="form-group row">
                     <label for="priority" class="col-sm-3 col-form-label">Priority:</label>
                     <div class="col-sm-9">
@@ -165,114 +171,102 @@
                         {% endif %}
                     </div>
                 </div>
-                    <br>
-<div class="form-group row">
-    <label for="value" class="col-sm-3 col-form-label">Value:</label>
-    <div class="col-sm-9">
-        {{ form.value }}
-        {% if form.value.errors %}
-            <div class="invalid-feedback d-block">
-                {{ form.value.errors }}
-            </div>
-        {% endif %}
-    </div>
-</div>
-
-                    <div class="form-group row">
-                        <label for="comments" class="col-sm-3 col-form-label">{{ form.comments.label }}</label>
-                        <div class="col-sm-8" id="comments-container">
-<!--                            {{ form.comments }}-->
-                            {% if form.comments.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.comments.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <!-- Add Comment Button -->
-                        <div class="col-sm-9">
-                            <button type="button" class="btn btn-success btn-circle" id="add-comment-btn">
-                                <i class="fas fa">Add Comment</i>
-                            </button>
-                        </div>
-                    </div>
-                    <br>
-                   <div class="form-group row">
-    <label for="remarks" class="col-sm-3 col-form-label">Meeting Type:</label>
-    <div class="col-sm-9">
-        {{ form.remarks }}
-        {% if form.remarks.errors %}
-            <div class="invalid-feedback d-block">
-                {{ form.remarks.errors }}
-            </div>
-        {% endif %}
-    </div>
-</div>
-<br>
-                    <div class="form-group row">
-                        <label for="social_media_details" class="col-sm-3 col-form-label">Event Details:</label>
-                        <div class="col-sm-9">
-                            {{ form.social_media_details }}
-                            {% if form.social_media_details.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.social_media_details.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="lead_source" class="col-sm-3 col-form-label">Lead Source:</label>
-                        <div class="col-sm-9">
-                            {{ form.lead_source }}
-                            {% if form.lead_source.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.lead_source.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group row">
-                        <label for="attachments" class="col-sm-3 col-form-label">Attachments:</label>
-                        <div class="col-sm-9">
-                            <input type="file" id="attachments" name="attachments" class="form-control">
-                            {% if record.attachments %}
-                                <br>
-                                <strong>Current Attachment:</strong>
-                                <a href="{{ record.attachments.url }}" target="_blank">{{ record.attachments.name }}</a>
-                            {% else %}
-                                <p>No attachment uploaded.</p>
-
-                            {% endif %}
-                        </div>
-                    </div>
-                    <br>
-<!--                    <div class="form-group row">-->
-<!--                        <label class="col-sm-3 col-form-label">Visible To:</label>-->
-<!--                        <div class="col-sm-9">-->
-<!--                            {% for user in users %}-->
-<!--                                <div class="form-check">-->
-<!--                                    <input class="form-check-input" type="checkbox" name="visible_to" id="user_{{ user.id }}" value="{{ user.id }}"-->
-<!--                                        {% if user == request.user or user in record.visible_to.all %}checked{% endif %}>-->
-<!--                                    <label class="form-check-label" for="user_{{ user.id }}">-->
-<!--                                        {{ user.username }}-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                            {% endfor %}-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <br>-->
-
-                <!-- Form Buttons -->
+                <br>
                 <div class="form-group row">
-                    <div class="col-sm-9 offset-sm-3">
-                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
+                    <label for="value" class="col-sm-3 col-form-label">Value:</label>
+                    <div class="col-sm-9">
+                        {{ form.value }}
+                        {% if form.value.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.value.errors }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
-            </form>
-        </div>
+            </fieldset>
+            <br>
+
+            <!-- Additional Information -->
+            <fieldset>
+                <legend class="legend-custom">Additional Information</legend>
+                <div class="form-group row">
+                    <label for="comments" class="col-sm-3 col-form-label">{{ form.comments.label }}</label>
+                    <div class="col-sm-8" id="comments-container">
+                        {{ form.comments }}
+                        {% if form.comments.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.comments.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-9 mt-2">
+                        <button type="button" class="btn btn-success" id="add-comment-btn">Add Comment</button>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label for="remarks" class="col-sm-3 col-form-label">Meeting Type:</label>
+                    <div class="col-sm-9">
+                        {{ form.remarks }}
+                        {% if form.remarks.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.remarks.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label for="social_media_details" class="col-sm-3 col-form-label">Event Details:</label>
+                    <div class="col-sm-9">
+                        {{ form.social_media_details }}
+                        {% if form.social_media_details.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.social_media_details.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label for="lead_source" class="col-sm-3 col-form-label">Lead Source:</label>
+                    <div class="col-sm-9">
+                        {{ form.lead_source }}
+                        {% if form.lead_source.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.lead_source.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label for="attachments" class="col-sm-3 col-form-label">Attachments:</label>
+                    <div class="col-sm-9">
+                        <input type="file" id="attachments" name="attachments" class="form-control">
+                        {% if record.attachments %}
+                            <br>
+                            <strong>Current Attachment:</strong>
+                            <a href="{{ record.attachments.url }}" target="_blank">{{ record.attachments.name }}</a>
+                        {% else %}
+                            <p>No attachment uploaded.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+            <br>
+
+            <!-- Form Buttons -->
+            <div class="form-group row">
+                <div class="col-sm-9 offset-sm-3">
+                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </form>
     </div>
+</div>
+
 <style>
     .legend-custom {
         font-size: 1.5em;
@@ -283,56 +277,68 @@
     .form-label {
         font-weight: 500;
     }
-    .mb-3 {
-        margin-bottom: 1.5rem;
-    }
-    .d-flex {
-        margin-top: 20px;
-    }
 </style>
+
 {% block scripts %}
 <script>
-    (function () {
-        'use strict';
-        window.addEventListener('load', function () {
-            var forms = document.getElementsByClassName('needs-validation');
-            Array.prototype.filter.call(forms, function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        }, false);
-    })();
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const addCommentBtn = document.getElementById('add-comment-btn');
-        const commentsContainer = document.getElementById('comments-container');
-
-        addCommentBtn.addEventListener('click', function() {
-            // Create a new text area for an additional comment
-            const newCommentField = document.createElement('textarea');
-            newCommentField.setAttribute('name', 'additional_comments[]');  // Name it as an array
-            newCommentField.setAttribute('class', 'form-control mt-2');
-            newCommentField.setAttribute('rows', '3');
-            newCommentField.setAttribute('placeholder', 'Add another comment...');
-
-            // Append the new comment field to the container
-            commentsContainer.appendChild(newCommentField);
-        });
-    });
-       document.addEventListener('DOMContentLoaded', function () {
+    // Flatpickr for Follow-Up Date
+    document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#id_follow_up_date", {
             enableTime: true,
             dateFormat: "Y-m-d H:i",
-            time_24hr: false, // Set to false for 12-hour clock
+            time_24hr: false,
             altInput: true,
-            altFormat: "F j, Y h:i K", // User-friendly format with AM/PM
+            altFormat: "F j, Y h:i K",
         });
     });
+
+    // Add Secondary Phone Field
+    function addPhoneField() {
+        const container = document.getElementById('extraPhoneFields');
+        const inputGroup = document.createElement('div');
+        inputGroup.className = 'input-group mt-2';
+
+        const newInput = document.createElement('input');
+        newInput.type = 'text';
+        newInput.name = 'phone_2';
+        newInput.className = 'form-control';
+        newInput.placeholder = 'Secondary Phone';
+        newInput.maxLength = '10';
+        newInput.pattern = '\\d{10}';
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'btn btn-outline-danger';
+        removeButton.innerText = '-';
+        removeButton.onclick = () => container.removeChild(inputGroup);
+
+        inputGroup.appendChild(newInput);
+        inputGroup.appendChild(removeButton);
+        container.appendChild(inputGroup);
+    }
+
+    // Add Secondary Email Field
+    function addEmailField() {
+        const container = document.getElementById('extraEmailFields');
+        const inputGroup = document.createElement('div');
+        inputGroup.className = 'input-group mt-2';
+
+        const newInput = document.createElement('input');
+        newInput.type = 'email';
+        newInput.name = 'email_2';
+        newInput.className = 'form-control';
+        newInput.placeholder = 'Secondary Email';
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'btn btn-outline-danger';
+        removeButton.innerText = '-';
+        removeButton.onclick = () => container.removeChild(inputGroup);
+
+        inputGroup.appendChild(newInput);
+        inputGroup.appendChild(removeButton);
+        container.appendChild(inputGroup);
+    }
 </script>
 {% endblock %}
 {% endblock %}
