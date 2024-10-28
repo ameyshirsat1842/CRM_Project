@@ -10,11 +10,11 @@
             {% if notifications %}
                 <ul class="list-group" id="notificationList">
                     {% for notification in notifications %}
-                        <li class="list-group-item notification-item {% if not notification.is_read %}unread{% endif %}">
+                        <li class="list-group-item notification-item {% if not notification.is_read %}unread{% endif %}" data-id="{{ notification.id }}">
                             <div class="d-flex justify-content-between">
                                 <div>
                                     {% if notification.link_url %}
-                                        <a href="{{ notification.link_url }}" class="notification-link">{{ notification.message }}</a>
+                                        <a href="{{ notification.link_url }}" class="notification-link" data-id="{{ notification.id }}">{{ notification.message }}</a>
                                     {% else %}
                                         <span>{{ notification.message }}</span>
                                     {% endif %}
@@ -35,8 +35,10 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Establish WebSocket connection with proper protocol for secure environments
+    const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
     const notificationSocket = new WebSocket(
-        'ws://' + window.location.host + '/ws/notifications/'
+        wsProtocol + window.location.host + '/ws/notifications/'
     );
 
     notificationSocket.onmessage = function(e) {
@@ -44,10 +46,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const notificationsList = document.getElementById('notificationList');
         const newNotification = document.createElement('li');
         newNotification.className = 'list-group-item notification-item unread';
+        newNotification.dataset.id = data.id;
         newNotification.innerHTML = `
             <div class="d-flex justify-content-between">
                 <div>
-                    <a href="${data.link_url}" class="notification-link">
+                    <a href="${data.link_url}" class="notification-link" data-id="${data.id}">
                         ${data.message}
                     </a>
                     <small class="text-muted d-block mt-1">- Just now</small>
@@ -60,6 +63,26 @@ document.addEventListener('DOMContentLoaded', function() {
     notificationSocket.onclose = function(e) {
         console.error('Notification socket closed unexpectedly');
     };
+
+    // Event delegation to mark notifications as read when clicked
+    document.getElementById('notificationList').addEventListener('click', function(event) {
+        const target = event.target.closest('.notification-link');
+        if (target) {
+            const notificationId = target.dataset.id;
+            markNotificationAsRead(notificationId, target.closest('.notification-item'));
+        }
+    });
+
+    // Function to mark notifications as read
+    function markNotificationAsRead(notificationId, notificationElement) {
+        fetch(`/mark-notification-read/${notificationId}/`, { method: 'POST', headers: {'X-CSRFToken': '{{ csrf_token }}'}})
+            .then(response => {
+                if (response.ok) {
+                    notificationElement.classList.remove('unread');
+                }
+            })
+            .catch(error => console.error('Error marking notification as read:', error));
+    }
 });
 </script>
 

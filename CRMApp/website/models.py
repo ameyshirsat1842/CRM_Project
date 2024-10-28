@@ -129,6 +129,7 @@ class Record(models.Model):
 
 class Customer(models.Model):
     # Basic customer information
+    DoesNotExist = None
     company = models.CharField(max_length=255, blank=True, null=True)
     client_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=15, blank=True, null=True)

@@ -10,7 +10,8 @@ from .utils import send_otp_to_email
 
 
 @receiver(pre_save, sender=Record)
-def notify_user_assignment(sender, instance, **kwargs):
+def notify_user_assignment_pre_save(sender, instance, **kwargs):
+    # Only handle updates to existing records in pre_save
     try:
         if instance.pk:  # Existing Record
             old_record = Record.objects.get(pk=instance.pk)
@@ -19,32 +20,65 @@ def notify_user_assignment(sender, instance, **kwargs):
             if old_record.assigned_to != instance.assigned_to:
                 new_assignee = instance.assigned_to
                 if new_assignee:
-                    department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
-                                                                                         'profile') else 'Unknown'
-                    message = f"You have been re-assigned a lead: {instance.client_name} from {instance.company} by {instance.last_modified_by.username} from {department} department"
+                    last_modified_by = instance.last_modified_by or instance.created_by
+                    department = (
+                        last_modified_by.profile.department if last_modified_by and hasattr(last_modified_by, 'profile')
+                        else 'Unknown'
+                    )
+                    message = (
+                        f"You have been re-assigned a lead: {instance.client_name} from {instance.company} "
+                        f"by {last_modified_by.username if last_modified_by else 'an admin'} from {department} department"
+                    )
                     send_notification_to_user(new_assignee, message)
-                    Notification.objects.create(user=new_assignee, message=message, link_url=f'/record/{instance.pk}')
+                    Notification.objects.create(
+                        user=new_assignee,
+                        message=message,
+                        link_url=reverse('record', kwargs={'pk': instance.pk})
+                    )
 
             # Handle follow-up date update notifications
             if old_record.follow_up_date != instance.follow_up_date and instance.follow_up_date:
                 assignee = instance.assigned_to
                 if assignee:
-                    department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
-                                                                                         'profile') else 'Unknown'
-                    message = f"Meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d %I:%M %p')} for lead:{instance.client_name} from {instance.company} by {instance.last_modified_by.username} from {department} department"
+                    last_modified_by = instance.last_modified_by or instance.created_by
+                    department = (
+                        last_modified_by.profile.department if last_modified_by and hasattr(last_modified_by, 'profile')
+                        else 'Unknown'
+                    )
+                    message = (
+                        f"Meeting scheduled on {instance.follow_up_date.strftime('%Y-%m-%d %I:%M %p')} for lead: "
+                        f"{instance.client_name} from {instance.company} by {last_modified_by.username if last_modified_by else 'an admin'} from {department} department"
+                    )
                     send_notification_to_user(assignee, message)
-                    Notification.objects.create(user=assignee, message=message, link_url=f'/record/{instance.pk}')
-        else:
-            # New Record creation and assignment
-            if instance.assigned_to:
-                new_assignee = instance.assigned_to
-                department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by,
-                                                                                     'profile') else 'Unknown'
-                message = f"You have been assigned a new lead: {instance.client_name} from {instance.company} by {instance.last_modified_by.username} from {department} department"
-                send_notification_to_user(new_assignee, message)
-                Notification.objects.create(user=new_assignee, message=message, link_url=f'/record/{instance.pk}')
+                    Notification.objects.create(
+                        user=assignee,
+                        message=message,
+                        link_url=reverse('record', kwargs={'pk': instance.pk})
+                    )
     except Record.DoesNotExist:
         pass
+
+
+@receiver(post_save, sender=Record)
+def notify_user_assignment_post_save(sender, instance, created, **kwargs):
+    # Handle notifications for new records in post_save
+    if created and instance.assigned_to:
+        new_assignee = instance.assigned_to
+        created_by = instance.created_by
+        department = (
+            created_by.profile.department if created_by and hasattr(created_by, 'profile')
+            else 'Unknown'
+        )
+        message = (
+            f"You have been assigned a new lead: {instance.client_name} from {instance.company} by "
+            f"{created_by.username if created_by else 'an admin'} from {department} department"
+        )
+        send_notification_to_user(new_assignee, message)
+        Notification.objects.create(
+            user=new_assignee,
+            message=message,
+            link_url=reverse('record', kwargs={'pk': instance.pk})
+        )
 
 
 @receiver(pre_save, sender=MeetingRecord)
