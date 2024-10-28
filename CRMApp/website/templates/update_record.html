@@ -339,6 +339,22 @@
         inputGroup.appendChild(removeButton);
         container.appendChild(inputGroup);
     }
+    document.addEventListener('DOMContentLoaded', function() {
+        const addCommentBtn = document.getElementById('add-comment-btn');
+        const commentsContainer = document.getElementById('comments-container');
+
+        addCommentBtn.addEventListener('click', function() {
+            // Create a new text area for an additional comment
+            const newCommentField = document.createElement('textarea');
+            newCommentField.setAttribute('name', 'additional_comments[]');  // Name it as an array
+            newCommentField.setAttribute('class', 'form-control mt-2');
+            newCommentField.setAttribute('rows', '3');
+            newCommentField.setAttribute('placeholder', 'Add another comment...');
+
+            // Append the new comment field to the container
+            commentsContainer.appendChild(newCommentField);
+        });
+    });
 </script>
 {% endblock %}
 {% endblock %}
