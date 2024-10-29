@@ -119,7 +119,7 @@ def handle_record_deletion(sender, instance, **kwargs):
     deletion_reason = getattr(instance, 'deletion_reason', 'No reason provided')
 
     # Log the deleted record's details
-    DeletedRecord.objects.create(
+    deleted_record = DeletedRecord.objects.create(
         record_id=instance.pk,
         client_name=instance.client_name,
         company=instance.company,
@@ -142,11 +142,11 @@ def handle_record_deletion(sender, instance, **kwargs):
         notification_message = f"Your lead {instance.client_name} from {instance.company} has been deleted by {instance.last_modified_by.username}."
         send_notification_to_user(instance.assigned_to, notification_message)
 
-        # Optionally save the notification to the database with link to the deleted record
+        # Save the notification to the database with the DeletedRecord link
         Notification.objects.create(
             user=instance.assigned_to,
             message=notification_message,
-            link_url=f'/deleted-record/{instance.pk}'
+            link_url=reverse('deleted_record_detail', kwargs={'pk': deleted_record.pk})  # Use DeletedRecord's pk
         )
 
 
