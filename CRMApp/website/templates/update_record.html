@@ -185,6 +185,22 @@
                 </div>
             </fieldset>
             <br>
+            <!-- CC Users Selection -->
+            <fieldset>
+                <legend class="legend-custom">CC Users</legend>
+                <div class="form-group row">
+                    <label for="cc_users" class="col-sm-3 col-form-label">{{ form.cc_users.label }}</label>
+                    <div class="col-sm-9">
+                        {{ form.cc_users }}
+                        {% if form.cc_users.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.cc_users.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+            <br>
 
             <!-- Additional Information -->
             <fieldset>
@@ -192,12 +208,12 @@
                 <div class="form-group row">
                     <label for="comments" class="col-sm-3 col-form-label">{{ form.comments.label }}</label>
                     <div class="col-sm-8" id="comments-container">
-                        {{ form.comments }}
-                        {% if form.comments.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.comments.errors }}
-                            </div>
-                        {% endif %}
+<!--                        {{ form.comments }}-->
+<!--                        {% if form.comments.errors %}-->
+<!--                            <div class="invalid-feedback d-block">-->
+<!--                                {{ form.comments.errors }}-->
+<!--                            </div>-->
+<!--                        {% endif %}-->
                     </div>
                     <div class="col-sm-9 mt-2">
                         <button type="button" class="btn btn-success" id="add-comment-btn">Add Comment</button>

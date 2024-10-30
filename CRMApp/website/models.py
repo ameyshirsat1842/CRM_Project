@@ -22,7 +22,7 @@ class Record(models.Model):
         blank=True
     )
 
-    email = models.EmailField(max_length=100)
+    email = models.EmailField(max_length=100, null=True, blank=True)
     email_2 = models.EmailField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=50, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
@@ -98,6 +98,7 @@ class Record(models.Model):
         default='mid'
     )
     value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    cc_users = models.ManyToManyField(User, related_name='cc_leads', blank=True)
 
     objects = models.Manager()  # Default manager
 

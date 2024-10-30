@@ -100,7 +100,7 @@ class AddRecordForm(forms.ModelForm):
         label="Department Name"
     )
     phone = forms.CharField(
-        required=True,
+        required=False,
         max_length=10,
         widget=forms.TextInput(attrs={"placeholder": "Phone", "class": "form-control"}),
         label="Phone"
@@ -112,7 +112,7 @@ class AddRecordForm(forms.ModelForm):
         label="Secondary Phone"
     )
     email = forms.EmailField(
-        required=True,
+        required=False,
         widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
         label="Email"
     )
@@ -127,7 +127,7 @@ class AddRecordForm(forms.ModelForm):
         label="City"
     )
     address = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={"placeholder": "Address", "class": "form-control"}),
         label="Address"
     )
@@ -171,7 +171,7 @@ class AddRecordForm(forms.ModelForm):
     )
     priority = forms.ChoiceField(
         choices=Record.PRIORITY_CHOICES,
-        required=True,
+        required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
         label="Priority"
     )
@@ -187,12 +187,18 @@ class AddRecordForm(forms.ModelForm):
         widget=forms.ClearableFileInput(attrs={"class": "form-control"}),
         label="Attachment"
     )
+    cc_users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="CC Users"
+    )
 
     class Meta:
         model = Record
         fields = ['company', 'client_name', 'dept_name', 'phone', 'phone_2', 'email', 'email_2', 'city', 'address', 'classification',
                   'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details',
-                  'lead_source', 'value', 'attachment', 'priority']
+                  'lead_source', 'value', 'attachment', 'priority', 'cc_users']
         widgets = {
             'created_by': forms.HiddenInput(),
             'social_media_details': forms.Textarea(attrs={'rows': 3, 'cols': 40}),
@@ -260,12 +266,18 @@ class UpdateRecordForm(forms.ModelForm):
         widget=forms.ClearableFileInput(attrs={"class": "form-control"}),
         label="Attachment"
     )
+    cc_users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="CC Users"
+    )
 
     class Meta:
         model = Record
         fields = ['company', 'client_name', 'dept_name', 'phone', 'phone_2', 'email', 'email_2', 'city', 'address', 'classification',
                   'assigned_to', 'visible_to', 'follow_up_date', 'comments', 'remarks', 'social_media_details',
-                  'lead_source', 'value', 'attachment', 'priority']
+                  'lead_source', 'value', 'attachment', 'priority', 'cc_users']
         widgets = {
             'visible_to': forms.CheckboxSelectMultiple(),
             'created_by': forms.HiddenInput(),

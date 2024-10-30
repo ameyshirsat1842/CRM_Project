@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, m2m_changed
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.urls import reverse
@@ -216,3 +216,38 @@ def notify_user_customer_assignment(sender, instance, **kwargs):
 
     except Customer.DoesNotExist:
         pass
+
+
+@receiver(post_save, sender=Record)
+def notify_cc_users(sender, instance, created, **kwargs):
+    # Determine the creator or last modified user
+    creator = instance.created_by or instance.last_modified_by
+    creator_name = creator.username if creator else "an admin"
+
+    # Notify CC users on creation
+    if created:
+        for cc_user in instance.cc_users.all():
+            message = (
+                f"You are added in CC for the lead: {instance.client_name} from {instance.company} by {creator_name}."
+            )
+            link_url = reverse('record', kwargs={'pk': instance.pk})
+            send_notification_to_user(cc_user, message)
+            Notification.objects.create(user=cc_user, message=message, link_url=link_url)
+
+
+# Handle updates to CC users
+@receiver(m2m_changed, sender=Record.cc_users.through)
+def notify_cc_users_on_update(sender, instance, action, pk_set, **kwargs):
+    if action == "post_add":  # This action occurs when CC users are added
+        updater = instance.last_modified_by or instance.created_by
+        updater_name = updater.username if updater else "an admin"
+
+        # Notify only the newly added CC users
+        for user_id in pk_set:
+            cc_user = User.objects.get(pk=user_id)
+            message = (
+                f"You have been added in CC for the updated lead: {instance.client_name} from {instance.company} by {updater_name}."
+            )
+            link_url = reverse('record', kwargs={'pk': instance.pk})
+            send_notification_to_user(cc_user, message)
+            Notification.objects.create(user=cc_user, message=message, link_url=link_url)

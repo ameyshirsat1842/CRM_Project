@@ -245,6 +245,7 @@ def add_record(request):
                 record.attachments = request.FILES['attachments']
 
             record.save()
+            form.save_m2m()  # Save many-to-many fields, including cc_users
 
             messages.success(request, "Record added successfully!")
             return redirect('leads')
@@ -281,6 +282,7 @@ def update_record(request, pk):
                 updated_record.attachments = record.attachments
 
             updated_record.save()
+            form.save_m2m()  # Save the Many-to-Many field for CC users
 
             # Process additional comments from the dynamically added comment fields
             additional_comments = request.POST.getlist('additional_comments[]')

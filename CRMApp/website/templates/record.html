@@ -50,6 +50,14 @@
           <legend class="w-auto">Follow-Up & Assignment</legend>
           <h5 class="card-title">
             <strong>Assigned Person:</strong> {{ customer_record.assigned_to.username }}<br>
+            <strong>CC Users:</strong>
+            {% if customer_record.cc_users.exists %}
+                {% for user in customer_record.cc_users.all %}
+                    {{ user.username }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            {% else %}
+                None
+              {% endif %}<br>
               <strong>Meeting Type:</strong> {{ customer_record.remarks|linebreaksbr }}<br>
             <strong>Follow-Up Date:</strong> {{ customer_record.follow_up_date|date:"F d, Y, h:i A" }}<br>
           </h5>
