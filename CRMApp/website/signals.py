@@ -189,28 +189,36 @@ def notify_user_ticket_assignment(sender, instance, **kwargs):
         pass  # Handle case where old_ticket does not exist
 
 
-@receiver(pre_save, sender=Customer)
-def notify_user_customer_assignment(sender, instance, **kwargs):
+@receiver(post_save, sender=Customer)
+def notify_user_customer_assignment(sender, instance, created, **kwargs):
     try:
-        if instance.pk:  # Existing customer
+        if created:  # New customer assignment
+            if instance.assigned_to:
+                new_assignee = instance.assigned_to
+                created_by = instance.created_by.username if instance.created_by else "Unknown User"
+                department = (
+                    instance.created_by.profile.department
+                    if instance.created_by and hasattr(instance.created_by, 'profile')
+                    else 'Unknown'
+                )
+                message = f"You have been assigned a new customer: {instance.client_name} from {instance.company} by {created_by} from {department} department"
+                link_url = reverse('customer_detail', kwargs={'customer_id': instance.pk})
+                send_notification_to_user(new_assignee, message)
+                Notification.objects.create(user=new_assignee, message=message, link_url=link_url)
+        else:  # Existing customer update
             old_customer = Customer.objects.get(pk=instance.pk)
 
             # Check if the customer is being reassigned
             if old_customer.assigned_to != instance.assigned_to:
                 new_assignee = instance.assigned_to
-                if new_assignee:
-                    department = instance.last_modified_by.profile.department if hasattr(instance.last_modified_by, 'profile') else 'Unknown'
-                    message = f"You have been re-assigned a customer: {instance.client_name} from {instance.company} by {instance.last_modified_by.username} from {department} department"
-                    link_url = reverse('customer_detail', kwargs={'customer_id': instance.pk})  # Correct URL
-                    send_notification_to_user(new_assignee, message)
-                    Notification.objects.create(user=new_assignee, message=message, link_url=link_url)
-
-        else:  # New customer assignment
-            if instance.assigned_to:
-                new_assignee = instance.assigned_to
-                department = instance.created_by.profile.department if hasattr(instance.created_by, 'profile') else 'Unknown'
-                message = f"You have been assigned a new customer: {instance.client_name} from {instance.company} by {instance.created_by.username} from {department} department"
-                link_url = reverse('customer_detail', kwargs={'customer_id': instance.pk})  # Correct URL
+                last_modified_by = instance.last_modified_by.username if instance.last_modified_by else "Unknown User"
+                department = (
+                    instance.last_modified_by.profile.department
+                    if instance.last_modified_by and hasattr(instance.last_modified_by, 'profile')
+                    else 'Unknown'
+                )
+                message = f"You have been re-assigned a customer: {instance.client_name} from {instance.company} by {last_modified_by} from {department} department"
+                link_url = reverse('customer_detail', kwargs={'customer_id': instance.pk})
                 send_notification_to_user(new_assignee, message)
                 Notification.objects.create(user=new_assignee, message=message, link_url=link_url)
 

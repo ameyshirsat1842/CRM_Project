@@ -668,8 +668,11 @@ def add_customer(request):
     if request.method == "POST":
         form = CustomerForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('customers')  # Redirect to a list of customers or any relevant page
+            customer = form.save(commit=False)
+            customer.created_by = request.user  # Set the current user as the creator
+            customer.last_modified_by = request.user  # Set the current user as the last modifier
+            customer.save()
+            return redirect('customers')
     else:
         form = CustomerForm()
 

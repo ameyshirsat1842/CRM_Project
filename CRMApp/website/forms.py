@@ -502,6 +502,12 @@ class CustomerForm(forms.ModelForm):
             'pancard': forms.ClearableFileInput(),
         }
 
+    def clean_assigned_to(self):
+        assigned_to = self.cleaned_data.get('assigned_to')
+        if assigned_to and not User.objects.filter(id=assigned_to.id).exists():
+            raise forms.ValidationError("The selected user does not exist.")
+        return assigned_to
+
 
 class CustomerUpdateForm(forms.ModelForm):
     class Meta:
