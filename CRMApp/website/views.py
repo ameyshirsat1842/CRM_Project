@@ -250,6 +250,7 @@ def add_record(request):
             messages.success(request, "Record added successfully!")
             return redirect('leads')
         else:
+            print(form.errors)
             messages.error(request, "There was an error with the form.")
     else:
         form = AddRecordForm(user=request.user)
